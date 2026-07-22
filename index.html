@@ -1,0 +1,762 @@
+<!--
+========================================================
+SALINK ENTERPRISE PLATFORM
+========================================================
+Build       : BUILD-001 RC-01
+Version     : 0.1.0
+File        : index.html
+Part        : 1A
+Status      : Production
+Architecture: Enterprise Application Shell
+========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
+
+<meta
+name="theme-color"
+content="#2C7A7B">
+
+<meta
+name="apple-mobile-web-app-capable"
+content="yes">
+
+<meta
+name="mobile-web-app-capable"
+content="yes">
+
+<meta
+name="apple-mobile-web-app-status-bar-style"
+content="black-translucent">
+
+<meta
+name="description"
+content="SALINK Emergency Communication Platform">
+
+<meta
+name="author"
+content="Kang L + OpenAI">
+
+<title>
+SALINK
+Emergency Communication Platform
+</title>
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<link
+rel="stylesheet"
+href="assets/css/core.css">
+
+<link
+rel="stylesheet"
+href="assets/css/theme.css">
+
+<link
+rel="stylesheet"
+href="assets/css/animation.css">
+
+</head>
+
+<body>
+
+<!-- ===================================================== -->
+<!-- APPLICATION ROOT -->
+<!-- ===================================================== -->
+
+<div
+id="salink-app">
+
+<!-- ===================================================== -->
+<!-- SPLASH SCREEN -->
+<!-- ===================================================== -->
+
+<section
+id="splash-screen">
+
+<div
+class="splash-background"></div>
+
+<div
+class="splash-content">
+
+<div
+class="splash-logo">
+
+<div class="logo-circle">
+
+<span>
+🚨
+</span>
+
+</div>
+
+<h1>
+
+SALINK
+
+</h1>
+
+<p>
+
+Emergency Communication Platform
+
+</p>
+
+</div>
+
+<div
+class="loading-container">
+
+<div
+class="loading-bar">
+
+<div
+class="loading-progress">
+</div>
+
+</div>
+
+<p>
+
+Initializing Platform...
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- MAIN APPLICATION -->
+<!-- ===================================================== -->
+
+<div
+id="application-shell">
+
+<!-- ===================================================== -->
+<!-- HEADER -->
+<!-- ===================================================== -->
+
+<header
+id="main-header">
+
+<div
+class="header-left">
+
+<button
+class="icon-button"
+id="menuButton">
+
+<svg
+viewBox="0 0 24 24">
+
+<path
+d="M3 6h18M3 12h18M3 18h18"/>
+
+</svg>
+
+</button>
+
+<div
+class="brand">
+
+<div
+class="brand-logo">
+
+🚨
+
+</div>
+
+<div
+class="brand-text">
+
+<h2>
+
+SALINK
+
+</h2>
+
+<span>
+
+Emergency Platform
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="header-right">
+
+<button
+class="icon-button"
+id="searchButton">
+
+<svg
+viewBox="0 0 24 24">
+
+<circle
+cx="11"
+cy="11"
+r="7"/>
+
+<line
+x1="20"
+y1="20"
+x2="16.5"
+y2="16.5"/>
+
+</svg>
+
+</button>
+
+<button
+class="icon-button notification-button">
+
+<svg
+viewBox="0 0 24 24">
+
+<path
+d="M18 8
+A6 6 0 0 0
+6 8
+v5
+l-2
+2h16
+l-2-2z"/>
+
+</svg>
+
+<span
+class="notification-badge">
+
+3
+
+</span>
+
+</button>
+
+<button
+class="profile-button">
+
+<img
+src="assets/images/avatar-default.png"
+alt="Avatar">
+
+</button>
+
+</div>
+
+</header>
+
+<!-- ===================================================== -->
+<!-- SEARCH BAR -->
+<!-- ===================================================== -->
+
+<section
+id="search-section">
+
+<div
+class="search-box">
+
+<svg
+viewBox="0 0 24 24">
+
+<circle
+cx="11"
+cy="11"
+r="7"/>
+
+<line
+x1="20"
+y1="20"
+x2="16.5"
+y2="16.5"/>
+
+</svg>
+
+<input
+
+type="text"
+
+placeholder="Cari pengguna, desa, postingan, laporan, produk..."
+
+autocomplete="off"
+
+id="globalSearch">
+
+</div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- HOME WORKSPACE -->
+<!-- ===================================================== -->
+
+<main
+id="workspace">
+
+<section
+id="home-workspace">
+  <!-- ===================================================== -->
+<!-- HOME HERO -->
+<!-- ===================================================== -->
+
+<section
+class="home-hero">
+
+    <div
+    class="hero-container glass-card">
+
+        <div
+        class="hero-info">
+
+            <div
+            class="hero-greeting">
+
+                <span
+                class="online-indicator">
+                    ●
+                </span>
+
+                <span
+                id="greetingText">
+
+                    Selamat Datang
+
+                </span>
+
+            </div>
+
+            <h1
+            id="userDisplayName">
+
+                Kang L
+
+            </h1>
+
+            <p
+            class="hero-description">
+
+                Terhubung dengan masyarakat,
+                berbagi informasi,
+                dan mengirim laporan darurat
+                secara real-time.
+
+            </p>
+
+            <div
+            class="hero-location">
+
+                📍
+                <span>
+
+                    Desa Ciasmara
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div
+        class="hero-avatar">
+
+            <img
+
+            src="assets/images/avatar-default.png"
+
+            alt="Foto Profil"
+
+            loading="lazy">
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- DASHBOARD STATS -->
+<!-- ===================================================== -->
+
+<section
+class="dashboard-stats">
+
+    <div
+    class="horizontal-scroll">
+
+        <article
+        class="stats-card">
+
+            <span
+            class="stats-icon">
+
+                📰
+
+            </span>
+
+            <h3>
+
+                125
+
+            </h3>
+
+            <small>
+
+                Postingan
+
+            </small>
+
+        </article>
+
+        <article
+        class="stats-card">
+
+            <span
+            class="stats-icon">
+
+                👥
+
+            </span>
+
+            <h3>
+
+                1.286
+
+            </h3>
+
+            <small>
+
+                Pengguna
+
+            </small>
+
+        </article>
+
+        <article
+        class="stats-card">
+
+            <span
+            class="stats-icon">
+
+                ❤️
+
+            </span>
+
+            <h3>
+
+                5.481
+
+            </h3>
+
+            <small>
+
+                Like
+
+            </small>
+
+        </article>
+
+        <article
+        class="stats-card">
+
+            <span
+            class="stats-icon">
+
+                💬
+
+            </span>
+
+            <h3>
+
+                2.145
+
+            </h3>
+
+            <small>
+
+                Komentar
+
+            </small>
+
+        </article>
+
+        <article
+        class="stats-card">
+
+            <span
+            class="stats-icon">
+
+                🚨
+
+            </span>
+
+            <h3>
+
+                8
+
+            </h3>
+
+            <small>
+
+                Emergency
+
+            </small>
+
+        </article>
+
+        <article
+        class="stats-card">
+
+            <span
+            class="stats-icon">
+
+                ⚡
+
+            </span>
+
+            <h3>
+
+                98%
+
+            </h3>
+
+            <small>
+
+                Response
+
+            </small>
+
+        </article>
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- CREATE POST -->
+<!-- ===================================================== -->
+
+<section
+id="create-post-card">
+
+    <article
+    class="glass-card post-composer">
+
+        <div
+        class="composer-header">
+
+            <img
+
+            class="composer-avatar"
+
+            src="assets/images/avatar-default.png"
+
+            alt="Avatar">
+
+            <button
+
+            id="openComposer"
+
+            class="composer-input">
+
+                Apa yang sedang terjadi?
+
+            </button>
+
+        </div>
+
+        <div
+        class="composer-toolbar">
+
+            <button
+            class="tool-button">
+
+                📷
+
+                <span>
+
+                    Foto
+
+                </span>
+
+            </button>
+
+            <button
+            class="tool-button">
+
+                🎥
+
+                <span>
+
+                    Video
+
+                </span>
+
+            </button>
+
+            <button
+            class="tool-button">
+
+                📍
+
+                <span>
+
+                    Lokasi
+
+                </span>
+
+            </button>
+
+            <button
+
+            id="openEmergencyComposer"
+
+            class="tool-button emergency">
+
+                🚨
+
+                <span>
+
+                    Emergency
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </article>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- STORY LIST -->
+<!-- ===================================================== -->
+
+<section
+id="story-section">
+
+    <div
+    class="story-scroll">
+
+        <article
+        class="story-card add-story">
+
+            <div
+            class="story-avatar">
+
+                +
+
+            </div>
+
+            <span>
+
+                Story Saya
+
+            </span>
+
+        </article>
+
+        <article
+        class="story-card">
+
+            <img
+            src="assets/images/avatar-default.png"
+            alt="">
+
+            <span>
+
+                Andi
+
+            </span>
+
+        </article>
+
+        <article
+        class="story-card">
+
+            <img
+            src="assets/images/avatar-default.png"
+            alt="">
+
+            <span>
+
+                Budi
+
+            </span>
+
+        </article>
+
+        <article
+        class="story-card">
+
+            <img
+            src="assets/images/avatar-default.png"
+            alt="">
+
+            <span>
+
+                Citra
+
+            </span>
+
+        </article>
+
+        <article
+        class="story-card">
+
+            <img
+            src="assets/images/avatar-default.png"
+            alt="">
+
+            <span>
+
+                Deni
+
+            </span>
+
+        </article>
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- FEED START -->
+<!-- ===================================================== -->
+
+<section
+id="feed-section">
+  
+  
