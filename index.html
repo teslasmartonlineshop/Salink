@@ -1,403 +1,144 @@
-<!--
-========================================================
-SALINK ENTERPRISE PLATFORM
-========================================================
-Build       : BUILD-001 RC-01
-Version     : 0.1.0
-File        : index.html
-Part        : 1A
-Status      : Production
-Architecture: Enterprise Application Shell
-========================================================
--->
-
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
 
-<meta charset="UTF-8">
+    <!-- ===================================================== -->
+    <!-- BASIC META -->
+    <!-- ===================================================== -->
 
-<meta
-name="viewport"
-content="width=device-width,
-initial-scale=1.0,
-maximum-scale=1.0,
-user-scalable=no">
+    <meta charset="UTF-8">
 
-<meta
-name="theme-color"
-content="#2C7A7B">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<meta
-name="apple-mobile-web-app-capable"
-content="yes">
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge">
 
-<meta
-name="mobile-web-app-capable"
-content="yes">
+    <meta
+        name="theme-color"
+        content="#2C7A7B">
 
-<meta
-name="apple-mobile-web-app-status-bar-style"
-content="black-translucent">
+    <meta
+        name="mobile-web-app-capable"
+        content="yes">
 
-<meta
-name="description"
-content="SALINK Emergency Communication Platform">
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes">
 
-<meta
-name="author"
-content="Kang L + OpenAI">
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
 
-<title>
-SALINK
-Emergency Communication Platform
-</title>
+    <meta
+        name="description"
+        content="SALINK Enterprise Emergency Communication Platform">
 
-<link
-rel="preconnect"
-href="https://fonts.googleapis.com">
+    <meta
+        name="keywords"
+        content="SALINK, Emergency, Media Sosial, Koperasi, Citizen App">
 
-<link
-rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
+    <meta
+        name="author"
+        content="Kang L">
 
-<link
-href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-rel="stylesheet">
+    <meta
+        name="robots"
+        content="index,follow">
 
-<link
-rel="stylesheet"
-href="assets/css/core.css">
+    <!-- ===================================================== -->
+    <!-- TITLE -->
+    <!-- ===================================================== -->
 
-<link
-rel="stylesheet"
-href="assets/css/theme.css">
+    <title>
 
-<link
-rel="stylesheet"
-href="assets/css/animation.css">
+        SALINK
+
+    </title>
+
+    <!-- ===================================================== -->
+    <!-- GOOGLE FONT -->
+    <!-- ===================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- ===================================================== -->
+    <!-- CSS -->
+    <!-- ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="assets/css/core.css">
+
+    <link
+        rel="stylesheet"
+        href="assets/css/theme.css">
+
+    <link
+        rel="stylesheet"
+        href="assets/css/animation.css">
 
 </head>
 
 <body>
 
 <!-- ===================================================== -->
-<!-- APPLICATION ROOT -->
+<!-- APPLICATION -->
 <!-- ===================================================== -->
 
-<div
-id="salink-app">
+<div id="app">
 
 <!-- ===================================================== -->
 <!-- SPLASH SCREEN -->
 <!-- ===================================================== -->
 
-<section
-id="splash-screen">
+<section id="splashScreen">
 
-<div
-class="splash-background"></div>
+    <div class="splash-overlay"></div>
 
-<div
-class="splash-content">
+    <div class="splash-content">
 
-<div
-class="splash-logo">
+        <div class="logo-wrapper">
 
-<div class="logo-circle">
+            <div class="logo-circle">
 
-<span>
-🚨
-</span>
-
-</div>
-
-<h1>
-
-SALINK
-
-</h1>
-
-<p>
-
-Emergency Communication Platform
-
-</p>
-
-</div>
-
-<div
-class="loading-container">
-
-<div
-class="loading-bar">
-
-<div
-class="loading-progress">
-</div>
-
-</div>
-
-<p>
-
-Initializing Platform...
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- MAIN APPLICATION -->
-<!-- ===================================================== -->
-
-<div
-id="application-shell">
-
-<!-- ===================================================== -->
-<!-- HEADER -->
-<!-- ===================================================== -->
-
-<header
-id="main-header">
-
-<div
-class="header-left">
-
-<button
-class="icon-button"
-id="menuButton">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M3 6h18M3 12h18M3 18h18"/>
-
-</svg>
-
-</button>
-
-<div
-class="brand">
-
-<div
-class="brand-logo">
-
-🚨
-
-</div>
-
-<div
-class="brand-text">
-
-<h2>
-
-SALINK
-
-</h2>
-
-<span>
-
-Emergency Platform
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-<div
-class="header-right">
-
-<button
-class="icon-button"
-id="searchButton">
-
-<svg
-viewBox="0 0 24 24">
-
-<circle
-cx="11"
-cy="11"
-r="7"/>
-
-<line
-x1="20"
-y1="20"
-x2="16.5"
-y2="16.5"/>
-
-</svg>
-
-</button>
-
-<button
-class="icon-button notification-button">
-
-<svg
-viewBox="0 0 24 24">
-
-<path
-d="M18 8
-A6 6 0 0 0
-6 8
-v5
-l-2
-2h16
-l-2-2z"/>
-
-</svg>
-
-<span
-class="notification-badge">
-
-3
-
-</span>
-
-</button>
-
-<button
-class="profile-button">
-
-<img
-src="assets/images/avatar-default.png"
-alt="Avatar">
-
-</button>
-
-</div>
-
-</header>
-
-<!-- ===================================================== -->
-<!-- SEARCH BAR -->
-<!-- ===================================================== -->
-
-<section
-id="search-section">
-
-<div
-class="search-box">
-
-<svg
-viewBox="0 0 24 24">
-
-<circle
-cx="11"
-cy="11"
-r="7"/>
-
-<line
-x1="20"
-y1="20"
-x2="16.5"
-y2="16.5"/>
-
-</svg>
-
-<input
-
-type="text"
-
-placeholder="Cari pengguna, desa, postingan, laporan, produk..."
-
-autocomplete="off"
-
-id="globalSearch">
-
-</div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- HOME WORKSPACE -->
-<!-- ===================================================== -->
-
-<main
-id="workspace">
-
-<section
-id="home-workspace">
-  <!-- ===================================================== -->
-<!-- HOME HERO -->
-<!-- ===================================================== -->
-
-<section
-class="home-hero">
-
-    <div
-    class="hero-container glass-card">
-
-        <div
-        class="hero-info">
-
-            <div
-            class="hero-greeting">
-
-                <span
-                class="online-indicator">
-                    ●
-                </span>
-
-                <span
-                id="greetingText">
-
-                    Selamat Datang
-
-                </span>
+                🚨
 
             </div>
 
-            <h1
-            id="userDisplayName">
+            <h1>
 
-                Kang L
+                SALINK
 
             </h1>
 
-            <p
-            class="hero-description">
+            <p>
 
-                Terhubung dengan masyarakat,
-                berbagi informasi,
-                dan mengirim laporan darurat
-                secara real-time.
+                Emergency Communication Platform
 
             </p>
 
-            <div
-            class="hero-location">
-
-                📍
-                <span>
-
-                    Desa Ciasmara
-
-                </span>
-
-            </div>
-
         </div>
 
-        <div
-        class="hero-avatar">
+        <div class="loading">
 
-            <img
+            <div class="loading-bar">
 
-            src="assets/images/avatar-default.png"
+                <div class="loading-progress"></div>
 
-            alt="Foto Profil"
-
-            loading="lazy">
+            </div>
 
         </div>
 
@@ -406,26 +147,207 @@ class="home-hero">
 </section>
 
 <!-- ===================================================== -->
-<!-- DASHBOARD STATS -->
+<!-- APPLICATION SHELL -->
 <!-- ===================================================== -->
 
-<section
-class="dashboard-stats">
+<div id="appShell">
 
-    <div
-    class="horizontal-scroll">
+<!-- ===================================================== -->
+<!-- HEADER -->
+<!-- ===================================================== -->
 
-        <article
-        class="stats-card">
+<header id="mainHeader">
 
-            <span
-            class="stats-icon">
+    <div class="header-left">
 
-                📰
+        <button
+            id="menuButton"
+            class="icon-button"
+            aria-label="Menu">
+
+            ☰
+
+        </button>
+
+        <div class="brand">
+
+            <span class="brand-logo">
+
+                🚨
 
             </span>
 
-            <h3>
+            <div>
+
+                <h2>
+
+                    SALINK
+
+                </h2>
+
+                <small>
+
+                    Citizen Platform
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="header-right">
+
+        <button
+            id="searchButton"
+            class="icon-button">
+
+            🔍
+
+        </button>
+
+        <button
+            id="notificationButton"
+            class="icon-button">
+
+            🔔
+
+            <span class="badge">
+
+                3
+
+            </span>
+
+        </button>
+
+        <button
+            id="profileButton">
+
+            <img
+                src="assets/images/avatar.png"
+                alt="Profile">
+
+        </button>
+
+    </div>
+
+</header>
+
+<!-- ===================================================== -->
+<!-- SEARCH -->
+<!-- ===================================================== -->
+
+<section id="searchSection">
+
+    <div class="search-box">
+
+        <input
+            id="globalSearch"
+            type="text"
+            placeholder="Cari pengguna, postingan, lokasi...">
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- HOME -->
+<!-- ===================================================== -->
+
+<main id="homeWorkspace">
+  <!-- ===================================================== -->
+<!-- HERO SECTION -->
+<!-- ===================================================== -->
+
+<section class="heroSection">
+
+    <div class="heroCard glass">
+
+        <div class="heroLeft">
+
+            <span class="onlineStatus">
+
+                <span class="dot"></span>
+
+                Online
+
+            </span>
+
+            <h1 id="welcomeText">
+
+                Selamat Datang,
+
+            </h1>
+
+            <h2 id="userName">
+
+                Kang L
+
+            </h2>
+
+            <p class="heroDescription">
+
+                Terhubung dengan masyarakat, berbagi informasi,
+                mengelola komunitas, dan mengirim Emergency Alert
+                dalam satu platform.
+
+            </p>
+
+            <div class="heroInfo">
+
+                <div class="heroInfoItem">
+
+                    📍
+                    <span id="userVillage">
+
+                        Desa Ciasmara
+
+                    </span>
+
+                </div>
+
+                <div class="heroInfoItem">
+
+                    ⚡
+                    <span>
+
+                        Response 98%
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="heroRight">
+
+            <img
+                src="assets/images/avatar.png"
+                alt="Avatar"
+                class="heroAvatar">
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- DASHBOARD STATISTICS -->
+<!-- ===================================================== -->
+
+<section class="statisticsSection">
+
+    <div class="statisticsScroller">
+
+        <div class="statsCard">
+
+            <span class="statsIcon">📰</span>
+
+            <h3 id="totalPost">
 
                 125
 
@@ -437,43 +359,31 @@ class="dashboard-stats">
 
             </small>
 
-        </article>
+        </div>
 
-        <article
-        class="stats-card">
+        <div class="statsCard">
 
-            <span
-            class="stats-icon">
+            <span class="statsIcon">👥</span>
 
-                👥
+            <h3 id="totalFollower">
 
-            </span>
-
-            <h3>
-
-                1.286
+                842
 
             </h3>
 
             <small>
 
-                Pengguna
+                Pengikut
 
             </small>
 
-        </article>
+        </div>
 
-        <article
-        class="stats-card">
+        <div class="statsCard">
 
-            <span
-            class="stats-icon">
+            <span class="statsIcon">❤️</span>
 
-                ❤️
-
-            </span>
-
-            <h3>
+            <h3 id="totalLike">
 
                 5.481
 
@@ -485,19 +395,13 @@ class="dashboard-stats">
 
             </small>
 
-        </article>
+        </div>
 
-        <article
-        class="stats-card">
+        <div class="statsCard">
 
-            <span
-            class="stats-icon">
+            <span class="statsIcon">💬</span>
 
-                💬
-
-            </span>
-
-            <h3>
+            <h3 id="totalComment">
 
                 2.145
 
@@ -509,19 +413,13 @@ class="dashboard-stats">
 
             </small>
 
-        </article>
+        </div>
 
-        <article
-        class="stats-card">
+        <div class="statsCard">
 
-            <span
-            class="stats-icon">
+            <span class="statsIcon">🚨</span>
 
-                🚨
-
-            </span>
-
-            <h3>
+            <h3 id="totalEmergency">
 
                 8
 
@@ -533,31 +431,25 @@ class="dashboard-stats">
 
             </small>
 
-        </article>
+        </div>
 
-        <article
-        class="stats-card">
+        <div class="statsCard">
 
-            <span
-            class="stats-icon">
+            <span class="statsIcon">🏘️</span>
 
-                ⚡
+            <h3 id="totalVillage">
 
-            </span>
-
-            <h3>
-
-                98%
+                18
 
             </h3>
 
             <small>
 
-                Response
+                Desa
 
             </small>
 
-        </article>
+        </div>
 
     </div>
 
@@ -567,28 +459,20 @@ class="dashboard-stats">
 <!-- CREATE POST -->
 <!-- ===================================================== -->
 
-<section
-id="create-post-card">
+<section id="createPostSection">
 
-    <article
-    class="glass-card post-composer">
+    <div class="createPostCard glass">
 
-        <div
-        class="composer-header">
+        <div class="createPostHeader">
 
             <img
-
-            class="composer-avatar"
-
-            src="assets/images/avatar-default.png"
-
-            alt="Avatar">
+                src="assets/images/avatar.png"
+                alt="Avatar"
+                class="postAvatar">
 
             <button
-
-            id="openComposer"
-
-            class="composer-input">
+                id="openPostComposer"
+                class="postInputButton">
 
                 Apa yang sedang terjadi?
 
@@ -596,11 +480,9 @@ id="create-post-card">
 
         </div>
 
-        <div
-        class="composer-toolbar">
+        <div class="createPostToolbar">
 
-            <button
-            class="tool-button">
+            <button class="toolbarButton">
 
                 📷
 
@@ -612,8 +494,7 @@ id="create-post-card">
 
             </button>
 
-            <button
-            class="tool-button">
+            <button class="toolbarButton">
 
                 🎥
 
@@ -625,8 +506,7 @@ id="create-post-card">
 
             </button>
 
-            <button
-            class="tool-button">
+            <button class="toolbarButton">
 
                 📍
 
@@ -639,10 +519,7 @@ id="create-post-card">
             </button>
 
             <button
-
-            id="openEmergencyComposer"
-
-            class="tool-button emergency">
+                class="toolbarButton emergencyButton">
 
                 🚨
 
@@ -656,25 +533,21 @@ id="create-post-card">
 
         </div>
 
-    </article>
+    </div>
 
 </section>
 
 <!-- ===================================================== -->
-<!-- STORY LIST -->
+<!-- STORY SECTION -->
 <!-- ===================================================== -->
 
-<section
-id="story-section">
+<section id="storySection">
 
-    <div
-    class="story-scroll">
+    <div class="storyScroller">
 
-        <article
-        class="story-card add-story">
+        <div class="storyItem addStory">
 
-            <div
-            class="story-avatar">
+            <div class="storyAvatar">
 
                 +
 
@@ -686,14 +559,13 @@ id="story-section">
 
             </span>
 
-        </article>
+        </div>
 
-        <article
-        class="story-card">
+        <div class="storyItem">
 
             <img
-            src="assets/images/avatar-default.png"
-            alt="">
+                src="assets/images/avatar.png"
+                alt="Story">
 
             <span>
 
@@ -701,14 +573,13 @@ id="story-section">
 
             </span>
 
-        </article>
+        </div>
 
-        <article
-        class="story-card">
+        <div class="storyItem">
 
             <img
-            src="assets/images/avatar-default.png"
-            alt="">
+                src="assets/images/avatar.png"
+                alt="Story">
 
             <span>
 
@@ -716,14 +587,13 @@ id="story-section">
 
             </span>
 
-        </article>
+        </div>
 
-        <article
-        class="story-card">
+        <div class="storyItem">
 
             <img
-            src="assets/images/avatar-default.png"
-            alt="">
+                src="assets/images/avatar.png"
+                alt="Story">
 
             <span>
 
@@ -731,14 +601,13 @@ id="story-section">
 
             </span>
 
-        </article>
+        </div>
 
-        <article
-        class="story-card">
+        <div class="storyItem">
 
             <img
-            src="assets/images/avatar-default.png"
-            alt="">
+                src="assets/images/avatar.png"
+                alt="Story">
 
             <span>
 
@@ -746,17 +615,353 @@ id="story-section">
 
             </span>
 
-        </article>
+        </div>
 
     </div>
 
 </section>
 
 <!-- ===================================================== -->
-<!-- FEED START -->
+<!-- FEED -->
 <!-- ===================================================== -->
 
-<section
-id="feed-section">
-  
-  
+<section id="feedSection">
+      <!-- ===================================================== -->
+    <!-- FEED COMPOSER -->
+    <!-- ===================================================== -->
+
+    <article class="feedComposer glass">
+
+        <div class="feedComposerHeader">
+
+            <img
+                src="assets/images/avatar.png"
+                alt="Avatar"
+                class="avatar">
+
+            <div class="feedComposerBody">
+
+                <textarea
+                    id="feedComposerInput"
+                    rows="3"
+                    maxlength="5000"
+                    placeholder="Tulis sesuatu...">
+                </textarea>
+
+            </div>
+
+        </div>
+
+        <div class="feedComposerFooter">
+
+            <div class="composerTools">
+
+                <button class="composerTool">
+
+                    📷
+
+                    <span>
+
+                        Foto
+
+                    </span>
+
+                </button>
+
+                <button class="composerTool">
+
+                    🎥
+
+                    <span>
+
+                        Video
+
+                    </span>
+
+                </button>
+
+                <button class="composerTool">
+
+                    😊
+
+                    <span>
+
+                        Emoji
+
+                    </span>
+
+                </button>
+
+                <button class="composerTool">
+
+                    📍
+
+                    <span>
+
+                        Lokasi
+
+                    </span>
+
+                </button>
+
+                <button
+                    id="composerEmergency"
+                    class="composerTool emergency">
+
+                    🚨
+
+                    <span>
+
+                        Emergency
+
+                    </span>
+
+                </button>
+
+            </div>
+
+            <button
+                id="publishPostButton"
+                class="publishButton">
+
+                Posting
+
+            </button>
+
+        </div>
+
+    </article>
+
+    <!-- ===================================================== -->
+    <!-- POST CARD -->
+    <!-- ===================================================== -->
+
+    <article
+        class="postCard glass"
+        data-post-id="POST000001"
+        data-post-type="normal">
+
+        <header class="postHeader">
+
+            <div class="postAuthor">
+
+                <img
+                    src="assets/images/avatar.png"
+                    alt="Avatar"
+                    class="avatar">
+
+                <div>
+
+                    <h3>
+
+                        Pemerintah Desa Ciasmara
+
+                    </h3>
+
+                    <small>
+
+                        2 menit yang lalu
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <button
+                class="postMenu">
+
+                ⋮
+
+            </button>
+
+        </header>
+
+        <div class="postContent">
+
+            <p>
+
+                Selamat datang di
+                <strong>SALINK</strong>.
+
+                Platform komunikasi masyarakat,
+                media sosial,
+                marketplace,
+                dan Emergency Alert System
+                yang terintegrasi.
+
+            </p>
+
+        </div>
+
+        <figure class="postMedia">
+
+            <img
+                src="assets/images/post-default.jpg"
+                alt="Postingan">
+
+        </figure>
+
+        <div class="postStatistic">
+
+            <span>
+
+                ❤️
+                <strong>245</strong>
+
+            </span>
+
+            <span>
+
+                💬
+                <strong>38</strong>
+
+            </span>
+
+            <span>
+
+                ↗
+                <strong>15</strong>
+
+            </span>
+
+        </div>
+
+        <nav class="postAction">
+
+            <button class="postActionButton">
+
+                ❤️
+
+                <span>
+
+                    Like
+
+                </span>
+
+            </button>
+
+            <button class="postActionButton">
+
+                💬
+
+                <span>
+
+                    Komentar
+
+                </span>
+
+            </button>
+
+            <button class="postActionButton">
+
+                ↗
+
+                <span>
+
+                    Bagikan
+
+                </span>
+
+            </button>
+
+            <button class="postActionButton">
+
+                🔖
+
+            </button>
+
+        </nav>
+
+    </article>
+
+    <!-- ===================================================== -->
+    <!-- EMERGENCY POST -->
+    <!-- ===================================================== -->
+
+    <article
+        class="postCard emergencyCard"
+        data-post-id="EMG000001"
+        data-post-type="fire">
+
+        <header class="postHeader">
+
+            <div class="postAuthor">
+
+                <img
+                    src="assets/images/avatar.png"
+                    alt="Avatar"
+                    class="avatar">
+
+                <div>
+
+                    <h3>
+
+                        Andi Saputra
+
+                    </h3>
+
+                    <small>
+
+                        Baru saja
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="emergencyBadge">
+
+                🔥 KEBAKARAN
+
+            </div>
+
+        </header>
+
+        <div class="postContent">
+
+            <p>
+
+                Terjadi kebakaran
+                di Kampung Sukamaju.
+
+                Mohon bantuan
+                Damkar
+                dan warga sekitar.
+
+            </p>
+
+        </div>
+
+        <div class="emergencyLocation">
+
+            📍
+
+            Desa Ciasmara,
+            Kecamatan Pamijahan
+
+        </div>
+
+        <footer class="emergencyFooter">
+
+            <button
+                class="emergencyDetailButton">
+
+                Lihat Detail
+
+            </button>
+
+        </footer>
+
+    </article>
+
+    <!-- ===================================================== -->
+    <!-- FEED LIST CONTAINER -->
+    <!-- ===================================================== -->
+
+    <section
+        id="feedList">
+
+    </section>
+    
