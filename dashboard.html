@@ -1796,14 +1796,18 @@
         }
 
         /* ---------- FOOTER ---------- */
+        /* Footer berada di ATAS bottom navigation */
+        .sl-footer-wrapper {
+            flex-shrink: 0;
+            background: var(--sl-color-surface);
+            border-top: 1px solid var(--sl-color-border);
+        }
+
         .sl-footer-text {
             text-align: center;
             font-size: var(--sl-font-size-xs);
             color: var(--sl-color-text-muted);
             padding: var(--sl-spacing-2) var(--sl-spacing-4);
-            border-top: 1px solid var(--sl-color-border);
-            background: var(--sl-color-surface);
-            flex-shrink: 0;
         }
 
         .sl-footer-text .sl-footer-copyright {
@@ -2341,11 +2345,14 @@
                 <button class="sl-btn sl-btn-primary sl-mt-3" onclick="location.reload()">Muat Ulang</button>
             </div>
         </main>
-      <!-- FOOTER TEXT -->
-        <div class="sl-footer-text" id="sl-footer-text">
-            <span class="sl-footer-copyright">SALINK — Emergency Social Platform © 2026 Powered by. TeslaSmart</span>
+
+        <!-- FOOTER WRAPPER (di atas bottom nav) -->
+        <div class="sl-footer-wrapper">
+            <div class="sl-footer-text" id="sl-footer-text">
+                <span class="sl-footer-copyright">SALINK — Emergency Social Platform © 2026 Powered by. TeslaSmart</span>
+            </div>
         </div>
-    </div>
+
         <!-- BOTTOM NAVIGATION -->
         <nav id="sl-bottom-nav" role="navigation" aria-label="Main Navigation">
             <a href="#" class="sl-nav-item active" data-workspace="home" aria-label="Home" aria-current="page">
@@ -2370,6 +2377,8 @@
                 <span class="sl-nav-label">Profil</span>
             </a>
         </nav>
+
+    </div>
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside class="sl-sidebar" id="sl-sidebar" role="navigation" aria-label="Sidebar Menu">
