@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SALINK - Loading</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ================================================================
+           THEME VARIABLES - SAMA DENGAN DASHBOARD
+           ================================================================ */
+        :root {
+            /* ===== DARK MODE (DEFAULT) ===== */
+            --sl-color-bg: #071A2E;
+            --sl-color-surface: #0B223D;
+            --sl-color-card: #12385E;
+            --sl-color-card-hover: #1A4670;
+            --sl-color-text-primary: #FFFFFF;
+            --sl-color-text-secondary: #B0C4DE;
+            --sl-color-text-muted: #6A8BA0;
+            --sl-color-border: rgba(255, 255, 255, 0.08);
+            --sl-color-border-light: rgba(255, 255, 255, 0.15);
+            --sl-color-primary: #00C2FF;
+            --sl-color-primary-hover: #33D0FF;
+            --sl-color-primary-gradient: linear-gradient(135deg, #00C2FF, #0099CC);
+            --sl-color-success: #00C853;
+            --sl-color-warning: #FFC107;
+            --sl-color-danger: #FF3B30;
+            --sl-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
+            --sl-shadow-primary: 0 0 40px rgba(0, 194, 255, 0.3);
+            --sl-font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+            --sl-radius-full: 9999px;
+            --sl-radius-lg: 16px;
+            --sl-radius-md: 12px;
+            --sl-duration-slow: 500ms;
+            --sl-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== LIGHT MODE ===== */
+        [data-theme="light"] {
+            --sl-color-bg: #F0F4F8;
+            --sl-color-surface: #FFFFFF;
+            --sl-color-card: #E8EEF2;
+            --sl-color-card-hover: #D8E0E8;
+            --sl-color-text-primary: #0D1B2A;
+            --sl-color-text-secondary: #2C3E50;
+            --sl-color-text-muted: #5A7A8C;
+            --sl-color-border: rgba(0, 0, 0, 0.08);
+            --sl-color-border-light: rgba(0, 0, 0, 0.12);
+            --sl-color-primary: #4facfe;
+            --sl-color-primary-hover: #00c6fb;
+            --sl-color-primary-gradient: linear-gradient(135deg, #4facfe, #00c6fb);
+            --sl-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --sl-shadow-primary: 0 0 40px rgba(79, 172, 254, 0.3);
+        }
+
+        /* ===== EMERGENCY MODE ===== */
+        [data-theme="emergency"] {
+            --sl-color-bg: #1A0000;
+            --sl-color-surface: #2A0000;
+            --sl-color-card: #3A0000;
+            --sl-color-text-primary: #FFFFFF;
+            --sl-color-text-secondary: #FFCDD2;
+            --sl-color-text-muted: #EF9A9A;
+            --sl-color-border: rgba(255, 59, 48, 0.3);
+            --sl-color-primary: #FF1744;
+            --sl-color-primary-gradient: linear-gradient(135deg, #FF1744, #D50000);
+            --sl-shadow-primary: 0 0 40px rgba(255, 23, 68, 0.3);
+        }
+
+        /* ===== COMMAND CENTER MODE ===== */
+        [data-theme="command-center"] {
+            --sl-font-size-md: 16px;
+            --sl-font-size-lg: 18px;
+            --sl-font-size-xl: 22px;
+            --sl-font-size-2xl: 28px;
+            --sl-touch-target-min: 48px;
+        }
+
+        /* ================================================================
+           BASE STYLES
+           ================================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--sl-font-primary);
+            background: var(--sl-color-bg);
+            color: var(--sl-color-text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* ================================================================
+           LOADING CONTAINER
+           ================================================================ */
+        .loading-container {
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            animation: sl-fade-in 0.6s ease;
+        }
+
+        @keyframes sl-fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ================================================================
+           LOGO
+           ================================================================ */
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            background: var(--sl-color-primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #fff;
+            box-shadow: var(--sl-shadow-primary);
+            animation: sl-pulse 2s ease-in-out infinite;
+            transition: box-shadow 0.3s ease;
+        }
+
+        @keyframes sl-pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .loading-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--sl-color-text-primary);
+            margin-bottom: 2px;
+            letter-spacing: -0.5px;
+        }
+
+        .loading-title .sl-logo-icon {
+            color: var(--sl-color-primary);
+            margin-right: 4px;
+        }
+
+        .loading-subtitle {
+            font-size: 0.85rem;
+            color: var(--sl-color-text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* ================================================================
+           PROGRESS BAR
+           ================================================================ */
+        .progress-wrapper {
+            background: var(--sl-color-surface);
+            border-radius: var(--sl-radius-md);
+            padding: 4px;
+            border: 1px solid var(--sl-color-border);
+            overflow: hidden;
+            box-shadow: var(--sl-shadow-lg);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .progress-bar {
+            height: 8px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-primary-gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: sl-shimmer 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sl-shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* ================================================================
+           PROGRESS TEXT
+           ================================================================ */
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: var(--sl-color-text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .progress-text .percentage {
+            font-weight: 600;
+            color: var(--sl-color-primary);
+            transition: color 0.3s ease;
+        }
+
+        /* ================================================================
+           STATUS MESSAGE
+           ================================================================ */
+        .status-message {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--sl-color-text-secondary);
+            min-height: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .status-message .loading-dots::after {
+            content: '';
+            animation: sl-dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes sl-dots {
+            0% {
+                content: '';
+            }
+            25% {
+                content: '.';
+            }
+            50% {
+                content: '..';
+            }
+            75% {
+                content: '...';
+            }
+            100% {
+                content: '';
+            }
+        }
+
+        /* ================================================================
+           LOADING ICON
+           ================================================================ */
+        .loading-icon {
+            margin-top: 24px;
+            font-size: 2rem;
+            color: var(--sl-color-primary);
+            opacity: 0.5;
+            animation: sl-spin 2s linear infinite;
+            transition: color 0.3s ease, opacity 0.3s ease;
+        }
+
+        @keyframes sl-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ================================================================
+           RESPONSIVE
+           ================================================================ */
+        @media (max-width: 480px) {
+            .loading-title {
+                font-size: 1.4rem;
+            }
+
+            .loading-logo {
+                width: 64px;
+                height: 64px;
+                font-size: 2rem;
+            }
+
+            .loading-subtitle {
+                font-size: 0.75rem;
+            }
+
+            .progress-text {
+                font-size: 0.65rem;
+            }
+
+            .status-message {
+                font-size: 0.75rem;
+            }
+
+            .loading-icon {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .loading-title {
+                font-size: 1.2rem;
+            }
+
+            .loading-logo {
+                width: 54px;
+                height: 54px;
+                font-size: 1.6rem;
+            }
+
+            .loading-subtitle {
+                font-size: 0.65rem;
+            }
+
+            .progress-wrapper {
+                padding: 3px;
+            }
+
+            .progress-bar {
+                height: 6px;
+            }
+
+            .progress-text {
+                font-size: 0.6rem;
+            }
+
+            .status-message {
+                font-size: 0.65rem;
+            }
+
+            .loading-icon {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <!-- Logo -->
+        <div class="loading-logo">
+            <i class="fas fa-bell"></i>
+        </div>
+
+        <!-- Title -->
+        <h1 class="loading-title">
+            <span class="sl-logo-icon">🚨</span> SALINK
+        </h1>
+        <p class="loading-subtitle">Sistem Peringatan Darurat Masyarakat</p>
+
+        <!-- Progress Bar -->
+        <div class="progress-wrapper">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Progress Text -->
+        <div class="progress-text">
+            <span id="statusLabel">Memuat...</span>
+            <span class="percentage" id="percentageLabel">0%</span>
+        </div>
+
+        <!-- Status Message -->
+        <div class="status-message" id="statusMessage">
+            <span class="loading-dots">Menyiapkan sistem</span>
+        </div>
+
+        <!-- Loading Icon -->
+        <div class="loading-icon">
+            <i class="fas fa-circle-notch"></i>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        // THEME - AMBIL DARI LOCAL STORAGE (SAMA DENGAN DASHBOARD)
+        // ================================================================
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            // Hapus semua data-theme sebelumnya
+            html.removeAttribute('data-theme');
+            // Terapkan tema yang dipilih
+            if (theme && theme !== 'dark') {
+                html.setAttribute('data-theme', theme);
+            }
+        }
+
+        const savedTheme = localStorage.getItem('sl_theme') || 'dark';
+        applyTheme(savedTheme);
+
+        // Dengarkan perubahan tema dari dashboard
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'sl_theme') {
+                applyTheme(e.newValue);
+            }
+        });
+
+        // ================================================================
+        // LOADING BAR PROGRESS
+        // ================================================================
+        const progressBar = document.getElementById('progressBar');
+        const percentageLabel = document.getElementById('percentageLabel');
+        const statusLabel = document.getElementById('statusLabel');
+        const statusMessage = document.getElementById('statusMessage');
+
+        const statusMessages = [
+            '🚀 Memulai sistem SALINK...',
+            '🔐 Memeriksa keamanan platform...',
+            '📡 Menghubungkan server darurat...',
+            '📊 Memuat data pengguna...',
+            '🔔 Menyiapkan notifikasi darurat...',
+            '📍 Mengaktifkan GPS & lokasi...',
+            '✅ Sistem siap digunakan!'
+        ];
+
+        let progress = 0;
+        let step = 0;
+
+        function updateLoading() {
+            if (progress >= 100) {
+                // Selesai loading
+                statusLabel.textContent = '✅ Selesai';
+                percentageLabel.textContent = '100%';
+                statusMessage.innerHTML = '✨ SALINK siap! Mengalihkan...';
+
+                // Cek apakah ada user yang login
+                const user = localStorage.getItem('sl_user');
+                const isLoggedIn = localStorage.getItem('sl_logged_in') === 'true';
+
+                // Tujuan redirect
+                let targetPage = 'dashboard.html';
+
+                // Jika belum login, redirect ke login.html
+                // Jika sudah login, langsung ke dashboard.html
+                if (!user || !isLoggedIn) {
+                    targetPage = 'login.html';
+                }
+
+                setTimeout(() => {
+                    window.location.href = targetPage;
+                }, 800);
+                return;
+            }
+
+            // Update progress
+            progress += Math.random() * 6 + 1;
+            if (progress > 100) progress = 100;
+
+            progressBar.style.width = progress + '%';
+            percentageLabel.textContent = Math.round(progress) + '%';
+
+            // Update status per step
+            const currentStep = Math.floor(progress / 15);
+            if (currentStep < statusMessages.length && currentStep !== step) {
+                step = currentStep;
+                statusLabel.textContent = statusMessages[step] || 'Memuat...';
+                statusMessage.innerHTML = `<span class="loading-dots">${statusMessages[step] || 'Memuat...'}</span>`;
+            }
+
+            // Kecepatan loading
+            const delay = progress > 90 ? 150 : progress > 70 ? 80 : 50;
+            setTimeout(updateLoading, delay);
+        }
+
+        // ================================================================
+        // MULAI LOADING
+        // ================================================================
+        // Tunggu sebentar sebelum mulai
+        setTimeout(() => {
+            updateLoading();
+        }, 500);
+
+        // ================================================================
+        // CEK KONEKSI INTERNET
+        // ================================================================
+        function updateConnectionStatus() {
+            if (!navigator.onLine) {
+                statusMessage.innerHTML = '⚠️ Tidak ada koneksi internet. Periksa jaringan Anda.';
+                statusMessage.style.color = 'var(--sl-color-danger)';
+            } else {
+                statusMessage.style.color = '';
+            }
+        }
+
+        updateConnectionStatus();
+
+        window.addEventListener('online', function() {
+            statusMessage.innerHTML = '<span class="loading-dots">🔄 Koneksi pulih! Melanjutkan...</span>';
+            statusMessage.style.color = '';
+        });
+
+        window.addEventListener('offline', function() {
+            statusMessage.innerHTML = '⚠️ Koneksi terputus. Menunggu jaringan...';
+            statusMessage.style.color = 'var(--sl-color-danger)';
+        });
+
+        // ================================================================
+        // LOG
+        // ================================================================
+        console.log('🚀 SALINK Loading Page');
+        console.log('📌 Tema:', savedTheme);
+        console.log('📊 Status: Loading...');
+        console.log('👤 User:', localStorage.getItem('sl_user') ? 'Terdeteksi' : 'Belum login');
+        console.log('🔗 Integrasi dengan dashboard: ✅ Tersinkronisasi');
+    </script>
+</body>
+</html>
