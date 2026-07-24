@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="theme-color" content="#071A2E" />
+    <meta name="description" content="SALINK — Smart Alert, Link & Integrated Notification Knowledge. Platform darurat berbasis komunitas." />
+    <title>SALINK — Loading...</title>
+
+    <style>
+        /* ================================================================
+           SPLASH SCREEN — SALINK
+           ================================================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #071A2E;
+            color: #FFFFFF;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #sl-splash {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            animation: sl-fade-in 0.6s ease;
+            padding: 20px;
+        }
+
+        #sl-splash .sl-splash-logo {
+            font-size: 72px;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: -1px;
+            line-height: 1;
+            animation: sl-logo-bounce 1.5s ease-in-out infinite;
+        }
+
+        #sl-splash .sl-splash-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFFFFF;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #00C2FF, #0099CC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #sl-splash .sl-splash-sub {
+            font-size: 13px;
+            color: #6A8BA0;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        #sl-splash .sl-splash-loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.06);
+            border-top-color: #00C2FF;
+            border-radius: 50%;
+            animation: sl-spin 0.8s linear infinite;
+            margin-top: 8px;
+        }
+
+        #sl-splash .sl-splash-loader-text {
+            font-size: 12px;
+            color: #6A8BA0;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        #sl-splash .sl-splash-progress {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        #sl-splash .sl-splash-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00C2FF, #0099CC);
+            border-radius: 4px;
+            transition: width 0.2s ease;
+        }
+
+        #sl-splash .sl-splash-version {
+            font-size: 10px;
+            color: #4A6A80;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes sl-fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes sl-logo-bounce {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes sl-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            #sl-splash .sl-splash-logo {
+                font-size: 56px;
+            }
+            #sl-splash .sl-splash-title {
+                font-size: 22px;
+            }
+            #sl-splash .sl-splash-sub {
+                font-size: 11px;
+            }
+            #sl-splash .sl-splash-loader {
+                width: 40px;
+                height: 40px;
+                border-width: 3px;
+            }
+            #sl-splash .sl-splash-progress {
+                width: 160px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            #sl-splash .sl-splash-logo {
+                font-size: 44px;
+            }
+            #sl-splash .sl-splash-title {
+                font-size: 18px;
+            }
+            #sl-splash .sl-splash-progress {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== SPLASH SCREEN ==================== -->
+    <div id="sl-splash">
+        <div class="sl-splash-logo">🚨</div>
+        <div class="sl-splash-title">SALINK</div>
+        <div class="sl-splash-sub">Emergency Social Platform</div>
+        <div class="sl-splash-loader"></div>
+        <div class="sl-splash-loader-text">Loading...</div>
+        <div class="sl-splash-progress">
+            <div class="sl-splash-progress-bar" id="sl-progress-bar"></div>
+        </div>
+        <div class="sl-splash-version">v1.0 Enterprise</div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT — REDIRECT TO DASHBOARD                                -->
+    <!-- ================================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            console.log('🚨 [SALINK] Splash Screen loaded');
+
+            const progressBar = document.getElementById('sl-progress-bar');
+            const loaderText = document.querySelector('.sl-splash-loader-text');
+
+            let progress = 0;
+            const messages = [
+                'Loading...',
+                'Memulai aplikasi...',
+                'Menyiapkan workspace...',
+                'Hampir selesai...',
+                'Siap!'
+            ];
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 12 + 5;
+                if (progress > 100) progress = 100;
+
+                if (progressBar) {
+                    progressBar.style.width = progress + '%';
+                }
+
+                const msgIndex = Math.min(Math.floor(progress / 25), messages.length - 1);
+                if (loaderText) {
+                    loaderText.textContent = messages[msgIndex] || 'Loading...';
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        console.log('✅ [SALINK] Redirecting to dashboard...');
+                        window.location.href = 'dashboard.html';
+                    }, 400);
+                }
+            }, 150);
+
+            // Fallback: jika loading terlalu lama (>5 detik), tetap redirect
+            setTimeout(() => {
+                clearInterval(interval);
+                if (progress < 100) {
+                    console.warn('⚠️ [SALINK] Loading timeout, redirecting anyway...');
+                    window.location.href = 'dashboard.html';
+                }
+            }, 6000);
+
+            // Cek apakah user sudah login? Jika sudah, tetap redirect ke dashboard
+            // Jika belum, tetap redirect ke dashboard (Preview Mode)
+
+        })();
+    </script>
+
+</body>
+</html>
