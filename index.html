@@ -1,967 +1,3391 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="theme-color" content="#071A2E" />
+    <meta name="description" content="SALINK — Smart Alert, Link & Integrated Notification Knowledge. Platform darurat berbasis komunitas." />
+    <title>SALINK — Emergency Social Platform</title>
 
-    <!-- ===================================================== -->
-    <!-- BASIC META -->
-    <!-- ===================================================== -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
 
-    <meta charset="UTF-8">
+    <style>
+        /* ================================================================
+           SALINK DESIGN SYSTEM — All in One
+           ================================================================ */
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        /* ---------- TOKENS ---------- */
+        :root {
+            --sl-color-primary: #00C2FF;
+            --sl-color-primary-hover: #33D0FF;
+            --sl-color-primary-active: #0099CC;
+            --sl-color-success: #00C853;
+            --sl-color-success-bg: #E8F5E9;
+            --sl-color-warning: #FFC107;
+            --sl-color-warning-bg: #FFF8E1;
+            --sl-color-danger: #FF3B30;
+            --sl-color-danger-hover: #FF6259;
+            --sl-color-danger-bg: #FFEBEE;
+            --sl-color-bg: #071A2E;
+            --sl-color-surface: #0B223D;
+            --sl-color-card: #12385E;
+            --sl-color-card-hover: #1A4670;
+            --sl-color-text-primary: #FFFFFF;
+            --sl-color-text-secondary: #B0C4DE;
+            --sl-color-text-muted: #6A8BA0;
+            --sl-color-border: rgba(255, 255, 255, 0.08);
+            --sl-color-border-light: rgba(255, 255, 255, 0.15);
+            --sl-glass-bg: rgba(255, 255, 255, 0.06);
+            --sl-glass-border: rgba(255, 255, 255, 0.10);
+            --sl-font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+            --sl-font-size-xs: 10px;
+            --sl-font-size-sm: 12px;
+            --sl-font-size-md: 14px;
+            --sl-font-size-lg: 16px;
+            --sl-font-size-xl: 20px;
+            --sl-font-size-2xl: 24px;
+            --sl-font-weight-medium: 500;
+            --sl-font-weight-bold: 700;
+            --sl-line-height-normal: 1.5;
+            --sl-spacing-1: 4px;
+            --sl-spacing-2: 8px;
+            --sl-spacing-3: 12px;
+            --sl-spacing-4: 16px;
+            --sl-spacing-5: 20px;
+            --sl-spacing-6: 24px;
+            --sl-radius-sm: 8px;
+            --sl-radius-md: 12px;
+            --sl-radius-lg: 16px;
+            --sl-radius-xl: 24px;
+            --sl-radius-full: 9999px;
+            --sl-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --sl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.20);
+            --sl-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
+            --sl-shadow-emergency: 0 0 60px rgba(255, 59, 48, 0.20);
+            --sl-duration-fast: 150ms;
+            --sl-duration-normal: 300ms;
+            --sl-duration-slow: 500ms;
+            --sl-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+            --sl-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --sl-z-base: 0;
+            --sl-z-header: 50;
+            --sl-z-sidebar: 60;
+            --sl-z-bottom-nav: 70;
+            --sl-z-fab: 80;
+            --sl-z-drawer: 100;
+            --sl-z-modal: 200;
+            --sl-z-toast: 300;
+            --sl-z-loader: 400;
+            --sl-z-emergency-overlay: 500;
+            --sl-touch-target-min: 44px;
+            --sl-transition-all: all var(--sl-duration-normal) var(--sl-ease-default);
+            --sl-transition-color: color var(--sl-duration-normal) var(--sl-ease-default);
+        }
 
-    <meta
-        http-equiv="X-UA-Compatible"
-        content="IE=edge">
+        [data-theme="light"] {
+            --sl-color-bg: #F0F4F8;
+            --sl-color-surface: #FFFFFF;
+            --sl-color-card: #E8EEF2;
+            --sl-color-card-hover: #D8E0E8;
+            --sl-color-text-primary: #0D1B2A;
+            --sl-color-text-secondary: #2C3E50;
+            --sl-color-text-muted: #5A7A8C;
+            --sl-color-border: rgba(0, 0, 0, 0.08);
+            --sl-glass-bg: rgba(255, 255, 255, 0.6);
+            --sl-glass-border: rgba(255, 255, 255, 0.3);
+        }
 
-    <meta
-        name="theme-color"
-        content="#2C7A7B">
+        [data-theme="emergency"] {
+            --sl-color-bg: #1A0000;
+            --sl-color-surface: #2A0000;
+            --sl-color-card: #3A0000;
+            --sl-color-text-primary: #FFFFFF;
+            --sl-color-text-secondary: #FFCDD2;
+            --sl-color-primary: #FF1744;
+            --sl-color-border: rgba(255, 59, 48, 0.3);
+            --sl-shadow-emergency: 0 0 80px rgba(255, 59, 48, 0.15);
+        }
 
-    <meta
-        name="mobile-web-app-capable"
-        content="yes">
+        /* ---------- RESET ---------- */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <meta
-        name="apple-mobile-web-app-capable"
-        content="yes">
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
+        }
 
-    <meta
-        name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent">
+        body {
+            font-family: var(--sl-font-primary);
+            background: var(--sl-color-bg);
+            color: var(--sl-color-text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    <meta
-        name="description"
-        content="SALINK Enterprise Emergency Communication Platform">
+        /* ---------- SPLASH SCREEN ---------- */
+        #sl-splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--sl-color-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--sl-spacing-4);
+            transition: opacity var(--sl-duration-slow) var(--sl-ease-default);
+        }
 
-    <meta
-        name="keywords"
-        content="SALINK, Emergency, Media Sosial, Koperasi, Citizen App">
+        #sl-splash.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    <meta
-        name="author"
-        content="Kang L">
+        #sl-splash .sl-splash-logo {
+            font-size: 48px;
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            letter-spacing: -1px;
+        }
 
-    <meta
-        name="robots"
-        content="index,follow">
+        #sl-splash .sl-splash-sub {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-muted);
+        }
 
-    <!-- ===================================================== -->
-    <!-- TITLE -->
-    <!-- ===================================================== -->
+        #sl-splash .sl-splash-loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--sl-color-primary);
+            border-radius: 50%;
+            animation: sl-spin 0.8s linear infinite;
+        }
 
-    <title>
+        @keyframes sl-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
-        SALINK
+        /* ---------- APP SHELL ---------- */
+        #sl-app {
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--sl-color-bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--sl-shadow-lg);
+        }
 
-    </title>
+        /* ---------- SYSTEM BAR ---------- */
+        #sl-system-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px var(--sl-spacing-4);
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-secondary);
+            background: rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
 
-    <!-- ===================================================== -->
-    <!-- GOOGLE FONT -->
-    <!-- ===================================================== -->
+        #sl-status-text {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+        }
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+        #sl-status-text::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sl-color-success);
+        }
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+        /* ---------- HEADER ---------- */
+        #sl-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--sl-spacing-3) var(--sl-spacing-4);
+            background: var(--sl-color-surface);
+            border-bottom: 1px solid var(--sl-color-border);
+            flex-shrink: 0;
+        }
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+        .sl-header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-2);
+        }
 
-    <!-- ===================================================== -->
-    <!-- CSS -->
-    <!-- ===================================================== -->
+        #sl-logo {
+            font-weight: var(--sl-font-weight-bold);
+            font-size: var(--sl-font-size-lg);
+            color: var(--sl-color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+        }
 
-    <link
-        rel="stylesheet"
-        href="assets/css/core.css">
+        #sl-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--sl-color-primary);
+        }
 
-    <link
-        rel="stylesheet"
-        href="assets/css/theme.css">
+        .sl-header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-2);
+        }
 
-    <link
-        rel="stylesheet"
-        href="assets/css/animation.css">
+        .sl-icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--sl-color-text-secondary);
+            cursor: pointer;
+            padding: var(--sl-spacing-1);
+            transition: var(--sl-transition-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--sl-radius-full);
+        }
 
+        .sl-icon-btn:hover {
+            color: var(--sl-color-text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sl-icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ---------- SEARCH ---------- */
+        #sl-search-bar {
+            padding: var(--sl-spacing-2) var(--sl-spacing-4);
+            background: var(--sl-color-surface);
+            border-bottom: 1px solid var(--sl-color-border);
+            flex-shrink: 0;
+            display: none;
+        }
+
+        #sl-search-bar.active {
+            display: block;
+        }
+
+        .sl-search-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .sl-search-input-wrap svg {
+            position: absolute;
+            left: var(--sl-spacing-3);
+            width: 18px;
+            height: 18px;
+            fill: var(--sl-color-text-muted);
+            stroke: var(--sl-color-text-muted);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sl-search-input {
+            width: 100%;
+            padding: var(--sl-spacing-2) var(--sl-spacing-3) var(--sl-spacing-2) 40px;
+            background: var(--sl-color-bg);
+            border: 2px solid var(--sl-color-border);
+            border-radius: var(--sl-radius-full);
+            color: var(--sl-color-text-primary);
+            font-size: var(--sl-font-size-md);
+            font-family: var(--sl-font-primary);
+            min-height: var(--sl-touch-target-min);
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-search-input::placeholder {
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-search-input:focus {
+            outline: none;
+            border-color: var(--sl-color-primary);
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+        }
+
+        /* ---------- WORKSPACE ---------- */
+        #sl-workspace {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--sl-spacing-4);
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        #sl-workspace::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #sl-workspace::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--sl-radius-full);
+        }
+
+        /* ---------- LOADER ---------- */
+        .sl-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 200px;
+            gap: var(--sl-spacing-4);
+            color: var(--sl-color-text-secondary);
+        }
+
+        .sl-loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--sl-color-primary);
+            border-radius: 50%;
+            animation: sl-spin 0.8s linear infinite;
+        }
+
+        .sl-loader-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--sl-radius-full);
+            overflow: hidden;
+        }
+
+        .sl-loader-progress-bar {
+            height: 100%;
+            background: var(--sl-color-primary);
+            border-radius: var(--sl-radius-full);
+            transition: width var(--sl-duration-slow) var(--sl-ease-default);
+            width: 0%;
+        }
+
+        /* ---------- HERO ---------- */
+        .sl-hero {
+            background: linear-gradient(135deg, var(--sl-color-card), var(--sl-color-surface));
+            border-radius: var(--sl-radius-lg);
+            padding: var(--sl-spacing-4);
+            margin-bottom: var(--sl-spacing-4);
+            border: 1px solid var(--sl-color-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sl-hero::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0, 194, 255, 0.08), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .sl-hero-title {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            margin-bottom: var(--sl-spacing-1);
+        }
+
+        .sl-hero-sub {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-secondary);
+        }
+
+        .sl-hero-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--sl-spacing-2);
+            margin-top: var(--sl-spacing-3);
+            padding: var(--sl-spacing-1) var(--sl-spacing-3);
+            background: rgba(0, 200, 83, 0.15);
+            border-radius: var(--sl-radius-full);
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-success);
+        }
+
+        /* ---------- STATISTICS ---------- */
+        .sl-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--sl-spacing-2);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-stat-item {
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-md);
+            padding: var(--sl-spacing-2) var(--sl-spacing-1);
+            text-align: center;
+            border: 1px solid var(--sl-color-border);
+            transition: var(--sl-transition-all);
+            cursor: default;
+        }
+
+        .sl-stat-item:hover {
+            border-color: var(--sl-color-border-light);
+        }
+
+        .sl-stat-value {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-stat-label {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+            margin-top: 2px;
+        }
+
+        /* ---------- CREATE POST ---------- */
+        .sl-create-post {
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-lg);
+            padding: var(--sl-spacing-3);
+            border: 1px solid var(--sl-color-border);
+            margin-bottom: var(--sl-spacing-4);
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-create-post:hover {
+            border-color: var(--sl-color-border-light);
+            background: var(--sl-color-card-hover);
+        }
+
+        .sl-create-post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            flex-shrink: 0;
+            font-size: var(--sl-font-size-lg);
+        }
+
+        .sl-create-post-placeholder {
+            flex: 1;
+            color: var(--sl-color-text-muted);
+            font-size: var(--sl-font-size-md);
+        }
+
+        .sl-create-post-actions {
+            display: flex;
+            gap: var(--sl-spacing-2);
+        }
+
+        .sl-create-post-actions button {
+            background: transparent;
+            border: none;
+            color: var(--sl-color-text-secondary);
+            cursor: pointer;
+            padding: var(--sl-spacing-1);
+            border-radius: var(--sl-radius-full);
+            transition: var(--sl-transition-all);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .sl-create-post-actions button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-create-post-actions button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ---------- STORY ---------- */
+        .sl-story-section {
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-story-section-title {
+            font-size: var(--sl-font-size-sm);
+            font-weight: var(--sl-font-weight-medium);
+            color: var(--sl-color-text-secondary);
+            margin-bottom: var(--sl-spacing-2);
+        }
+
+        .sl-story-list {
+            display: flex;
+            gap: var(--sl-spacing-3);
+            overflow-x: auto;
+            padding-bottom: var(--sl-spacing-2);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .sl-story-list::-webkit-scrollbar {
+            height: 2px;
+        }
+
+        .sl-story-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--sl-radius-full);
+        }
+
+        .sl-story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .sl-story-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--sl-font-size-xl);
+            border: 2px solid var(--sl-color-primary);
+            padding: 2px;
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-story-name {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-secondary);
+            max-width: 64px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* ---------- FEED ---------- */
+        .sl-feed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--sl-spacing-4);
+            flex-wrap: wrap;
+            gap: var(--sl-spacing-2);
+        }
+
+        .sl-feed-title {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-feed-filters {
+            display: flex;
+            gap: var(--sl-spacing-2);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: var(--sl-spacing-1);
+        }
+
+        .sl-feed-filter {
+            padding: var(--sl-spacing-1) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-full);
+            border: 1px solid var(--sl-color-border);
+            background: transparent;
+            color: var(--sl-color-text-secondary);
+            font-size: var(--sl-font-size-sm);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--sl-transition-all);
+            font-family: var(--sl-font-primary);
+        }
+
+        .sl-feed-filter:hover {
+            border-color: var(--sl-color-primary);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-feed-filter.active {
+            background: var(--sl-color-primary);
+            border-color: var(--sl-color-primary);
+            color: #fff;
+        }
+
+        /* ---------- POST COMPOSER ---------- */
+        .sl-post-composer {
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-lg);
+            padding: var(--sl-spacing-4);
+            border: 1px solid var(--sl-color-border);
+            margin-bottom: var(--sl-spacing-4);
+            display: none;
+        }
+
+        .sl-post-composer.active {
+            display: block;
+        }
+
+        .sl-post-composer-header {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            margin-bottom: var(--sl-spacing-3);
+        }
+
+        .sl-post-composer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            flex-shrink: 0;
+            font-size: var(--sl-font-size-lg);
+        }
+
+        .sl-post-composer-input {
+            flex: 1;
+            background: var(--sl-color-surface);
+            border: 2px solid var(--sl-color-border);
+            border-radius: var(--sl-radius-full);
+            padding: var(--sl-spacing-2) var(--sl-spacing-4);
+            color: var(--sl-color-text-primary);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            min-height: 44px;
+            transition: var(--sl-transition-all);
+            resize: none;
+        }
+
+        .sl-post-composer-input:focus {
+            outline: none;
+            border-color: var(--sl-color-primary);
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+        }
+
+        .sl-post-composer-input::placeholder {
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-post-composer-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-2);
+            flex-wrap: wrap;
+        }
+
+        .sl-post-composer-type {
+            padding: var(--sl-spacing-1) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-full);
+            border: 1px solid var(--sl-color-border);
+            background: var(--sl-color-surface);
+            color: var(--sl-color-text-secondary);
+            font-size: var(--sl-font-size-sm);
+            cursor: pointer;
+            font-family: var(--sl-font-primary);
+            min-height: 36px;
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-post-composer-type:hover {
+            border-color: var(--sl-color-primary);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-post-composer-type option {
+            background: var(--sl-color-surface);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-post-composer-type.emergency {
+            border-color: var(--sl-color-danger);
+            color: var(--sl-color-danger);
+        }
+
+        .sl-post-composer-submit {
+            margin-left: auto;
+        }
+
+        /* ---------- POST CARD ---------- */
+        .sl-post-card {
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-lg);
+            padding: var(--sl-spacing-4);
+            border: 1px solid var(--sl-color-border);
+            margin-bottom: var(--sl-spacing-4);
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-post-card:hover {
+            border-color: var(--sl-color-border-light);
+        }
+
+        .sl-post-header {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            margin-bottom: var(--sl-spacing-3);
+        }
+
+        .sl-post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            flex-shrink: 0;
+            font-size: var(--sl-font-size-lg);
+        }
+
+        .sl-post-author {
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-post-time {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-post-content {
+            color: var(--sl-color-text-secondary);
+            line-height: var(--sl-line-height-normal);
+            margin-bottom: var(--sl-spacing-3);
+            font-size: var(--sl-font-size-md);
+        }
+
+        .sl-post-media {
+            border-radius: var(--sl-radius-md);
+            overflow: hidden;
+            margin-bottom: var(--sl-spacing-3);
+            background: var(--sl-color-surface);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .sl-post-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+            padding-top: var(--sl-spacing-3);
+            border-top: 1px solid var(--sl-color-border);
+            flex-wrap: wrap;
+        }
+
+        .sl-post-action {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+            background: none;
+            border: none;
+            color: var(--sl-color-text-secondary);
+            font-size: var(--sl-font-size-sm);
+            cursor: pointer;
+            padding: var(--sl-spacing-1) var(--sl-spacing-2);
+            border-radius: var(--sl-radius-sm);
+            transition: var(--sl-transition-all);
+            font-family: var(--sl-font-primary);
+            min-height: 32px;
+        }
+
+        .sl-post-action:hover {
+            background: var(--sl-color-surface);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-post-action.liked {
+            color: var(--sl-color-danger);
+        }
+
+        .sl-post-action svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sl-post-action.liked svg {
+            fill: var(--sl-color-danger);
+            stroke: var(--sl-color-danger);
+        }
+
+        .sl-post-action .sl-action-count {
+            font-size: var(--sl-font-size-sm);
+        }
+
+        /* ---------- EMERGENCY CARD ---------- */
+        .sl-emergency-card {
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-lg);
+            padding: var(--sl-spacing-4);
+            border-left: 4px solid var(--sl-color-danger);
+            margin-bottom: var(--sl-spacing-4);
+            border: 1px solid var(--sl-color-border);
+            border-left-width: 4px;
+        }
+
+        .sl-emergency-card .sl-post-header {
+            margin-bottom: var(--sl-spacing-2);
+        }
+
+        .sl-emergency-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+            padding: var(--sl-spacing-0_5) var(--sl-spacing-2);
+            background: var(--sl-color-danger);
+            color: #fff;
+            border-radius: var(--sl-radius-full);
+            font-size: var(--sl-font-size-xs);
+            font-weight: var(--sl-font-weight-bold);
+        }
+
+        .sl-emergency-status {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+        }
+
+        /* ---------- QUICK ACTION ---------- */
+        .sl-quick-action {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--sl-spacing-2);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+            padding: var(--sl-spacing-2);
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-md);
+            border: 1px solid var(--sl-color-border);
+            color: var(--sl-color-text-secondary);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-xs);
+            min-height: 64px;
+        }
+
+        .sl-quick-action-btn:hover {
+            border-color: var(--sl-color-border-light);
+            background: var(--sl-color-card-hover);
+            color: var(--sl-color-text-primary);
+            transform: translateY(-2px);
+        }
+
+        .sl-quick-action-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sl-quick-action-btn .sl-icon-emoji {
+            font-size: 24px;
+        }
+
+        /* ---------- EMERGENCY GRID ---------- */
+        .sl-emergency-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sl-spacing-4);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-emergency-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--sl-spacing-2);
+            padding: var(--sl-spacing-5) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-lg);
+            border: none;
+            font-size: var(--sl-font-size-md);
+            font-weight: var(--sl-font-weight-bold);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+            min-height: 120px;
+            font-family: var(--sl-font-primary);
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sl-emergency-btn .sl-icon-emoji {
+            font-size: 48px;
+        }
+
+        .sl-emergency-btn .sl-label {
+            font-size: var(--sl-font-size-md);
+        }
+
+        .sl-emergency-btn:hover {
+            transform: scale(1.02);
+            box-shadow: var(--sl-shadow-lg);
+        }
+
+        .sl-emergency-btn:active {
+            transform: scale(0.95);
+        }
+
+        .sl-emergency-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), transparent 60%);
+            pointer-events: none;
+        }
+
+        .sl-emergency-fire {
+            background: linear-gradient(135deg, #FF3D00, #D50000);
+        }
+        .sl-emergency-medical {
+            background: linear-gradient(135deg, #00BCD4, #006064);
+        }
+        .sl-emergency-security {
+            background: linear-gradient(135deg, #FFC107, #F57F17);
+        }
+        .sl-emergency-disaster {
+            background: linear-gradient(135deg, #9C27B0, #4A148C);
+        }
+
+        .sl-emergency-sos {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #D50000, #B71C1C);
+            min-height: 64px;
+            font-size: var(--sl-font-size-lg);
+            animation: sl-sos-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes sl-sos-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(213, 0, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(213, 0, 0, 0.5);
+            }
+        }
+
+        /* ---------- NOTIFICATION PANEL ---------- */
+        .sl-notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--sl-spacing-3);
+            padding: var(--sl-spacing-3) var(--sl-spacing-4);
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-md);
+            border: 1px solid var(--sl-color-border);
+            margin-bottom: var(--sl-spacing-2);
+            transition: var(--sl-transition-all);
+            cursor: pointer;
+        }
+
+        .sl-notification-item:hover {
+            border-color: var(--sl-color-border-light);
+            background: var(--sl-color-card-hover);
+        }
+
+        .sl-notification-item.unread {
+            border-left: 4px solid var(--sl-color-primary);
+        }
+
+        .sl-notification-icon {
+            font-size: var(--sl-font-size-xl);
+            flex-shrink: 0;
+        }
+
+        .sl-notification-content {
+            flex: 1;
+        }
+
+        .sl-notification-title {
+            font-weight: var(--sl-font-weight-medium);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-notification-message {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-secondary);
+        }
+
+        .sl-notification-time {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+            flex-shrink: 0;
+        }
+
+        .sl-notification-empty {
+            text-align: center;
+            padding: var(--sl-spacing-8) 0;
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-notification-empty .sl-icon-emoji {
+            font-size: 48px;
+            display: block;
+            margin-bottom: var(--sl-spacing-3);
+        }
+
+        /* ---------- BOTTOM NAV ---------- */
+        #sl-bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: var(--sl-color-surface);
+            border-top: 1px solid var(--sl-color-border);
+            padding: var(--sl-spacing-1) 0 var(--sl-spacing-2);
+            flex-shrink: 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: relative;
+            z-index: var(--sl-z-bottom-nav);
+        }
+
+        .sl-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            border: none;
+            color: var(--sl-color-text-secondary);
+            cursor: pointer;
+            padding: var(--sl-spacing-1) var(--sl-spacing-3);
+            transition: var(--sl-transition-color);
+            font-family: var(--sl-font-primary);
+            position: relative;
+            min-height: var(--sl-touch-target-min);
+        }
+
+        .sl-nav-item svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sl-nav-item .sl-nav-label {
+            font-size: var(--sl-font-size-xs);
+            font-weight: var(--sl-font-weight-medium);
+            margin-top: 2px;
+        }
+
+        .sl-nav-item.active {
+            color: var(--sl-color-primary);
+        }
+
+        .sl-nav-item.active::after {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            border-radius: var(--sl-radius-sm);
+            background: var(--sl-color-primary);
+        }
+
+        .sl-nav-item:hover {
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-nav-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--sl-color-danger);
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: var(--sl-radius-full);
+            min-width: 18px;
+            text-align: center;
+            display: none;
+            font-weight: var(--sl-font-weight-bold);
+        }
+
+        /* ---------- SIDEBAR ---------- */
+        .sl-sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--sl-color-surface);
+            border-right: 1px solid var(--sl-color-border);
+            z-index: var(--sl-z-sidebar);
+            transition: left var(--sl-duration-normal) var(--sl-ease-default);
+            padding: var(--sl-spacing-4);
+            overflow-y: auto;
+        }
+
+        .sl-sidebar.open {
+            left: 0;
+        }
+
+        .sl-sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--sl-color-overlay);
+            z-index: var(--sl-z-above);
+            display: none;
+        }
+
+        .sl-sidebar-overlay.active {
+            display: block;
+        }
+
+        .sl-sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: var(--sl-spacing-4);
+            border-bottom: 1px solid var(--sl-color-border);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-sidebar-close {
+            background: none;
+            border: none;
+            color: var(--sl-color-text-secondary);
+            font-size: var(--sl-font-size-xl);
+            cursor: pointer;
+            padding: var(--sl-spacing-1);
+            transition: var(--sl-transition-color);
+        }
+
+        .sl-sidebar-close:hover {
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            padding: var(--sl-spacing-3);
+            background: var(--sl-color-card);
+            border-radius: var(--sl-radius-md);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-sidebar-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--sl-font-size-2xl);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-sidebar-username {
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-sidebar-user-status {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sl-sidebar-menu li {
+            margin-bottom: var(--sl-spacing-1);
+        }
+
+        .sl-sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            padding: var(--sl-spacing-3) var(--sl-spacing-4);
+            border-radius: var(--sl-radius-md);
+            color: var(--sl-color-text-secondary);
+            text-decoration: none;
+            transition: var(--sl-transition-all);
+            cursor: pointer;
+            font-size: var(--sl-font-size-md);
+        }
+
+        .sl-sidebar-menu a:hover {
+            background: var(--sl-color-card);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-sidebar-menu a.active {
+            background: var(--sl-color-card);
+            color: var(--sl-color-primary);
+        }
+
+        .sl-sidebar-menu a svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sl-sidebar-footer {
+            margin-top: var(--sl-spacing-4);
+            padding-top: var(--sl-spacing-4);
+            border-top: 1px solid var(--sl-color-border);
+        }
+
+        /* ---------- MODAL ---------- */
+        .sl-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--sl-color-overlay);
+            z-index: var(--sl-z-modal);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--sl-spacing-4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .sl-modal-overlay.active {
+            display: flex;
+        }
+
+        .sl-modal {
+            background: var(--sl-color-surface);
+            border-radius: var(--sl-radius-xl);
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: var(--sl-spacing-5);
+            border: 1px solid var(--sl-color-border);
+            box-shadow: var(--sl-shadow-xl);
+            animation: sl-modal-in var(--sl-duration-normal) var(--sl-ease-spring);
+        }
+
+        @keyframes sl-modal-in {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .sl-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-modal-title {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-modal-close {
+            background: none;
+            border: none;
+            color: var(--sl-color-text-secondary);
+            font-size: var(--sl-font-size-2xl);
+            cursor: pointer;
+            padding: var(--sl-spacing-1);
+            transition: var(--sl-transition-color);
+        }
+
+        .sl-modal-close:hover {
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-modal-body {
+            color: var(--sl-color-text-secondary);
+            line-height: var(--sl-line-height-normal);
+        }
+
+        .sl-modal-footer {
+            margin-top: var(--sl-spacing-4);
+            padding-top: var(--sl-spacing-4);
+            border-top: 1px solid var(--sl-color-border);
+            display: flex;
+            gap: var(--sl-spacing-2);
+            justify-content: flex-end;
+        }
+
+        /* ---------- TOAST ---------- */
+        .sl-toast-container {
+            position: fixed;
+            bottom: calc(var(--sl-spacing-4) + 72px);
+            left: var(--sl-spacing-4);
+            right: var(--sl-spacing-4);
+            z-index: var(--sl-z-toast);
+            display: flex;
+            flex-direction: column;
+            gap: var(--sl-spacing-2);
+            max-width: 480px;
+            margin: 0 auto;
+            pointer-events: none;
+        }
+
+        .sl-toast {
+            padding: var(--sl-spacing-3) var(--sl-spacing-4);
+            border-radius: var(--sl-radius-md);
+            background: var(--sl-color-card);
+            border: 1px solid var(--sl-color-border);
+            box-shadow: var(--sl-shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
+            pointer-events: auto;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .sl-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .sl-toast-icon {
+            font-size: var(--sl-font-size-xl);
+            flex-shrink: 0;
+        }
+
+        .sl-toast-content {
+            flex: 1;
+        }
+
+        .sl-toast-title {
+            font-weight: var(--sl-font-weight-bold);
+            font-size: var(--sl-font-size-md);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-toast-message {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-secondary);
+        }
+
+        .sl-toast-close {
+            background: none;
+            border: none;
+            color: var(--sl-color-text-muted);
+            cursor: pointer;
+            font-size: var(--sl-font-size-lg);
+            padding: var(--sl-spacing-1);
+            transition: var(--sl-transition-color);
+        }
+
+        .sl-toast-close:hover {
+            color: var(--sl-color-text-primary);
+        }
+
+        /* ---------- BUTTONS ---------- */
+        .sl-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--sl-spacing-2);
+            padding: var(--sl-spacing-2) var(--sl-spacing-4);
+            border: none;
+            border-radius: var(--sl-radius-md);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            font-weight: var(--sl-font-weight-medium);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+            min-height: var(--sl-touch-target-min);
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .sl-btn-primary {
+            background: var(--sl-color-primary);
+            color: #fff;
+        }
+        .sl-btn-primary:hover {
+            background: var(--sl-color-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--sl-shadow-sm);
+        }
+
+        .sl-btn-secondary {
+            background: var(--sl-color-secondary);
+            color: var(--sl-color-text-primary);
+        }
+        .sl-btn-secondary:hover {
+            background: var(--sl-color-secondary-hover);
+        }
+
+        .sl-btn-danger {
+            background: var(--sl-color-danger);
+            color: #fff;
+        }
+        .sl-btn-danger:hover {
+            background: var(--sl-color-danger-hover);
+        }
+
+        .sl-btn-sm {
+            padding: var(--sl-spacing-1) var(--sl-spacing-3);
+            font-size: var(--sl-font-size-sm);
+            min-height: 32px;
+        }
+
+        .sl-btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---------- INPUT ---------- */
+        .sl-input {
+            display: block;
+            width: 100%;
+            padding: var(--sl-spacing-2) var(--sl-spacing-3);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            color: var(--sl-color-text-primary);
+            background: var(--sl-color-surface);
+            border: 2px solid var(--sl-color-border);
+            border-radius: var(--sl-radius-md);
+            transition: var(--sl-transition-all);
+            min-height: var(--sl-touch-target-min);
+        }
+
+        .sl-input::placeholder {
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-input:focus {
+            outline: none;
+            border-color: var(--sl-color-primary);
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 767px) {
+            .sl-stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--sl-spacing-1);
+            }
+
+            .sl-stat-value {
+                font-size: var(--sl-font-size-lg);
+            }
+
+            .sl-emergency-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--sl-spacing-3);
+            }
+
+            .sl-emergency-btn {
+                min-height: 100px;
+                padding: var(--sl-spacing-4) var(--sl-spacing-2);
+            }
+
+            .sl-emergency-btn .sl-icon-emoji {
+                font-size: 36px;
+            }
+
+            .sl-quick-action {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .sl-toast-container {
+                bottom: calc(var(--sl-spacing-4) + 72px);
+                left: var(--sl-spacing-3);
+                right: var(--sl-spacing-3);
+            }
+
+            .sl-post-composer-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sl-post-composer-submit {
+                margin-left: 0;
+            }
+
+            .sl-post-actions {
+                gap: var(--sl-spacing-1);
+            }
+
+            .sl-post-action {
+                padding: var(--sl-spacing-1);
+                font-size: var(--sl-font-size-xs);
+            }
+
+            .sl-post-action svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .sl-stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--sl-spacing-4);
+            }
+
+            .sl-emergency-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .sl-quick-action {
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--sl-spacing-4);
+            }
+
+            .sl-toast-container {
+                bottom: var(--sl-spacing-6);
+                right: var(--sl-spacing-6);
+                left: auto;
+                max-width: 400px;
+            }
+
+            .sl-post-composer-actions {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .sl-post-composer-submit {
+                margin-left: auto;
+            }
+        }
+
+        /* ---------- WORKSPACE TITLE OVERRIDE ---------- */
+        .sl-workspace-title {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-workspace-title .sl-icon-emoji {
+            margin-right: var(--sl-spacing-2);
+        }
+
+        /* ---------- MISC ---------- */
+        .sl-text-center {
+            text-align: center;
+        }
+        .sl-mt-2 {
+            margin-top: var(--sl-spacing-2);
+        }
+        .sl-mt-3 {
+            margin-top: var(--sl-spacing-3);
+        }
+        .sl-mt-4 {
+            margin-top: var(--sl-spacing-4);
+        }
+        .sl-mb-2 {
+            margin-bottom: var(--sl-spacing-2);
+        }
+        .sl-mb-3 {
+            margin-bottom: var(--sl-spacing-3);
+        }
+        .sl-mb-4 {
+            margin-bottom: var(--sl-spacing-4);
+        }
+        .sl-gap-2 {
+            gap: var(--sl-spacing-2);
+        }
+        .sl-gap-3 {
+            gap: var(--sl-spacing-3);
+        }
+        .sl-flex {
+            display: flex;
+        }
+        .sl-flex-col {
+            flex-direction: column;
+        }
+        .sl-items-center {
+            align-items: center;
+        }
+        .sl-justify-between {
+            justify-content: space-between;
+        }
+        .sl-w-full {
+            width: 100%;
+        }
+        .sl-hidden {
+            display: none !important;
+        }
+
+        .sl-error-boundary {
+            display: none;
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--sl-color-danger);
+        }
+
+        .sl-error-boundary.active {
+            display: block;
+        }
+
+        .sl-error-boundary p {
+            color: var(--sl-color-text-secondary);
+            font-size: 14px;
+        }
+
+        /* ---------- EMERGENCY OVERLAY ---------- */
+        .sl-emergency-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: var(--sl-z-emergency-overlay);
+            background: rgba(255, 0, 0, 0.02);
+            pointer-events: none;
+            display: none;
+            animation: sl-emergency-pulse 2s ease-in-out infinite;
+        }
+
+        [data-theme="emergency"] .sl-emergency-overlay {
+            display: block;
+        }
+
+        @keyframes sl-emergency-pulse {
+            0%,
+            100% {
+                background: rgba(255, 0, 0, 0.02);
+            }
+            50% {
+                background: rgba(255, 0, 0, 0.06);
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- ===================================================== -->
-<!-- APPLICATION -->
-<!-- ===================================================== -->
-
-<div id="app">
-
-<!-- ===================================================== -->
-<!-- SPLASH SCREEN -->
-<!-- ===================================================== -->
-
-<section id="splashScreen">
-
-    <div class="splash-overlay"></div>
-
-    <div class="splash-content">
-
-        <div class="logo-wrapper">
-
-            <div class="logo-circle">
-
-                🚨
-
-            </div>
-
-            <h1>
-
-                SALINK
-
-            </h1>
-
-            <p>
-
-                Emergency Communication Platform
-
-            </p>
-
-        </div>
-
-        <div class="loading">
-
-            <div class="loading-bar">
-
-                <div class="loading-progress"></div>
-
-            </div>
-
-        </div>
-
+    <!-- ==================== SPLASH SCREEN ==================== -->
+    <div id="sl-splash">
+        <div class="sl-splash-logo">🔗 SALINK</div>
+        <div class="sl-splash-sub">Emergency Social Platform</div>
+        <div class="sl-splash-loader"></div>
+        <div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-top:var(--sl-spacing-2);">Loading...</div>
     </div>
 
-</section>
+    <!-- ==================== EMERGENCY OVERLAY ==================== -->
+    <div class="sl-emergency-overlay"></div>
 
-<!-- ===================================================== -->
-<!-- APPLICATION SHELL -->
-<!-- ===================================================== -->
+    <!-- ==================== APPLICATION SHELL ==================== -->
+    <div id="sl-app" role="application">
 
-<div id="appShell">
+        <!-- SYSTEM BAR -->
+        <div id="sl-system-bar" role="status" aria-live="polite">
+            <span id="sl-status-text">● Online</span>
+            <span id="sl-time-display">--:--</span>
+        </div>
 
-<!-- ===================================================== -->
-<!-- HEADER -->
-<!-- ===================================================== -->
-
-<header id="mainHeader">
-
-    <div class="header-left">
-
-        <button
-            id="menuButton"
-            class="icon-button"
-            aria-label="Menu">
-
-            ☰
-
-        </button>
-
-        <div class="brand">
-
-            <span class="brand-logo">
-
-                🚨
-
-            </span>
-
-            <div>
-
-                <h2>
-
+        <!-- HEADER -->
+        <header id="sl-header" role="banner">
+            <div class="sl-header-left">
+                <button class="sl-icon-btn" id="sl-menu-btn" aria-label="Menu">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div id="sl-logo">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     SALINK
-
-                </h2>
-
-                <small>
-
-                    Citizen Platform
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="header-right">
-
-        <button
-            id="searchButton"
-            class="icon-button">
-
-            🔍
-
-        </button>
-
-        <button
-            id="notificationButton"
-            class="icon-button">
-
-            🔔
-
-            <span class="badge">
-
-                3
-
-            </span>
-
-        </button>
-
-        <button
-            id="profileButton">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Profile">
-
-        </button>
-
-    </div>
-
-</header>
-
-<!-- ===================================================== -->
-<!-- SEARCH -->
-<!-- ===================================================== -->
-
-<section id="searchSection">
-
-    <div class="search-box">
-
-        <input
-            id="globalSearch"
-            type="text"
-            placeholder="Cari pengguna, postingan, lokasi...">
-
-    </div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- HOME -->
-<!-- ===================================================== -->
-
-<main id="homeWorkspace">
-  <!-- ===================================================== -->
-<!-- HERO SECTION -->
-<!-- ===================================================== -->
-
-<section class="heroSection">
-
-    <div class="heroCard glass">
-
-        <div class="heroLeft">
-
-            <span class="onlineStatus">
-
-                <span class="dot"></span>
-
-                Online
-
-            </span>
-
-            <h1 id="welcomeText">
-
-                Selamat Datang,
-
-            </h1>
-
-            <h2 id="userName">
-
-                Kang L
-
-            </h2>
-
-            <p class="heroDescription">
-
-                Terhubung dengan masyarakat, berbagi informasi,
-                mengelola komunitas, dan mengirim Emergency Alert
-                dalam satu platform.
-
-            </p>
-
-            <div class="heroInfo">
-
-                <div class="heroInfoItem">
-
-                    📍
-                    <span id="userVillage">
-
-                        Desa Ciasmara
-
-                    </span>
-
                 </div>
-
-                <div class="heroInfoItem">
-
-                    ⚡
-                    <span>
-
-                        Response 98%
-
-                    </span>
-
-                </div>
-
             </div>
-
-        </div>
-
-        <div class="heroRight">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Avatar"
-                class="heroAvatar">
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- DASHBOARD STATISTICS -->
-<!-- ===================================================== -->
-
-<section class="statisticsSection">
-
-    <div class="statisticsScroller">
-
-        <div class="statsCard">
-
-            <span class="statsIcon">📰</span>
-
-            <h3 id="totalPost">
-
-                125
-
-            </h3>
-
-            <small>
-
-                Postingan
-
-            </small>
-
-        </div>
-
-        <div class="statsCard">
-
-            <span class="statsIcon">👥</span>
-
-            <h3 id="totalFollower">
-
-                842
-
-            </h3>
-
-            <small>
-
-                Pengikut
-
-            </small>
-
-        </div>
-
-        <div class="statsCard">
-
-            <span class="statsIcon">❤️</span>
-
-            <h3 id="totalLike">
-
-                5.481
-
-            </h3>
-
-            <small>
-
-                Like
-
-            </small>
-
-        </div>
-
-        <div class="statsCard">
-
-            <span class="statsIcon">💬</span>
-
-            <h3 id="totalComment">
-
-                2.145
-
-            </h3>
-
-            <small>
-
-                Komentar
-
-            </small>
-
-        </div>
-
-        <div class="statsCard">
-
-            <span class="statsIcon">🚨</span>
-
-            <h3 id="totalEmergency">
-
-                8
-
-            </h3>
-
-            <small>
-
-                Emergency
-
-            </small>
-
-        </div>
-
-        <div class="statsCard">
-
-            <span class="statsIcon">🏘️</span>
-
-            <h3 id="totalVillage">
-
-                18
-
-            </h3>
-
-            <small>
-
-                Desa
-
-            </small>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- CREATE POST -->
-<!-- ===================================================== -->
-
-<section id="createPostSection">
-
-    <div class="createPostCard glass">
-
-        <div class="createPostHeader">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Avatar"
-                class="postAvatar">
-
-            <button
-                id="openPostComposer"
-                class="postInputButton">
-
-                Apa yang sedang terjadi?
-
-            </button>
-
-        </div>
-
-        <div class="createPostToolbar">
-
-            <button class="toolbarButton">
-
-                📷
-
-                <span>
-
-                    Foto
-
-                </span>
-
-            </button>
-
-            <button class="toolbarButton">
-
-                🎥
-
-                <span>
-
-                    Video
-
-                </span>
-
-            </button>
-
-            <button class="toolbarButton">
-
-                📍
-
-                <span>
-
-                    Lokasi
-
-                </span>
-
-            </button>
-
-            <button
-                class="toolbarButton emergencyButton">
-
-                🚨
-
-                <span>
-
-                    Emergency
-
-                </span>
-
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- STORY SECTION -->
-<!-- ===================================================== -->
-
-<section id="storySection">
-
-    <div class="storyScroller">
-
-        <div class="storyItem addStory">
-
-            <div class="storyAvatar">
-
-                +
-
+            <div class="sl-header-right">
+                <button class="sl-icon-btn" id="sl-search-btn" aria-label="Search">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+                <button class="sl-icon-btn" id="sl-theme-btn" aria-label="Toggle Theme">🌙</button>
             </div>
-
-            <span>
-
-                Story Saya
-
-            </span>
-
-        </div>
-
-        <div class="storyItem">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Story">
-
-            <span>
-
-                Andi
-
-            </span>
-
-        </div>
-
-        <div class="storyItem">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Story">
-
-            <span>
-
-                Budi
-
-            </span>
-
-        </div>
-
-        <div class="storyItem">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Story">
-
-            <span>
-
-                Citra
-
-            </span>
-
-        </div>
-
-        <div class="storyItem">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Story">
-
-            <span>
-
-                Deni
-
-            </span>
-
-        </div>
-
-    </div>
-
-</section>
-
-<!-- ===================================================== -->
-<!-- FEED -->
-<!-- ===================================================== -->
-
-<section id="feedSection">
-      <!-- ===================================================== -->
-    <!-- FEED COMPOSER -->
-    <!-- ===================================================== -->
-
-    <article class="feedComposer glass">
-
-        <div class="feedComposerHeader">
-
-            <img
-                src="assets/images/avatar.png"
-                alt="Avatar"
-                class="avatar">
-
-            <div class="feedComposerBody">
-
-                <textarea
-                    id="feedComposerInput"
-                    rows="3"
-                    maxlength="5000"
-                    placeholder="Tulis sesuatu...">
-                </textarea>
-
-            </div>
-
-        </div>
-
-        <div class="feedComposerFooter">
-
-            <div class="composerTools">
-
-                <button class="composerTool">
-
-                    📷
-
-                    <span>
-
-                        Foto
-
-                    </span>
-
-                </button>
-
-                <button class="composerTool">
-
-                    🎥
-
-                    <span>
-
-                        Video
-
-                    </span>
-
-                </button>
-
-                <button class="composerTool">
-
-                    😊
-
-                    <span>
-
-                        Emoji
-
-                    </span>
-
-                </button>
-
-                <button class="composerTool">
-
-                    📍
-
-                    <span>
-
-                        Lokasi
-
-                    </span>
-
-                </button>
-
-                <button
-                    id="composerEmergency"
-                    class="composerTool emergency">
-
-                    🚨
-
-                    <span>
-
-                        Emergency
-
-                    </span>
-
-                </button>
-
-            </div>
-
-            <button
-                id="publishPostButton"
-                class="publishButton">
-
-                Posting
-
-            </button>
-
-        </div>
-
-    </article>
-
-    <!-- ===================================================== -->
-    <!-- POST CARD -->
-    <!-- ===================================================== -->
-
-    <article
-        class="postCard glass"
-        data-post-id="POST000001"
-        data-post-type="normal">
-
-        <header class="postHeader">
-
-            <div class="postAuthor">
-
-                <img
-                    src="assets/images/avatar.png"
-                    alt="Avatar"
-                    class="avatar">
-
-                <div>
-
-                    <h3>
-
-                        Pemerintah Desa Ciasmara
-
-                    </h3>
-
-                    <small>
-
-                        2 menit yang lalu
-
-                    </small>
-
-                </div>
-
-            </div>
-
-            <button
-                class="postMenu">
-
-                ⋮
-
-            </button>
-
         </header>
 
-        <div class="postContent">
-
-            <p>
-
-                Selamat datang di
-                <strong>SALINK</strong>.
-
-                Platform komunikasi masyarakat,
-                media sosial,
-                marketplace,
-                dan Emergency Alert System
-                yang terintegrasi.
-
-            </p>
-
+        <!-- SEARCH BAR -->
+        <div id="sl-search-bar">
+            <div class="sl-search-input-wrap">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input class="sl-search-input" type="text" placeholder="Cari postingan, pengguna, atau hashtag..." id="sl-search-input" />
+            </div>
         </div>
 
-        <figure class="postMedia">
+        <!-- WORKSPACE -->
+        <main id="sl-workspace" role="main">
+            <div id="sl-loader" class="sl-loader">
+                <div class="sl-loader-spinner"></div>
+                <p id="sl-loader-text">Memuat Workspace...</p>
+                <div class="sl-loader-progress">
+                    <div class="sl-loader-progress-bar" id="sl-loader-progress-bar"></div>
+                </div>
+            </div>
+            <div id="sl-workspace-content" style="display:none;"></div>
+            <div class="sl-error-boundary" id="sl-error-boundary">
+                <h3>⚠️ Terjadi Kesalahan</h3>
+                <p id="sl-error-message"></p>
+                <button class="sl-btn sl-btn-primary sl-mt-3" onclick="location.reload()">Muat Ulang</button>
+            </div>
+        </main>
 
-            <img
-                src="assets/images/post-default.jpg"
-                alt="Postingan">
+        <!-- FAB -->
+        <button class="sl-fab" id="sl-fab" aria-label="Create Post">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+        </button>
 
-        </figure>
-
-        <div class="postStatistic">
-
-            <span>
-
-                ❤️
-                <strong>245</strong>
-
-            </span>
-
-            <span>
-
-                💬
-                <strong>38</strong>
-
-            </span>
-
-            <span>
-
-                ↗
-                <strong>15</strong>
-
-            </span>
-
-        </div>
-
-        <nav class="postAction">
-
-            <button class="postActionButton">
-
-                ❤️
-
-                <span>
-
-                    Like
-
-                </span>
-
+        <!-- BOTTOM NAVIGATION -->
+        <nav id="sl-bottom-nav" role="navigation" aria-label="Main Navigation">
+            <button class="sl-nav-item active" data-workspace="home" aria-label="Home" aria-current="page">
+                <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"/></svg>
+                <span class="sl-nav-label">Home</span>
             </button>
-
-            <button class="postActionButton">
-
-                💬
-
-                <span>
-
-                    Komentar
-
-                </span>
-
+            <button class="sl-nav-item" data-workspace="feed" aria-label="Feed">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span class="sl-nav-label">Feed</span>
             </button>
-
-            <button class="postActionButton">
-
-                ↗
-
-                <span>
-
-                    Bagikan
-
-                </span>
-
+            <button class="sl-nav-item" data-workspace="emergency" aria-label="Emergency">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                <span class="sl-nav-label">Emergency</span>
             </button>
-
-            <button class="postActionButton">
-
-                🔖
-
+            <button class="sl-nav-item" data-workspace="notification" aria-label="Notification">
+                <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                <span class="sl-nav-label">Notif</span>
+                <span class="sl-nav-badge" id="sl-notif-count">0</span>
             </button>
-
+            <button class="sl-nav-item" data-workspace="profile" aria-label="Profile">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="sl-nav-label">Profile</span>
+            </button>
         </nav>
+    </div>
 
-    </article>
-
-    <!-- ===================================================== -->
-    <!-- EMERGENCY POST -->
-    <!-- ===================================================== -->
-
-    <article
-        class="postCard emergencyCard"
-        data-post-id="EMG000001"
-        data-post-type="fire">
-
-        <header class="postHeader">
-
-            <div class="postAuthor">
-
-                <img
-                    src="assets/images/avatar.png"
-                    alt="Avatar"
-                    class="avatar">
-
-                <div>
-
-                    <h3>
-
-                        Andi Saputra
-
-                    </h3>
-
-                    <small>
-
-                        Baru saja
-
-                    </small>
-
-                </div>
-
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sl-sidebar" id="sl-sidebar" role="navigation" aria-label="Sidebar Menu">
+        <div class="sl-sidebar-header">
+            <div style="font-weight:var(--sl-font-weight-bold);font-size:var(--sl-font-size-lg);color:var(--sl-color-text-primary);display:flex;align-items:center;gap:var(--sl-spacing-2);">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--sl-color-primary)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                SALINK
             </div>
-
-            <div class="emergencyBadge">
-
-                🔥 KEBAKARAN
-
+            <button class="sl-sidebar-close" aria-label="Close sidebar">✕</button>
+        </div>
+        <div class="sl-sidebar-user">
+            <div class="sl-sidebar-avatar">👤</div>
+            <div>
+                <div class="sl-sidebar-username" id="sl-sidebar-username">Pengguna</div>
+                <div class="sl-sidebar-user-status">🟢 Online</div>
             </div>
-
-        </header>
-
-        <div class="postContent">
-
-            <p>
-
-                Terjadi kebakaran
-                di Kampung Sukamaju.
-
-                Mohon bantuan
-                Damkar
-                dan warga sekitar.
-
-            </p>
-
         </div>
-
-        <div class="emergencyLocation">
-
-            📍
-
-            Desa Ciasmara,
-            Kecamatan Pamijahan
-
+        <ul class="sl-sidebar-menu">
+            <li><a data-workspace="home" class="active">
+                <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1"/></svg>
+                Home
+            </a></li>
+            <li><a data-workspace="feed">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Feed
+            </a></li>
+            <li><a data-workspace="emergency">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Emergency
+            </a></li>
+            <li><a data-workspace="notification">
+                <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                Notifications
+            </a></li>
+            <li><a data-workspace="profile">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profile
+            </a></li>
+            <li><a data-workspace="marketplace">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                Marketplace
+            </a></li>
+            <li><a data-workspace="settings">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Settings
+            </a></li>
+        </ul>
+        <div class="sl-sidebar-footer">
+            <button class="sl-btn sl-btn-danger sl-btn-sm sl-btn-full" id="sl-logout-btn">🚪 Logout</button>
+            <div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);text-align:center;margin-top:var(--sl-spacing-2);">
+                SALINK v1.0 Enterprise
+            </div>
         </div>
+    </aside>
+    <div class="sl-sidebar-overlay"></div>
 
-        <footer class="emergencyFooter">
+    <!-- ==================== DRAWER ==================== -->
+    <div class="sl-drawer" id="sl-drawer">
+        <div class="sl-drawer-handle"></div>
+        <div id="sl-drawer-content"></div>
+    </div>
+    <div class="sl-drawer-overlay"></div>
 
-            <button
-                class="emergencyDetailButton">
+    <!-- ==================== MODAL ==================== -->
+    <div class="sl-modal-overlay" id="sl-modal-overlay">
+        <div class="sl-modal">
+            <div class="sl-modal-header">
+                <div class="sl-modal-title" id="sl-modal-title">Modal</div>
+                <button class="sl-modal-close" id="sl-modal-close">✕</button>
+            </div>
+            <div class="sl-modal-body" id="sl-modal-body"></div>
+            <div class="sl-modal-footer" id="sl-modal-footer"></div>
+        </div>
+    </div>
 
-                Lihat Detail
+    <!-- ==================== TOAST ==================== -->
+    <div class="sl-toast-container" id="sl-toast-container"></div>
 
-            </button>
+    <!-- ============================================================
+         ALL JAVASCRIPT IN ONE
+         ============================================================ -->
+    <script>
+        // ================================================================
+        // SALINK APPLICATION CORE — Full Citizen App
+        // ================================================================
 
-        </footer>
+        (function() {
+            'use strict';
 
-    </article>
+            // ==================== STATE ====================
+            const STATE = {
+                theme: 'dark',
+                currentWorkspace: 'home',
+                isReady: false,
+                user: {
+                    id: 'usr-001',
+                    name: 'Pengguna',
+                    username: '@pengguna',
+                    avatar: '👤',
+                    bio: 'Pengguna SALINK',
+                    location: 'Indonesia',
+                    joined: 'Januari 2025',
+                    posts: 0,
+                    followers: 0,
+                    following: 0,
+                    trustScore: 100,
+                    verified: false,
+                    online: true
+                },
+                posts: [],
+                notifications: [],
+                friends: [],
+                pendingInvites: []
+            };
 
-    <!-- ===================================================== -->
-    <!-- FEED LIST CONTAINER -->
-    <!-- ===================================================== -->
+            // ==================== STORAGE ====================
+            const Storage = {
+                prefix: 'sl_',
+                set(key, value) {
+                    try { localStorage.setItem(this.prefix + key, JSON.stringify(value)); } catch (e) {}
+                },
+                get(key, defaultValue = null) {
+                    try {
+                        const raw = localStorage.getItem(this.prefix + key);
+                        return raw ? JSON.parse(raw) : defaultValue;
+                    } catch (e) { return defaultValue; }
+                },
+                remove(key) {
+                    try { localStorage.removeItem(this.prefix + key); } catch (e) {}
+                }
+            };
 
-    <section
-        id="feedList">
+            // ==================== EVENT BUS ====================
+            const EventBus = {
+                listeners: {},
+                on(event, callback) {
+                    if (!this.listeners[event]) this.listeners[event] = [];
+                    this.listeners[event].push(callback);
+                },
+                emit(event, data) {
+                    if (this.listeners[event]) {
+                        this.listeners[event].forEach(cb => { try { cb(data); } catch (e) {} });
+                    }
+                },
+                off(event, callback) {
+                    if (this.listeners[event]) {
+                        this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+                    }
+                }
+            };
 
-    </section>
-    
+            // ==================== THEME MANAGER ====================
+            const ThemeManager = {
+                current: 'dark',
+                init() {
+                    const saved = Storage.get('theme', 'dark');
+                    this.current = saved;
+                    this.apply(this.current);
+                    return this;
+                },
+                toggle() {
+                    const themes = ['dark', 'light', 'emergency', 'command-center'];
+                    const idx = themes.indexOf(this.current);
+                    const next = themes[(idx + 1) % themes.length];
+                    this.apply(next);
+                    this.current = next;
+                    Storage.set('theme', next);
+                    EventBus.emit('theme:changed', { theme: next });
+                    return next;
+                },
+                apply(theme) {
+                    document.documentElement.setAttribute('data-theme', theme);
+                    const btn = document.getElementById('sl-theme-btn');
+                    if (btn) {
+                        const icons = { dark: '🌙', light: '☀️', emergency: '🚨', 'command-center': '🖥️' };
+                        btn.textContent = icons[theme] || '🌙';
+                    }
+                    const meta = document.querySelector('meta[name="theme-color"]');
+                    if (meta) {
+                        const colors = { dark: '#071A2E', light: '#F0F4F8', emergency: '#1A0000',
+                            'command-center': '#071A2E' };
+                        meta.content = colors[theme] || '#071A2E';
+                    }
+                }
+            };
+
+            // ==================== TOAST ====================
+            const Toast = {
+                container: null,
+                init() {
+                    this.container = document.getElementById('sl-toast-container');
+                    return this;
+                },
+                show(message, type = 'info', title = '', duration = 3000) {
+                    if (!this.container) return;
+                    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+                    const titles = { success: 'Berhasil', error: 'Error', warning: 'Peringatan', info: 'Informasi' };
+                    const toast = document.createElement('div');
+                    toast.className = 'sl-toast';
+                    toast.innerHTML = `
+                        <span class="sl-toast-icon">${icons[type] || 'ℹ️'}</span>
+                        <div class="sl-toast-content">
+                            <div class="sl-toast-title">${title || titles[type] || 'Info'}</div>
+                            <div class="sl-toast-message">${message}</div>
+                        </div>
+                        <button class="sl-toast-close">✕</button>
+                    `;
+                    this.container.appendChild(toast);
+                    requestAnimationFrame(() => toast.classList.add('show'));
+                    toast.querySelector('.sl-toast-close').addEventListener('click', () => {
+                        toast.classList.remove('show');
+                        setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+                    });
+                    const timer = setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+                    }, duration);
+                    toast._timer = timer;
+                    return toast;
+                }
+            };
+
+            // ==================== LAYOUT ====================
+            const Layout = {
+                sidebarOpen: false,
+                drawerOpen: false,
+                modalOpen: false,
+
+                init() {
+                    this._bindSidebar();
+                    this._bindDrawer();
+                    this._bindModal();
+                    this._bindKeyboard();
+                    return this;
+                },
+
+                _bindSidebar() {
+                    const sidebar = document.getElementById('sl-sidebar');
+                    const overlay = document.querySelector('.sl-sidebar-overlay');
+                    const menuBtn = document.getElementById('sl-menu-btn');
+                    const closeBtn = sidebar?.querySelector('.sl-sidebar-close');
+
+                    if (menuBtn) {
+                        menuBtn.addEventListener('click', () => this.toggleSidebar());
+                    }
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => this.closeSidebar());
+                    }
+                    if (overlay) {
+                        overlay.addEventListener('click', () => this.closeSidebar());
+                    }
+                    // Sidebar menu links
+                    sidebar?.querySelectorAll('.sl-sidebar-menu a').forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const ws = link.dataset.workspace;
+                            if (ws) {
+                                EventBus.emit('router:navigate', { workspace: ws });
+                                this.closeSidebar();
+                            }
+                        });
+                    });
+                },
+
+                _bindDrawer() {
+                    const drawer = document.getElementById('sl-drawer');
+                    const overlay = document.querySelector('.sl-drawer-overlay');
+                    const handle = drawer?.querySelector('.sl-drawer-handle');
+                    if (handle) {
+                        handle.addEventListener('click', () => this.closeDrawer());
+                    }
+                    if (overlay) {
+                        overlay.addEventListener('click', () => this.closeDrawer());
+                    }
+                },
+
+                _bindModal() {
+                    const modal = document.getElementById('sl-modal-overlay');
+                    const closeBtn = document.getElementById('sl-modal-close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', () => this.closeModal());
+                    }
+                    if (modal) {
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) this.closeModal();
+                        });
+                    }
+                },
+
+                _bindKeyboard() {
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            if (this.sidebarOpen) this.closeSidebar();
+                            if (this.drawerOpen) this.closeDrawer();
+                            if (this.modalOpen) this.closeModal();
+                        }
+                        if (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+                            const map = { '1': 'home', '2': 'feed', '3': 'emergency', '4': 'notification',
+                                '5': 'profile', '6': 'marketplace', '7': 'settings' };
+                            const target = map[e.key];
+                            if (target) {
+                                e.preventDefault();
+                                EventBus.emit('router:navigate', { workspace: target });
+                            }
+                        }
+                        if (e.ctrlKey && e.key === 't') {
+                            e.preventDefault();
+                            ThemeManager.toggle();
+                        }
+                    });
+                },
+
+                toggleSidebar() {
+                    const sidebar = document.getElementById('sl-sidebar');
+                    const overlay = document.querySelector('.sl-sidebar-overlay');
+                    if (this.sidebarOpen) {
+                        this.closeSidebar();
+                    } else {
+                        sidebar?.classList.add('open');
+                        overlay?.classList.add('active');
+                        this.sidebarOpen = true;
+                        document.body.style.overflow = 'hidden';
+                    }
+                },
+
+                closeSidebar() {
+                    const sidebar = document.getElementById('sl-sidebar');
+                    const overlay = document.querySelector('.sl-sidebar-overlay');
+                    sidebar?.classList.remove('open');
+                    overlay?.classList.remove('active');
+                    this.sidebarOpen = false;
+                    document.body.style.overflow = '';
+                },
+
+                openDrawer(content) {
+                    const drawer = document.getElementById('sl-drawer');
+                    const overlay = document.querySelector('.sl-drawer-overlay');
+                    const contentEl = document.getElementById('sl-drawer-content');
+                    if (contentEl && content) contentEl.innerHTML = content;
+                    drawer?.classList.add('open');
+                    overlay?.classList.add('active');
+                    this.drawerOpen = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeDrawer() {
+                    const drawer = document.getElementById('sl-drawer');
+                    const overlay = document.querySelector('.sl-drawer-overlay');
+                    drawer?.classList.remove('open');
+                    overlay?.classList.remove('active');
+                    this.drawerOpen = false;
+                    document.body.style.overflow = '';
+                },
+
+                openModal(title, body, footer = '') {
+                    const modal = document.getElementById('sl-modal-overlay');
+                    const titleEl = document.getElementById('sl-modal-title');
+                    const bodyEl = document.getElementById('sl-modal-body');
+                    const footerEl = document.getElementById('sl-modal-footer');
+                    if (titleEl) titleEl.textContent = title;
+                    if (bodyEl) bodyEl.innerHTML = body;
+                    if (footerEl) footerEl.innerHTML = footer;
+                    modal?.classList.add('active');
+                    this.modalOpen = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeModal() {
+                    const modal = document.getElementById('sl-modal-overlay');
+                    modal?.classList.remove('active');
+                    this.modalOpen = false;
+                    document.body.style.overflow = '';
+                }
+            };
+
+            // ==================== WORKSPACES ====================
+            const WORKSPACES = {
+                home: { id: 'home', label: 'Home', icon: '🏠' },
+                feed: { id: 'feed', label: 'Feed', icon: '📰' },
+                emergency: { id: 'emergency', label: 'Emergency', icon: '🚨' },
+                notification: { id: 'notification', label: 'Notifikasi', icon: '🔔' },
+                profile: { id: 'profile', label: 'Profil', icon: '👤' },
+                marketplace: { id: 'marketplace', label: 'Marketplace', icon: '🛒' },
+                settings: { id: 'settings', label: 'Settings', icon: '⚙️' }
+            };
+
+            const Router = {
+                current: 'home',
+                init() {
+                    const hash = window.location.hash.replace('#/', '');
+                    const initial = WORKSPACES[hash] ? hash : 'home';
+                    this.current = initial;
+                    window.addEventListener('hashchange', () => {
+                        const h = window.location.hash.replace('#/', '');
+                        if (WORKSPACES[h] && h !== this.current) {
+                            this.navigate(h);
+                        }
+                    });
+                    EventBus.on('router:navigate', ({ workspace }) => {
+                        if (WORKSPACES[workspace]) {
+                            this.navigate(workspace);
+                        }
+                    });
+                    // Restore last workspace
+                    const last = Storage.get('last_workspace', 'home');
+                    const target = WORKSPACES[last] ? last : 'home';
+                    this.navigate(target);
+                    return this;
+                },
+
+                navigate(workspaceId) {
+                    if (!WORKSPACES[workspaceId]) return;
+                    this.current = workspaceId;
+                    Storage.set('last_workspace', workspaceId);
+                    if (window.location.hash !== `#/${workspaceId}`) {
+                        window.location.hash = `#/${workspaceId}`;
+                    }
+                    EventBus.emit('route:changed', { workspace: workspaceId });
+                }
+            };
+
+            // ==================== RENDER FUNCTIONS ====================
+
+            function renderHero() {
+                return `
+                    <div class="sl-hero">
+                        <div class="sl-hero-title">Selamat datang di SALINK</div>
+                        <div class="sl-hero-sub">Platform darurat berbasis komunitas. Siap membantu Anda 24/7.</div>
+                        <div class="sl-hero-status">🟢 Sistem dalam keadaan normal</div>
+                    </div>
+                `;
+            }
+
+            function renderStats() {
+                return `
+                    <div class="sl-stats">
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">0</div>
+                            <div class="sl-stat-label">📝 Postingan</div>
+                        </div>
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">0</div>
+                            <div class="sl-stat-label">👥 Pengikut</div>
+                        </div>
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">0</div>
+                            <div class="sl-stat-label">➕ Mengikuti</div>
+                        </div>
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">100%</div>
+                            <div class="sl-stat-label">⭐ Trust Score</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderCreatePost() {
+                return `
+                    <div class="sl-create-post" id="sl-create-post-trigger">
+                        <div class="sl-create-post-avatar">👤</div>
+                        <div class="sl-create-post-placeholder">Apa yang ingin Anda bagikan?</div>
+                        <div class="sl-create-post-actions">
+                            <button aria-label="Foto">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </button>
+                            <button aria-label="Video">
+                                <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                            </button>
+                            <button aria-label="Location">
+                                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderPostComposer() {
+                return `
+                    <div class="sl-post-composer" id="sl-post-composer">
+                        <div class="sl-post-composer-header">
+                            <div class="sl-post-composer-avatar">👤</div>
+                            <input class="sl-post-composer-input" id="sl-post-input" placeholder="Apa yang ingin Anda bagikan?" />
+                        </div>
+                        <div class="sl-post-composer-actions">
+                            <select class="sl-post-composer-type" id="sl-post-type">
+                                <option value="status">📝 Status</option>
+                                <option value="photo">📷 Foto</option>
+                                <option value="video">🎥 Video</option>
+                                <option value="fire">🔥 Kebakaran</option>
+                                <option value="medical">🚑 Medis & Kematian</option>
+                                <option value="security">🚓 Keamanan</option>
+                                <option value="disaster">🌪️ Bencana Alam</option>
+                                <option value="marketplace">🛒 Jual Produk</option>
+                                <option value="help">🤝 Butuh Bantuan</option>
+                            </select>
+                            <button class="sl-btn sl-btn-primary sl-btn-sm sl-post-composer-submit" id="sl-post-submit">Posting</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderStory() {
+                return `
+                    <div class="sl-story-section">
+                        <div class="sl-story-section-title">Cerita Terbaru</div>
+                        <div class="sl-story-list">
+                            <div class="sl-story-item">
+                                <div class="sl-story-avatar">👤</div>
+                                <div class="sl-story-name">Anda</div>
+                            </div>
+                            <div class="sl-story-item">
+                                <div class="sl-story-avatar" style="border-color:var(--sl-color-border);">➕</div>
+                                <div class="sl-story-name">Tambah</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderFeed() {
+                const posts = STATE.posts;
+                let feedHtml = `
+                    <div class="sl-feed-header">
+                        <div class="sl-feed-title">📰 Feed</div>
+                        <div class="sl-feed-filters">
+                            <button class="sl-feed-filter active" data-filter="all">Semua</button>
+                            <button class="sl-feed-filter" data-filter="emergency">🚨 Darurat</button>
+                            <button class="sl-feed-filter" data-filter="friends">👥 Teman</button>
+                        </div>
+                    </div>
+                    <div id="sl-feed-container">
+                `;
+
+                if (posts.length === 0) {
+                    feedHtml += `
+                        <div class="sl-notification-empty">
+                            <span class="sl-icon-emoji">📭</span>
+                            <p>Belum ada postingan. Mulai bagikan sesuatu!</p>
+                        </div>
+                    `;
+                } else {
+                    posts.forEach(post => {
+                        const isEmergency = post.emergency || false;
+                        const cardClass = isEmergency ? 'sl-emergency-card' : 'sl-post-card';
+                        const emergencyBadge = isEmergency ?
+                            `<span class="sl-emergency-badge">🚨 ${post.emergency?.type?.toUpperCase() || 'DARURAT'}</span>` :
+                            '';
+                        feedHtml += `
+                            <div class="${cardClass}" data-post-id="${post.id}">
+                                <div class="sl-post-header">
+                                    <div class="sl-post-avatar">${post.author?.avatar || '👤'}</div>
+                                    <div>
+                                        <div class="sl-post-author">${post.author?.name || 'Pengguna'}</div>
+                                        <div class="sl-post-time">${post.time || 'baru saja'}</div>
+                                    </div>
+                                    ${emergencyBadge}
+                                </div>
+                                <div class="sl-post-content">${post.content || ''}</div>
+                                ${post.media ? `<div class="sl-post-media">${post.media}</div>` : ''}
+                                <div class="sl-post-actions">
+                                    <button class="sl-post-action" data-action="like" data-post="${post.id}">
+                                        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                                        <span class="sl-action-count">0</span>
+                                    </button>
+                                    <button class="sl-post-action" data-action="comment" data-post="${post.id}">
+                                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                                        <span class="sl-action-count">0</span>
+                                    </button>
+                                    <button class="sl-post-action" data-action="share" data-post="${post.id}">
+                                        <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                                        <span class="sl-action-count">0</span>
+                                    </button>
+                                    <button class="sl-post-action" data-action="bookmark" data-post="${post.id}">
+                                        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                feedHtml += `</div>`;
+                return feedHtml;
+            }
+
+            function renderQuickAction() {
+                return `
+                    <div class="sl-quick-action">
+                        <button class="sl-quick-action-btn" data-action="marketplace">
+                            <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                            <span>Jual</span>
+                        </button>
+                        <button class="sl-quick-action-btn" data-action="friends">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                            <span>Teman</span>
+                        </button>
+                        <button class="sl-quick-action-btn" data-action="photo">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <span>Foto</span>
+                        </button>
+                        <button class="sl-quick-action-btn" data-action="bio">
+                            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span>Biodata</span>
+                        </button>
+                    </div>
+                `;
+            }
+
+            function renderEmergencyWorkspace() {
+                return `
+                    <div class="sl-workspace-title"><span class="sl-icon-emoji">🚨</span> Emergency Center</div>
+                    <p style="color:var(--sl-color-text-secondary);margin-bottom:var(--sl-spacing-4);font-size:var(--sl-font-size-sm);">
+                        Pilih jenis keadaan darurat. Laporan Anda akan dikirim ke instansi terkait.
+                    </p>
+                    <div class="sl-emergency-grid">
+                        <button class="sl-emergency-btn sl-emergency-fire" data-emergency="fire">
+                            <span class="sl-icon-emoji">🔥</span>
+                            <span class="sl-label">Kebakaran</span>
+                        </button>
+                        <button class="sl-emergency-btn sl-emergency-medical" data-emergency="medical">
+                            <span class="sl-icon-emoji">🚑</span>
+                            <span class="sl-label">Medis</span>
+                        </button>
+                        <button class="sl-emergency-btn sl-emergency-security" data-emergency="security">
+                            <span class="sl-icon-emoji">🚓</span>
+                            <span class="sl-label">Keamanan</span>
+                        </button>
+                        <button class="sl-emergency-btn sl-emergency-disaster" data-emergency="disaster">
+                            <span class="sl-icon-emoji">🌪️</span>
+                            <span class="sl-label">Bencana</span>
+                        </button>
+                    </div>
+                    <button class="sl-emergency-btn sl-emergency-sos" id="sl-sos-btn">
+                        <span class="sl-icon-emoji">🚨</span>
+                        <span class="sl-label">SOS — Tekan untuk Darurat</span>
+                    </button>
+                    <div style="margin-top:var(--sl-spacing-4);padding:var(--sl-spacing-3);background:var(--sl-color-card);border-radius:var(--sl-radius-md);border:1px solid var(--sl-color-border);">
+                        <p style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">
+                            📍 <strong>Lokasi Anda:</strong> Sedang diambil...
+                        </p>
+                        <p style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);">
+                            GPS akan dikirim otomatis saat Anda melaporkan.
+                        </p>
+                    </div>
+                `;
+            }
+
+            function renderNotificationWorkspace() {
+                const notifs = STATE.notifications;
+                const unread = notifs.filter(n => !n.read).length;
+                let html = `
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sl-spacing-4);">
+                        <div class="sl-workspace-title"><span class="sl-icon-emoji">🔔</span> Notifikasi</div>
+                        ${unread > 0 ? `<button class="sl-btn sl-btn-sm sl-btn-primary" id="sl-mark-all-read">Tandai Semua Dibaca</button>` : ''}
+                    </div>
+                    ${unread > 0 ? `<div style="margin-bottom:var(--sl-spacing-3);"><span class="sl-badge sl-badge-danger" style="background:var(--sl-color-danger);color:#fff;padding:var(--sl-spacing-0_5) var(--sl-spacing-2);border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);">${unread} belum dibaca</span></div>` : ''}
+                `;
+                if (notifs.length === 0) {
+                    html += `
+                        <div class="sl-notification-empty">
+                            <span class="sl-icon-emoji">🔕</span>
+                            <p>Belum ada notifikasi. Tenang, semuanya aman.</p>
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="sl-notification-list">`;
+                    notifs.forEach(notif => {
+                        html += `
+                            <div class="sl-notification-item ${notif.read ? '' : 'unread'}" data-notif-id="${notif.id}">
+                                <span class="sl-notification-icon">${notif.icon || '📢'}</span>
+                                <div class="sl-notification-content">
+                                    <div class="sl-notification-title">${notif.title}</div>
+                                    <div class="sl-notification-message">${notif.message || ''}</div>
+                                </div>
+                                <div class="sl-notification-time">${notif.time || 'baru saja'}</div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+                return html;
+            }
+
+            function renderProfileWorkspace() {
+                const user = STATE.user;
+                return `
+                    <div style="text-align:center;padding:var(--sl-spacing-2) 0;">
+                        <div style="width:80px;height:80px;border-radius:var(--sl-radius-full);background:var(--sl-color-secondary);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto var(--sl-spacing-3);border:4px solid var(--sl-color-primary);">
+                            ${user.avatar || '👤'}
+                        </div>
+                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">${user.name}</div>
+                        <div style="font-size:var(--sl-font-size-md);color:var(--sl-color-text-secondary);">${user.bio || 'Pengguna SALINK'}</div>
+                        <div style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);margin-top:var(--sl-spacing-1);">${user.location || ''}</div>
+                        ${user.verified ? `<span class="sl-badge sl-badge-primary" style="background:var(--sl-color-primary);color:#fff;padding:var(--sl-spacing-0_5) var(--sl-spacing-2);border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);display:inline-block;margin-top:var(--sl-spacing-1);">✅ Terverifikasi</span>` : ''}
+                        <div style="margin-top:var(--sl-spacing-1);font-size:var(--sl-font-size-sm);color:var(--sl-color-primary);">⭐ Trust Score: ${user.trustScore || 0}%</div>
+                    </div>
+
+                    <div class="sl-stats" style="margin-top:var(--sl-spacing-4);">
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">${user.posts || 0}</div>
+                            <div class="sl-stat-label">📝 Postingan</div>
+                        </div>
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">${user.followers || 0}</div>
+                            <div class="sl-stat-label">👥 Pengikut</div>
+                        </div>
+                        <div class="sl-stat-item">
+                            <div class="sl-stat-value">${user.following || 0}</div>
+                            <div class="sl-stat-label">➕ Mengikuti</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:var(--sl-spacing-2);margin-bottom:var(--sl-spacing-4);flex-wrap:wrap;">
+                        <button class="sl-btn sl-btn-primary sl-btn-sm" style="flex:1;" id="profile-edit-btn">✏️ Edit Profil</button>
+                        <button class="sl-btn sl-btn-secondary sl-btn-sm" style="flex:1;" id="profile-share-btn">↗️ Bagikan</button>
+                    </div>
+
+                    <div style="display:flex;gap:var(--sl-spacing-1);border-bottom:2px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);overflow-x:auto;">
+                        <button class="sl-profile-nav-btn active" data-tab="posts" style="padding:var(--sl-spacing-2) var(--sl-spacing-4);background:none;border:none;color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);font-weight:var(--sl-font-weight-medium);cursor:pointer;border-bottom:2px solid transparent;transition:var(--sl-transition-all);white-space:nowrap;font-family:var(--sl-font-primary);">📝 Postingan</button>
+                        <button class="sl-profile-nav-btn" data-tab="photos" style="padding:var(--sl-spacing-2) var(--sl-spacing-4);background:none;border:none;color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);font-weight:var(--sl-font-weight-medium);cursor:pointer;border-bottom:2px solid transparent;transition:var(--sl-transition-all);white-space:nowrap;font-family:var(--sl-font-primary);">📷 Foto</button>
+                        <button class="sl-profile-nav-btn" data-tab="friends" style="padding:var(--sl-spacing-2) var(--sl-spacing-4);background:none;border:none;color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);font-weight:var(--sl-font-weight-medium);cursor:pointer;border-bottom:2px solid transparent;transition:var(--sl-transition-all);white-space:nowrap;font-family:var(--sl-font-primary);">👥 Teman</button>
+                        <button class="sl-profile-nav-btn" data-tab="bio" style="padding:var(--sl-spacing-2) var(--sl-spacing-4);background:none;border:none;color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);font-weight:var(--sl-font-weight-medium);cursor:pointer;border-bottom:2px solid transparent;transition:var(--sl-transition-all);white-space:nowrap;font-family:var(--sl-font-primary);">📋 Biodata</button>
+                    </div>
+
+                    <div id="sl-profile-content">
+                        <div class="sl-notification-empty">
+                            <span class="sl-icon-emoji">📭</span>
+                            <p>Belum ada postingan. Mulai bagikan sesuatu!</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderMarketplaceWorkspace() {
+                return `
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sl-spacing-4);">
+                        <div class="sl-workspace-title"><span class="sl-icon-emoji">🛒</span> Marketplace</div>
+                        <button class="sl-btn sl-btn-primary sl-btn-sm" id="sl-add-product">+ Tambah Produk</button>
+                    </div>
+                    <div class="sl-notification-empty">
+                        <span class="sl-icon-emoji">🛍️</span>
+                        <p>Belum ada produk. Mulai jualan sekarang!</p>
+                    </div>
+                `;
+            }
+
+            function renderSettingsWorkspace() {
+                return `
+                    <div class="sl-workspace-title"><span class="sl-icon-emoji">⚙️</span> Pengaturan</div>
+                    <div class="sl-card" style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sl-spacing-3);">
+                            <span style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">🎨 Tema</span>
+                            <button class="sl-btn sl-btn-sm sl-btn-primary" id="sl-theme-preview-btn">Ubah Tema</button>
+                        </div>
+                        <div id="sl-theme-preview-container"></div>
+                    </div>
+                    <div class="sl-card" style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--sl-spacing-2) 0;border-bottom:1px solid var(--sl-color-border);">
+                            <span style="color:var(--sl-color-text-secondary);">🔔 Notifikasi Push</span>
+                            <label class="sl-toggle" style="position:relative;display:inline-block;width:44px;height:24px;">
+                                <input type="checkbox" checked style="opacity:0;width:0;height:0;" />
+                                <span style="position:absolute;cursor:pointer;inset:0;background:var(--sl-color-primary);border-radius:24px;transition:var(--sl-transition-all);"></span>
+                            </label>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--sl-spacing-2) 0;border-bottom:1px solid var(--sl-color-border);">
+                            <span style="color:var(--sl-color-text-secondary);">🔊 Suara Notifikasi</span>
+                            <label class="sl-toggle" style="position:relative;display:inline-block;width:44px;height:24px;">
+                                <input type="checkbox" checked style="opacity:0;width:0;height:0;" />
+                                <span style="position:absolute;cursor:pointer;inset:0;background:var(--sl-color-primary);border-radius:24px;transition:var(--sl-transition-all);"></span>
+                            </label>
+                        </div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--sl-spacing-2) 0;">
+                            <span style="color:var(--sl-color-text-secondary);">🚨 Mode Darurat (Sirene)</span>
+                            <label class="sl-toggle" style="position:relative;display:inline-block;width:44px;height:24px;">
+                                <input type="checkbox" checked style="opacity:0;width:0;height:0;" />
+                                <span style="position:absolute;cursor:pointer;inset:0;background:var(--sl-color-primary);border-radius:24px;transition:var(--sl-transition-all);"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="sl-card" style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);">
+                        <div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-2);">📱 Aplikasi</div>
+                        <p style="color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);">Version: 1.0.0 Enterprise</p>
+                        <button class="sl-btn sl-btn-danger sl-btn-sm" style="margin-top:var(--sl-spacing-2);" id="sl-logout-btn">🚪 Logout</button>
+                    </div>
+                `;
+            }
+
+            // ==================== MAIN RENDER ====================
+            function renderWorkspace(workspaceId) {
+                const container = document.getElementById('sl-workspace-content');
+                const loader = document.getElementById('sl-loader');
+                const errorBoundary = document.getElementById('sl-error-boundary');
+                const errorMsg = document.getElementById('sl-error-message');
+
+                errorBoundary.classList.remove('active');
+                loader.style.display = 'flex';
+                container.style.display = 'none';
+
+                const progressBar = document.getElementById('sl-loader-progress-bar');
+                const loaderText = document.getElementById('sl-loader-text');
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 20;
+                    if (progress > 90) progress = 90;
+                    if (progressBar) progressBar.style.width = progress + '%';
+                    if (loaderText) {
+                        if (progress < 30) loaderText.textContent = 'Mempersiapkan workspace...';
+                        else if (progress < 60) loaderText.textContent = 'Memuat konten...';
+                        else if (progress < 80) loaderText.textContent = 'Hampir selesai...';
+                        else loaderText.textContent = 'Siap!';
+                    }
+                }, 80);
+
+                setTimeout(() => {
+                    clearInterval(interval);
+                    if (progressBar) progressBar.style.width = '100%';
+
+                    try {
+                        let content = '';
+                        const workspace = WORKSPACES[workspaceId];
+
+                        switch (workspaceId) {
+                            case 'home':
+                                content = renderHero() + renderStats() + renderCreatePost() + renderStory() +
+                                    renderQuickAction() + renderFeed();
+                                break;
+                            case 'feed':
+                                content = renderFeed();
+                                break;
+                            case 'emergency':
+                                content = renderEmergencyWorkspace();
+                                break;
+                            case 'notification':
+                                content = renderNotificationWorkspace();
+                                break;
+                            case 'profile':
+                                content = renderProfileWorkspace();
+                                break;
+                            case 'marketplace':
+                                content = renderMarketplaceWorkspace();
+                                break;
+                            case 'settings':
+                                content = renderSettingsWorkspace();
+                                break;
+                            default:
+                                throw new Error(`Workspace "${workspaceId}" tidak ditemukan`);
+                        }
+
+                        container.innerHTML = content;
+                        loader.style.display = 'none';
+                        container.style.display = 'block';
+
+                        document.querySelectorAll('.sl-nav-item').forEach(el => {
+                            el.classList.toggle('active', el.dataset.workspace === workspaceId);
+                        });
+                        document.querySelectorAll('.sl-sidebar-menu a').forEach(el => {
+                            el.classList.toggle('active', el.dataset.workspace === workspaceId);
+                        });
+
+                        // Update logo
+                        if (workspace) {
+                            document.querySelector('#sl-logo').innerHTML = `
+                                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                ${workspace.label}
+                            `;
+                        }
+
+                        bindWorkspaceEvents(workspaceId);
+
+                        if (workspaceId === 'settings') {
+                            setTimeout(renderThemePreview, 100);
+                        }
+
+                        updateNotificationBadge();
+                        EventBus.emit('workspace:loaded', { workspace: workspaceId });
+
+                    } catch (error) {
+                        console.error('[Workspace] Error:', error);
+                        errorBoundary.classList.add('active');
+                        errorMsg.textContent = error.message || 'Terjadi kesalahan saat memuat workspace.';
+                        loader.style.display = 'none';
+                        container.style.display = 'none';
+                    }
+                }, 800);
+            }
+
+            // ==================== THEME PREVIEW ====================
+            function renderThemePreview() {
+                const container = document.getElementById('sl-theme-preview-container');
+                if (!container) return;
+
+                const themes = [
+                    { id: 'dark', label: 'Dark', icon: '🌙', desc: 'Mode gelap standar' },
+                    { id: 'light', label: 'Light', icon: '☀️', desc: 'Mode terang untuk siang hari' },
+                    { id: 'emergency', label: 'Emergency', icon: '🚨', desc: 'Mode darurat dengan kontras tinggi' },
+                    { id: 'command-center', label: 'Command Center', icon: '🖥️', desc: 'Mode layar besar' }
+                ];
+
+                let html = '<div class="sl-theme-grid">';
+                themes.forEach(t => {
+                    const active = ThemeManager.current === t.id;
+                    html += `
+                        <div class="sl-theme-preview ${active ? 'active' : ''}" data-theme="${t.id}">
+                            <div class="sl-theme-preview-header">
+                                <span class="sl-theme-preview-icon">${t.icon}</span>
+                                <span class="sl-theme-preview-name">${t.label}</span>
+                                <span class="sl-theme-preview-badge">${active ? '✓ Active' : ''}</span>
+                            </div>
+                            <div class="sl-theme-preview-colors">
+                                <div class="sl-color-swatch" style="background:var(--sl-color-bg);"><span>Bg</span></div>
+                                <div class="sl-color-swatch" style="background:var(--sl-color-surface);"><span>Surface</span></div>
+                                <div class="sl-color-swatch" style="background:var(--sl-color-primary);"><span>Accent</span></div>
+                                <div class="sl-color-swatch" style="background:var(--sl-color-text-primary);color:var(--sl-color-bg);"><span>Text</span></div>
+                            </div>
+                            <div class="sl-theme-preview-desc">${t.desc}</div>
+                            <button class="sl-btn sl-btn-primary sl-btn-sm sl-theme-preview-btn" data-theme="${t.id}">Apply</button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                container.innerHTML = html;
+
+                container.querySelectorAll('.sl-theme-preview-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const themeId = btn.dataset.theme;
+                        if (themeId) {
+                            ThemeManager.apply(themeId);
+                            ThemeManager.current = themeId;
+                            Storage.set('theme', themeId);
+                            renderThemePreview();
+                            Toast.show(`Tema diubah ke ${themes.find(t => t.id === themeId)?.label || themeId}`,
+                                'success', '🎨');
+                        }
+                    });
+                });
+            }
+
+            // ==================== BIND EVENTS ====================
+            function bindWorkspaceEvents(workspaceId) {
+                // Create Post trigger
+                const trigger = document.getElementById('sl-create-post-trigger');
+                const composer = document.getElementById('sl-post-composer');
+                if (trigger && composer) {
+                    trigger.addEventListener('click', () => {
+                        composer.classList.toggle('active');
+                        if (composer.classList.contains('active')) {
+                            document.getElementById('sl-post-input')?.focus();
+                        }
+                    });
+                }
+
+                // Post submit
+                const submitBtn = document.getElementById('sl-post-submit');
+                const postInput = document.getElementById('sl-post-input');
+                const postType = document.getElementById('sl-post-type');
+
+                function handlePostSubmit() {
+                    if (!postInput || !postInput.value.trim()) {
+                        Toast.show('Silakan tulis sesuatu terlebih dahulu', 'warning', '📝');
+                        return;
+                    }
+
+                    const type = postType?.value || 'status';
+                    const content = postInput.value.trim();
+                    const typeLabels = {
+                        fire: '🔥 Kebakaran',
+                        medical: '🚑 Medis & Kematian',
+                        security: '🚓 Keamanan',
+                        disaster: '🌪️ Bencana Alam'
+                    };
+
+                    const isEmergency = ['fire', 'medical', 'security', 'disaster'].includes(type);
+                    const post = {
+                        id: 'post-' + Date.now(),
+                        author: STATE.user,
+                        content: isEmergency ? `🚨 ${typeLabels[type] || type} — ${content}` : content,
+                        time: 'baru saja',
+                        media: null,
+                        likes: 0,
+                        comments: 0,
+                        shares: 0,
+                        bookmarks: 0,
+                        emergency: isEmergency ? {
+                            type: type,
+                            priority: 'critical',
+                            status: 'pending'
+                        } : null
+                    };
+
+                    STATE.posts.unshift(post);
+                    STATE.user.posts = (STATE.user.posts || 0) + 1;
+
+                    postInput.value = '';
+                    composer?.classList.remove('active');
+
+                    if (isEmergency) {
+                        Toast.show(`🚨 Laporan ${typeLabels[type] || type} terkirim! Bantuan sedang diproses.`, 'error',
+                            '🚨');
+                        STATE.notifications.unshift({
+                            id: 'notif-' + Date.now(),
+                            icon: '🚨',
+                            title: `🚨 Laporan ${typeLabels[type] || type} terkirim`,
+                            message: `📍 ${STATE.user.location || 'Lokasi tidak diketahui'}`,
+                            time: 'baru saja',
+                            read: false
+                        });
+                        updateNotificationBadge();
+                    } else {
+                        Toast.show('Postingan berhasil dibagikan!', 'success', '📝');
+                    }
+
+                    renderWorkspace('feed');
+                    EventBus.emit('post:created', { post });
+                }
+
+                if (submitBtn) {
+                    submitBtn.addEventListener('click', handlePostSubmit);
+                }
+                if (postInput) {
+                    postInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handlePostSubmit();
+                        }
+                    });
+                }
+
+                // Like
+                document.querySelectorAll('.sl-post-action[data-action="like"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const postId = this.dataset.post;
+                        const post = STATE.posts.find(p => p.id === postId);
+                        if (post) {
+                            post.likes = (post.likes || 0) + 1;
+                            const count = this.querySelector('.sl-action-count');
+                            if (count) count.textContent = post.likes;
+                            this.classList.add('liked');
+                            Toast.show('Anda menyukai postingan ini', 'success', '❤️');
+                        }
+                    });
+                });
+
+                // Comment
+                document.querySelectorAll('.sl-post-action[data-action="comment"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        Toast.show('Fitur komentar akan segera hadir!', 'info', '💬');
+                    });
+                });
+
+                // Share
+                document.querySelectorAll('.sl-post-action[data-action="share"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const postId = this.dataset.post;
+                        const post = STATE.posts.find(p => p.id === postId);
+                        if (post) {
+                            post.shares = (post.shares || 0) + 1;
+                            const count = this.querySelector('.sl-action-count');
+                            if (count) count.textContent = post.shares;
+                            const text = `📢 ${post.content.substring(0, 80)}...\n\nBagikan via SALINK!`;
+                            if (navigator.share) {
+                                navigator.share({ title: 'Postingan SALINK', text: text })
+                                    .catch(() => {});
+                            } else {
+                                navigator.clipboard.writeText(text)
+                                    .then(() => Toast.show('Teks berhasil disalin!', 'success', '📋'))
+                                    .catch(() => Toast.show('Bagikan: ' + text, 'info', '↗️'));
+                            }
+                        }
+                    });
+                });
+
+                // Bookmark
+                document.querySelectorAll('.sl-post-action[data-action="bookmark"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        Toast.show('Postingan disimpan!', 'success', '🔖');
+                    });
+                });
+
+                // Quick Action buttons
+                document.querySelectorAll('.sl-quick-action-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const action = this.dataset.action;
+                        if (action === 'marketplace') {
+                            EventBus.emit('router:navigate', { workspace: 'marketplace' });
+                        } else if (action === 'friends') {
+                            Toast.show('👥 Fitur teman akan segera hadir!', 'info', '👥');
+                        } else if (action === 'photo') {
+                            Toast.show('📷 Fitur foto akan segera hadir!', 'info', '📷');
+                        } else if (action === 'bio') {
+                            Toast.show('📋 Fitur biodata akan segera hadir!', 'info', '📋');
+                        }
+                    });
+                });
+
+                // Emergency buttons
+                document.querySelectorAll('.sl-emergency-btn[data-emergency]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const type = this.dataset.emergency;
+                        const labels = {
+                            fire: '🔥 Kebakaran',
+                            medical: '🚑 Medis & Kematian',
+                            security: '🚓 Keamanan',
+                            disaster: '🌪️ Bencana Alam'
+                        };
+                        if (confirm(
+                            `Apakah Anda yakin ingin melaporkan ${labels[type] || type}? Lokasi Anda akan dikirim otomatis.`
+                            )) {
+                            const post = {
+                                id: 'post-' + Date.now(),
+                                author: STATE.user,
+                                content: `🚨 ${labels[type] || type} — Laporan darurat. Mohon bantuan segera!`,
+                                time: 'baru saja',
+                                media: null,
+                                likes: 0,
+                                comments: 0,
+                                shares: 0,
+                                bookmarks: 0,
+                                emergency: { type: type, priority: 'critical', status: 'pending' }
+                            };
+                            STATE.posts.unshift(post);
+                            STATE.user.posts = (STATE.user.posts || 0) + 1;
+                            Toast.show(`🚨 Laporan ${labels[type] || type} terkirim! Bantuan sedang diproses.`,
+                                'error', '🚨');
+                            STATE.notifications.unshift({
+                                id: 'notif-' + Date.now(),
+                                icon: '🚨',
+                                title: `🚨 Laporan ${labels[type] || type} terkirim`,
+                                message: `📍 ${STATE.user.location || 'Lokasi tidak diketahui'}`,
+                                time: 'baru saja',
+                                read: false
+                            });
+                            updateNotificationBadge();
+                            EventBus.emit('router:navigate', { workspace: 'feed' });
+                        }
+                    });
+                });
+
+                // SOS
+                const sosBtn = document.getElementById('sl-sos-btn');
+                if (sosBtn) {
+                    sosBtn.addEventListener('click', function() {
+                        if (confirm(
+                            '🚨 SOS DARURAT! Ini akan mengirim sinyal ke semua pengguna dan instansi terdekat. Lanjutkan?'
+                            )) {
+                            Toast.show('🚨 SOS DARURAT terkirim! Bantuan sedang dalam perjalanan.', 'error', '🚨');
+                            STATE.notifications.unshift({
+                                id: 'notif-' + Date.now(),
+                                icon: '🚨',
+                                title: '🚨 SOS DARURAT',
+                                message: `📍 ${STATE.user.location || 'Lokasi tidak diketahui'} — Segera bantuan!`,
+                                time: 'baru saja',
+                                read: false
+                            });
+                            updateNotificationBadge();
+                        }
+                    });
+                }
+
+                // Filter
+                document.querySelectorAll('.sl-feed-filter').forEach(filter => {
+                    filter.addEventListener('click', function() {
+                        document.querySelectorAll('.sl-feed-filter').forEach(f => f.classList.remove(
+                        'active'));
+                        this.classList.add('active');
+                        const filterType = this.dataset.filter;
+                        const container = document.getElementById('sl-feed-container');
+                        if (container) {
+                            let filtered = STATE.posts;
+                            if (filterType === 'emergency') {
+                                filtered = STATE.posts.filter(p => p.emergency);
+                            } else if (filterType === 'friends') {
+                                filtered = STATE.posts.filter(p => false);
+                            }
+                            if (filtered.length === 0) {
+                                container.innerHTML = `
+                                    <div class="sl-notification-empty">
+                                        <span class="sl-icon-emoji">📭</span>
+                                        <p>Tidak ada postingan untuk filter ini.</p>
+                                    </div>
+                                `;
+                            } else {
+                                // Re-render with filtered posts (simplified)
+                                Toast.show(`Menampilkan ${filtered.length} postingan`, 'info', '📰');
+                            }
+                        }
+                    });
+                });
+
+                // Notification item click
+                document.querySelectorAll('.sl-notification-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const id = this.dataset.notifId;
+                        if (id) {
+                            const notif = STATE.notifications.find(n => n.id === id);
+                            if (notif) {
+                                notif.read = true;
+                                this.classList.remove('unread');
+                                updateNotificationBadge();
+                            }
+                        }
+                    });
+                });
+
+                // Mark all read
+                const markAllBtn = document.getElementById('sl-mark-all-read');
+                if (markAllBtn) {
+                    markAllBtn.addEventListener('click', () => {
+                        STATE.notifications.forEach(n => n.read = true);
+                        updateNotificationBadge();
+                        Toast.show('Semua notifikasi ditandai dibaca', 'success', '✅');
+                        renderWorkspace('notification');
+                    });
+                }
+
+                // Profile nav tabs
+                document.querySelectorAll('.sl-profile-nav-btn').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        document.querySelectorAll('.sl-profile-nav-btn').forEach(t => t.classList.remove(
+                            'active'));
+                        this.classList.add('active');
+                        const tabName = this.dataset.tab;
+                        const content = document.getElementById('sl-profile-content');
+                        if (content) {
+                            if (tabName === 'posts') {
+                                const userPosts = STATE.posts.filter(p => p.author.id === STATE.user.id);
+                                if (userPosts.length === 0) {
+                                    content.innerHTML = `
+                                        <div class="sl-notification-empty">
+                                            <span class="sl-icon-emoji">📭</span>
+                                            <p>Belum ada postingan.</p>
+                                        </div>
+                                    `;
+                                } else {
+                                    content.innerHTML = userPosts.map(p => `
+                                        <div class="sl-post-card" style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">
+                                            <div class="sl-post-content">${p.content}</div>
+                                            <div class="sl-post-actions">
+                                                <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">❤️ ${p.likes || 0}</span>
+                                                <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">💬 ${p.comments || 0}</span>
+                                                <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">↗️ ${p.shares || 0}</span>
+                                            </div>
+                                        </div>
+                                    `).join('');
+                                }
+                            } else {
+                                content.innerHTML = `
+                                    <div class="sl-notification-empty">
+                                        <span class="sl-icon-emoji">📷</span>
+                                        <p>Fitur ${tabName} akan segera hadir!</p>
+                                    </div>
+                                `;
+                            }
+                        }
+                    });
+                });
+
+                // Profile edit
+                const editProfileBtn = document.getElementById('profile-edit-btn');
+                if (editProfileBtn) {
+                    editProfileBtn.addEventListener('click', () => {
+                        const user = STATE.user;
+                        Layout.openModal('✏️ Edit Profil', `
+                            <div style="display:flex;flex-direction:column;gap:var(--sl-spacing-3);">
+                                <input class="sl-input" placeholder="Nama" value="${user.name}" id="sl-edit-name" />
+                                <input class="sl-input" placeholder="Bio" value="${user.bio || ''}" id="sl-edit-bio" />
+                                <input class="sl-input" placeholder="Lokasi" value="${user.location || ''}" id="sl-edit-location" />
+                                <button class="sl-btn sl-btn-primary" id="sl-edit-submit">Simpan</button>
+                            </div>
+                        `);
+                        setTimeout(() => {
+                            document.getElementById('sl-edit-submit')?.addEventListener('click', () => {
+                                const name = document.getElementById('sl-edit-name')?.value || user.name;
+                                const bio = document.getElementById('sl-edit-bio')?.value || '';
+                                const location = document.getElementById('sl-edit-location')?.value ||
+                                '';
+                                user.name = name;
+                                user.bio = bio;
+                                user.location = location;
+                                Layout.closeModal();
+                                Toast.show('Profil berhasil diupdate!', 'success', '✅');
+                                renderWorkspace('profile');
+                            });
+                        }, 100);
+                    });
+                }
+
+                // Profile share
+                const shareBtn = document.getElementById('profile-share-btn');
+                if (shareBtn) {
+                    shareBtn.addEventListener('click', () => {
+                        const text =
+                            `👤 ${STATE.user.name} — ${STATE.user.bio || 'Pengguna SALINK'}\nBergabung: ${STATE.user.joined || 'SALINK'}\nTrust Score: ${STATE.user.trustScore || 0}%`;
+                        if (navigator.share) {
+                            navigator.share({ title: 'Profil SALINK', text: text }).catch(() => {});
+                        } else {
+                            navigator.clipboard.writeText(text)
+                                .then(() => Toast.show('Profil berhasil disalin!', 'success', '📋'))
+                                .catch(() => Toast.show(text, 'info', '↗️'));
+                        }
+                    });
+                }
+
+                // Add product
+                const addProductBtn = document.getElementById('sl-add-product');
+                if (addProductBtn) {
+                    addProductBtn.addEventListener('click', () => {
+                        Layout.openModal('🛒 Tambah Produk', `
+                            <div style="display:flex;flex-direction:column;gap:var(--sl-spacing-3);">
+                                <input class="sl-input" placeholder="Nama Produk" id="sl-product-name" />
+                                <input class="sl-input" placeholder="Harga" id="sl-product-price" />
+                                <textarea class="sl-input" placeholder="Deskripsi" id="sl-product-desc" rows="3"></textarea>
+                                <button class="sl-btn sl-btn-primary" id="sl-product-submit">Tambah Produk</button>
+                            </div>
+                        `);
+                        setTimeout(() => {
+                            document.getElementById('sl-product-submit')?.addEventListener('click', () => {
+                                const name = document.getElementById('sl-product-name')?.value ||
+                                    'Produk Baru';
+                                const price = document.getElementById('sl-product-price')?.value ||
+                                    'Hubungi';
+                                const desc = document.getElementById('sl-product-desc')?.value || '';
+                                const post = {
+                                    id: 'post-' + Date.now(),
+                                    author: STATE.user,
+                                    content: `🛒 ${name}\n${desc}\n💰 ${price}`,
+                                    time: 'baru saja',
+                                    media: null,
+                                    likes: 0,
+                                    comments: 0,
+                                    shares: 0,
+                                    bookmarks: 0,
+                                    emergency: null
+                                };
+                                STATE.posts.unshift(post);
+                                STATE.user.posts = (STATE.user.posts || 0) + 1;
+                                Layout.closeModal();
+                                Toast.show('Produk berhasil ditambahkan!', 'success', '🛒');
+                                renderWorkspace('marketplace');
+                            });
+                        }, 100);
+                    });
+                }
+
+                // Logout
+                const logoutBtns = document.querySelectorAll('#sl-logout-btn');
+                logoutBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (confirm('Apakah Anda yakin ingin logout?')) {
+                            Toast.show('Anda telah logout', 'info', '👋');
+                            EventBus.emit('router:navigate', { workspace: 'home' });
+                        }
+                    });
+                });
+
+                // Theme preview button in settings
+                const themePreviewBtn = document.getElementById('sl-theme-preview-btn');
+                if (themePreviewBtn) {
+                    themePreviewBtn.addEventListener('click', () => {
+                        const container = document.getElementById('sl-theme-preview-container');
+                        if (container) {
+                            if (container.style.display === 'none') {
+                                container.style.display = 'block';
+                                renderThemePreview();
+                            } else {
+                                container.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+            }
+
+            // ==================== NOTIFICATION BADGE ====================
+            function updateNotificationBadge() {
+                const unread = STATE.notifications.filter(n => !n.read).length;
+                const badge = document.getElementById('sl-notif-count');
+                if (badge) {
+                    badge.textContent = unread;
+                    badge.style.display = unread > 0 ? 'inline-flex' : 'none';
+                }
+            }
+
+            // ==================== SYSTEM BAR ====================
+            function updateSystemStatus() {
+                const status = document.getElementById('sl-status-text');
+                const online = navigator.onLine;
+                if (status) {
+                    status.textContent = online ? '● Online' : '● Offline';
+                    status.style.color = online ? 'var(--sl-color-success)' : 'var(--sl-color-danger)';
+                }
+            }
+
+            function updateClock() {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const display = document.getElementById('sl-time-display');
+                if (display) display.textContent = `${h}:${m}`;
+            }
+
+            // ==================== SEARCH ====================
+            function toggleSearch() {
+                const bar = document.getElementById('sl-search-bar');
+                bar.classList.toggle('active');
+                if (bar.classList.contains('active')) {
+                    document.getElementById('sl-search-input')?.focus();
+                }
+            }
+
+            // ==================== GLOBAL EVENTS ====================
+            function bindGlobalEvents() {
+                // Search
+                document.getElementById('sl-search-btn')?.addEventListener('click', toggleSearch);
+                document.getElementById('sl-search-input')?.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        document.getElementById('sl-search-bar')?.classList.remove('active');
+                    }
+                });
+
+                // Theme
+                document.getElementById('sl-theme-btn')?.addEventListener('click', () => {
+                    ThemeManager.toggle();
+                    Toast.show(`Tema: ${ThemeManager.current}`, 'info', '🎨');
+                });
+
+                // FAB
+                document.getElementById('sl-fab')?.addEventListener('click', () => {
+                    const current = Router.current;
+                    if (current === 'home' || current === 'feed') {
+                        const composer = document.getElementById('sl-post-composer');
+                        if (composer) {
+                            composer.classList.toggle('active');
+                            if (composer.classList.contains('active')) {
+                                document.getElementById('sl-post-input')?.focus();
+                            }
+                        }
+                    } else if (current === 'profile') {
+                        document.getElementById('profile-edit-btn')?.click();
+                    } else if (current === 'marketplace') {
+                        document.getElementById('sl-add-product')?.click();
+                    } else if (current === 'emergency') {
+                        document.getElementById('sl-sos-btn')?.click();
+                    } else {
+                        EventBus.emit('router:navigate', { workspace: 'home' });
+                        setTimeout(() => {
+                            document.getElementById('sl-post-input')?.focus();
+                        }, 300);
+                    }
+                });
+
+                // Online/Offline
+                window.addEventListener('online', updateSystemStatus);
+                window.addEventListener('offline', updateSystemStatus);
+
+                // Clock
+                setInterval(updateClock, 10000);
+                updateClock();
+
+                // Route changes
+                EventBus.on('route:changed', ({ workspace }) => {
+                    renderWorkspace(workspace);
+                });
+            }
+
+            // ==================== BOOTSTRAP ====================
+            function bootstrap() {
+                console.log('[SALINK] 🚀 Initializing...');
+
+                try {
+                    // Theme
+                    ThemeManager.init();
+                    console.log('[SALINK] ✅ Theme Engine ready');
+
+                    // Toast
+                    Toast.init();
+                    console.log('[SALINK] ✅ Toast ready');
+
+                    // Layout
+                    Layout.init();
+                    console.log('[SALINK] ✅ Layout Engine ready');
+
+                    // Router
+                    Router.init();
+                    console.log('[SALINK] ✅ Router Engine ready');
+
+                    // Global events
+                    bindGlobalEvents();
+
+                    // System status
+                    updateSystemStatus();
+
+                    // Notification badge
+                    updateNotificationBadge();
+
+                    // Hide splash
+                    setTimeout(() => {
+                        document.getElementById('sl-splash')?.classList.add('hide');
+                        setTimeout(() => {
+                            document.getElementById('sl-splash')?.remove();
+                        }, 500);
+                    }, 1500);
+
+                    // Render initial workspace
+                    const initial = Router.current;
+                    renderWorkspace(initial);
+
+                    STATE.isReady = true;
+                    console.log('[SALINK] ✅ Application ready');
+                    console.log('[SALINK] 🎉 SALINK Citizen App v1.0 ready');
+
+                    EventBus.emit('app:ready', {
+                        timestamp: new Date().toISOString(),
+                        version: '1.0',
+                        theme: ThemeManager.current,
+                        workspace: Router.current
+                    });
+
+                } catch (error) {
+                    console.error('[SALINK] ❌ Bootstrap error:', error);
+                    Toast.show('Terjadi kesalahan saat memuat aplikasi', 'error', '⚠️');
+                }
+            }
+
+            // ==================== START ====================
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bootstrap);
+            } else {
+                bootstrap();
+            }
+
+            // Expose for debugging
+            window.__SALINK = {
+                STATE,
+                EventBus,
+                Storage,
+                ThemeManager,
+                Toast,
+                Layout,
+                Router,
+                WORKSPACES,
+                renderWorkspace,
+                renderThemePreview
+            };
+
+        })();
+    </script>
+
+</body>
+</html>
