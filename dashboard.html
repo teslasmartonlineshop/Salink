@@ -4847,30 +4847,6 @@ function bootstrap() {
     console.log('[SALINK] 🚀 Initializing...');
 
     try {
-        // ===== CEK LOGIN STATUS DI AWAL =====
-        const isLoggedIn = checkLoginStatus();
-
-        ThemeManager.init();
-        console.log('[SALINK] ✅ Theme Engine ready');
-
-        Toast.init();
-        console.log('[SALINK] ✅ Toast ready');
-
-        Layout.init();
-        console.log('[SALINK] ✅ Layout Engine ready');
-
-        Router.init();
-        console.log('[SALINK] ✅ Router Engine ready');
-
-        bindGlobalEvents();
-        updateSystemStatus();
-        updateNotificationBadge();
-
-        // ===== HIDE PREVIEW IF LOGGED IN =====
-        if (isLoggedIn) {
-            document.getElementById('sl-preview-overlay')?.classList.remove('active');
-        }
-
                     const loggedIn = Storage.get('logged_in', false);
                     STATE.isLoggedIn = loggedIn;
                     STATE.isPreview = !loggedIn;
