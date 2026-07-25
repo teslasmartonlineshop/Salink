@@ -943,7 +943,7 @@
             }
         }
 
-        /* ---------- QUICK STATS ---------- */
+        /* ---------- QUICK STATS (Horizontal) ---------- */
         .sl-quick-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -2844,6 +2844,7 @@
                         overlay.addEventListener('click', () => this.closeSidebar());
                     }
 
+                    // Sidebar menu items
                     sidebar?.querySelectorAll('.sl-sidebar-menu a').forEach(link => {
                         link.addEventListener('click', (e) => {
                             e.preventDefault();
@@ -2854,11 +2855,6 @@
                                 if (confirm('Apakah Anda yakin ingin logout?')) {
                                     STATE.isLoggedIn = false;
                                     STATE.isPreview = true;
-                                    // Clear session
-                                    localStorage.removeItem('logged_in');
-                                    localStorage.removeItem('user_data');
-                                    localStorage.removeItem('salink_logged_in');
-                                    localStorage.removeItem('salink_user');
                                     Toast.show('Anda telah logout, kembali ke Preview Mode', 'info',
                                         '👋');
                                     EventBus.emit('router:navigate', { workspace: 'home' });
@@ -2905,7 +2901,7 @@
                     }
                     if (modal) {
                         modal.addEventListener('click', (e) => {
-                            if (e.target === modal) this.closeModal());
+                            if (e.target === modal) this.closeModal();
                         });
                     }
                 },
@@ -3144,39 +3140,6 @@
                     EventBus.emit('route:changed', { workspace: workspaceId });
                 }
             };
-
-            // ==================== CHECK LOGIN STATUS ====================
-            function checkLoginStatus() {
-                // Cek dari kedua key (kompatibilitas antara login.html dan dashboard.html)
-                const loggedIn = localStorage.getItem('logged_in') === 'true' ||
-                    localStorage.getItem('salink_logged_in') === 'true';
-                const userData = localStorage.getItem('user_data') ||
-                    localStorage.getItem('salink_user');
-
-                if (loggedIn && userData) {
-                    try {
-                        const user = JSON.parse(userData);
-                        STATE.isLoggedIn = true;
-                        STATE.isPreview = false;
-                        STATE.user = { ...STATE.user, ...user };
-                        console.log('[SALINK] ✅ User logged in:', user.username || user.fullName || 'User');
-                        return true;
-                    } catch (e) {
-                        console.warn('[SALINK] ⚠️ Failed to parse user data:', e);
-                        // Data corrupt, clear session
-                        localStorage.removeItem('user_data');
-                        localStorage.removeItem('logged_in');
-                        localStorage.removeItem('salink_user');
-                        localStorage.removeItem('salink_logged_in');
-                        return false;
-                    }
-                } else {
-                    STATE.isLoggedIn = false;
-                    STATE.isPreview = true;
-                    console.log('[SALINK] 👀 Preview mode (not logged in)');
-                    return false;
-                }
-            }
 
             // ==================== RENDER FUNCTIONS ====================
 
@@ -4022,11 +3985,6 @@
                     if (confirm('Apakah Anda yakin ingin logout?')) {
                         STATE.isLoggedIn = false;
                         STATE.isPreview = true;
-                        // Clear session
-                        localStorage.removeItem('logged_in');
-                        localStorage.removeItem('user_data');
-                        localStorage.removeItem('salink_logged_in');
-                        localStorage.removeItem('salink_user');
                         Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
                         EventBus.emit('router:navigate', { workspace: 'home' });
                         setTimeout(() => {
@@ -4851,23 +4809,71 @@
             }
 
             // ==================== BOOTSTRAP ====================
+            
             function bootstrap() {
-                console.log('[SALINK] 🚀 Application Core Engine (SACE) initializing...');
+                console.log('[SALINK] 🚀 Initializing...');
 
                 try {
-                    // ===== CEK LOGIN STATUS DI AWAL =====
-                    const isLoggedIn = checkLoginStatus();
+                    // ==================== CHECK LOGIN STATUS ====================
+function checkLoginStatus() {
+    // Cek dari kedua key (kompatibilitas)
+    const loggedIn = localStorage.getItem('logged_in') === 'true' || 
+                     localStorage.getItem('salink_logged_in') === 'true';
+    const userData = localStorage.getItem('user_data') || 
+                     localStorage.getItem('salink_user');
 
-                    // ===== TAMPILKAN PREVIEW OVERLAY JIKA BELUM LOGIN =====
-                    const previewOverlay = document.getElementById('sl-preview-overlay');
-                    if (!isLoggedIn) {
-                        // Tampilkan preview overlay setelah splash screen hilang
-                        setTimeout(() => {
-                            previewOverlay?.classList.add('active');
-                        }, 800);
-                    } else {
-                        previewOverlay?.classList.remove('active');
-                    }
+    if (loggedIn && userData) {
+        try {
+            const user = JSON.parse(userData);
+            STATE.isLoggedIn = true;
+            STATE.isPreview = false;
+            STATE.user = { ...STATE.user, ...user };
+            console.log('[SALINK] ✅ User logged in:', user.username || user.fullName);
+            return true;
+        } catch (e) {
+            console.warn('[SALINK] ⚠️ Failed to parse user data');
+            return false;
+        }
+    } else {
+        STATE.isLoggedIn = false;
+        STATE.isPreview = true;
+        console.log('[SALINK] 👀 Preview mode');
+        return false;
+    }
+}
+
+// ==================== DI DALAM BOOTSTRAP() ====================
+function bootstrap() {
+    console.log('[SALINK] 🚀 Initializing...');
+
+    try {
+        // ===== CEK LOGIN STATUS DI AWAL =====
+        const isLoggedIn = checkLoginStatus();
+
+        ThemeManager.init();
+        console.log('[SALINK] ✅ Theme Engine ready');
+
+        Toast.init();
+        console.log('[SALINK] ✅ Toast ready');
+
+        Layout.init();
+        console.log('[SALINK] ✅ Layout Engine ready');
+
+        Router.init();
+        console.log('[SALINK] ✅ Router Engine ready');
+
+        bindGlobalEvents();
+        updateSystemStatus();
+        updateNotificationBadge();
+
+        // ===== HIDE PREVIEW IF LOGGED IN =====
+        if (isLoggedIn) {
+            document.getElementById('sl-preview-overlay')?.classList.remove('active');
+        }
+
+                    const loggedIn = Storage.get('logged_in', false);
+                    STATE.isLoggedIn = loggedIn;
+                    STATE.isPreview = !loggedIn;
 
                     ThemeManager.init();
                     console.log('[SALINK] ✅ Theme Engine ready');
@@ -4889,6 +4895,12 @@
                         document.getElementById('sl-splash')?.classList.add('hide');
                         setTimeout(() => {
                             document.getElementById('sl-splash')?.remove();
+                            if (!STATE.isLoggedIn) {
+                                setTimeout(() => {
+                                    document.getElementById('sl-preview-overlay').classList.add(
+                                        'active');
+                                }, 300);
+                            }
                         }, 500);
                     }, 1500);
 
