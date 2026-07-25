@@ -4809,64 +4809,186 @@
             }
 
             // ==================== BOOTSTRAP ====================
-            function bootstrap() {
-                console.log('[SALINK] 🚀 Initializing...');
+function bootstrap() {
+    console.log('[SALINK] 🚀 Initializing...');
 
-                try {
-                    const loggedIn = Storage.get('logged_in', false);
-                    STATE.isLoggedIn = loggedIn;
-                    STATE.isPreview = !loggedIn;
+    try {
+        // ===== CEK STATUS LOGIN =====
+        const loggedIn = Storage.get('logged_in', false);
+        const currentUser = Storage.get('current_user', null);
 
-                    ThemeManager.init();
-                    console.log('[SALINK] ✅ Theme Engine ready');
+        STATE.isLoggedIn = loggedIn;
+        STATE.isPreview = !loggedIn;
 
-                    Toast.init();
-                    console.log('[SALINK] ✅ Toast ready');
+        if (currentUser) {
+            STATE.user = {
+                ...STATE.user,
+                ...currentUser
+            };
+        }
 
-                    Layout.init();
-                    console.log('[SALINK] ✅ Layout Engine ready');
+        console.log('[SALINK] Login status:', STATE.isLoggedIn ? '✅ Logged In' : '🔒 Preview Mode');
 
-                    Router.init();
-                    console.log('[SALINK] ✅ Router Engine ready');
+        ThemeManager.init();
+        console.log('[SALINK] ✅ Theme Engine ready');
 
-                    bindGlobalEvents();
-                    updateSystemStatus();
-                    updateNotificationBadge();
+        Toast.init();
+        console.log('[SALINK] ✅ Toast ready');
 
-                    setTimeout(() => {
-                        document.getElementById('sl-splash')?.classList.add('hide');
-                        setTimeout(() => {
-                            document.getElementById('sl-splash')?.remove();
-                            if (!STATE.isLoggedIn) {
-                                setTimeout(() => {
-                                    document.getElementById('sl-preview-overlay').classList.add(
-                                        'active');
-                                }, 300);
-                            }
-                        }, 500);
-                    }, 1500);
+        Layout.init();
+        console.log('[SALINK] ✅ Layout Engine ready');
 
-                    const initial = Router.current;
-                    renderWorkspace(initial);
+        Router.init();
+        console.log('[SALINK] ✅ Router Engine ready');
 
-                    STATE.isReady = true;
-                    console.log('[SALINK] ✅ Application ready');
-                    console.log('[SALINK] 🎉 SALINK Citizen App v1.0 ready');
+        bindGlobalEvents();
+        updateSystemStatus();
+        updateNotificationBadge();
 
-                    EventBus.emit('app:ready', {
-                        timestamp: new Date().toISOString(),
-                        version: '1.0',
-                        theme: ThemeManager.current,
-                        workspace: Router.current,
-                        isPreview: STATE.isPreview
-                    });
+        // ===== UPDATE UI BERDASARKAN STATUS LOGIN =====
+        if (STATE.isLoggedIn && currentUser) {
+            // Update avatar di header dan sidebar
+            const avatarEl = document.getElementById('sl-profile-avatar');
+            const sidebarAvatar = document.querySelector('.sl-sidebar-avatar');
+            const sidebarUsername = document.getElementById('sl-sidebar-username');
 
-                } catch (error) {
-                    console.error('[SALINK] ❌ Bootstrap error:', error);
-                    Toast.show('Terjadi kesalahan saat memuat aplikasi', 'error', '⚠️');
-                }
-            }
+            if (avatarEl) avatarEl.textContent = currentUser.avatar || '👤';
+            if (sidebarAvatar) sidebarAvatar.textContent = currentUser.avatar || '👤';
+            if (sidebarUsername) sidebarUsername.textContent = currentUser.name || 'Pengguna';
 
+            // Update user data di state
+            STATE.user = { ...STATE.user, ...currentUser };
+
+            // Update quick stats dengan data user
+            updateUserStats();
+
+            console.log('[SALINK] ✅ User loaded:', currentUser.name);
+        } else {
+            // Preview mode: tampilkan overlay setelah splash hilang
+            setTimeout(() => {
+                document.getElementById('sl-preview-overlay').classList.add('active');
+            }, 300);
+        }
+
+        // ===== SPLASH SCREEN =====
+        setTimeout(() => {
+            document.getElementById('sl-splash')?.classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('sl-splash')?.remove();
+            }, 500);
+        }, 1500);
+
+        const initial = Router.current;
+        renderWorkspace(initial);
+
+        STATE.isReady = true;
+        console.log('[SALINK] ✅ Application ready');
+        console.log('[SALINK] 🎉 SALINK Citizen App v1.0 ready');
+
+        EventBus.emit('app:ready', {
+            timestamp: new Date().toISOString(),
+            version: '1.0',
+            theme: ThemeManager.current,
+            workspace: Router.current,
+            isPreview: STATE.isPreview
+        });
+
+        // ===== TAMPILKAN PREVIEW OVERLAY JIKA BELUM LOGIN =====
+        if (!STATE.isLoggedIn) {
+            setTimeout(() => {
+                document.getElementById('sl-preview-overlay').classList.add('active');
+            }, 800);
+        }
+
+    } catch (error) {
+        console.error('[SALINK] ❌ Bootstrap error:', error);
+        Toast.show('Terjadi kesalahan saat memuat aplikasi', 'error', '⚠️');
+    }
+}
+
+// ===== UPDATE USER STATS =====
+function updateUserStats() {
+    const user = STATE.user;
+    // Update quick stats dengan data user
+    const statNumbers = document.querySelectorAll('.sl-quick-stat .sl-stat-number');
+    if (statNumbers.length >= 4) {
+        // Laporan Aktif (dari posts yang emergency)
+        const emergencyPosts = STATE.posts.filter(p => p.type && p.type !== 'status');
+        statNumbers[0].textContent = emergencyPosts.length;
+        // Selesai Ditangani (resolved)
+        const resolvedPosts = STATE.posts.filter(p => p.resolved);
+        statNumbers[1].textContent = resolvedPosts.length;
+        // Tim Siaga (followers)
+        statNumbers[2].textContent = user.followers || 0;
+        // Tingkat Respon (trustScore)
+        statNumbers[3].textContent = user.trustScore || 100 + '%';
+    }
+}
+
+// ===== LOGOUT =====
+function handleLogout() {
+    if (confirm('Apakah Anda yakin ingin logout?')) {
+        // Hapus semua data session
+        Storage.remove('logged_in');
+        Storage.remove('current_user');
+        STATE.isLoggedIn = false;
+        STATE.isPreview = true;
+
+        // Reset user ke default
+        STATE.user = {
+            id: 'usr-001',
+            name: 'Pengguna',
+            avatar: '👤',
+            bio: 'Pengguna SALINK',
+            location: 'Pamijahan, Bogor',
+            joined: 'Januari 2025',
+            posts: 0,
+            followers: 0,
+            following: 0,
+            trustScore: 100,
+            verified: false,
+            fullName: 'Pengguna',
+            gender: 'Laki-laki',
+            username: '@pengguna',
+            email: 'pengguna@salink.com',
+            phone: '081234567890',
+            country: 'Indonesia',
+            province: 'Jawa Barat',
+            regency: 'Kabupaten Bogor',
+            district: 'Pamijahan',
+            village: 'Ciasmara',
+            address: 'Jl. Raya Pamijahan No. 123',
+            password: 'password123'
+        };
+
+        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
+
+        // Reset avatar di header
+        const avatarEl = document.getElementById('sl-profile-avatar');
+        if (avatarEl) avatarEl.textContent = '👤';
+
+        // Redirect ke home
+        EventBus.emit('router:navigate', { workspace: 'home' });
+
+        // Tampilkan preview overlay setelah delay
+        setTimeout(() => {
+            document.getElementById('sl-preview-overlay').classList.add('active');
+        }, 500);
+
+        // Refresh workspace untuk update UI
+        setTimeout(() => {
+            renderWorkspace(Router.current);
+        }, 100);
+    }
+}
+
+// ===== BIND LOGOUT =====
+// Di dalam bindWorkspaceEvents atau bindGlobalEvents:
+document.getElementById('sl-logout-btn')?.addEventListener('click', handleLogout);
+document.getElementById('sl-sidebar-logout')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    handleLogout();
+});
             // ==================== START ====================
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', bootstrap);
