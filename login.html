@@ -1588,7 +1588,7 @@
         });
 
         // ================================================================
-        // HANDLE LOGIN
+        // HANDLE LOGIN — DIPERBAIKI (SINKRON DENGAN DASHBOARD)
         // ================================================================
         document.getElementById('signinBtn').addEventListener('click', async function() {
             const username = document.getElementById('signinUsername').value.trim();
@@ -1607,8 +1607,14 @@
                 const result = await apiMasuk(username, password);
 
                 if (result.sukses) {
-                    localStorage.setItem('salink_user', JSON.stringify(result.pengguna));
+                    // ===== SINKRON DENGAN DASHBOARD =====
+                    // Key yang dibaca oleh dashboard
+                    localStorage.setItem('logged_in', 'true');
+                    localStorage.setItem('user_data', JSON.stringify(result.pengguna));
+
+                    // Tetap pertahankan key lama untuk kompatibilitas
                     localStorage.setItem('salink_logged_in', 'true');
+                    localStorage.setItem('salink_user', JSON.stringify(result.pengguna));
 
                     if (document.getElementById('rememberMe').checked) {
                         localStorage.setItem('salink_remember', 'true');
@@ -1632,7 +1638,7 @@
         });
 
         // ================================================================
-        // HANDLE REGISTER
+        // HANDLE REGISTER — DIPERBAIKI (SINKRON DENGAN DASHBOARD)
         // ================================================================
         document.getElementById('signupBtn').addEventListener('click', async function() {
             const fullName = document.getElementById('signupFullName').value.trim();
@@ -1704,8 +1710,13 @@
                 if (result.sukses) {
                     showMessage('✅ ' + result.pesan, 'success');
 
-                    localStorage.setItem('salink_user', JSON.stringify(result.pengguna));
+                    // ===== SINKRON DENGAN DASHBOARD =====
+                    localStorage.setItem('logged_in', 'true');
+                    localStorage.setItem('user_data', JSON.stringify(result.pengguna));
+
+                    // Tetap pertahankan key lama
                     localStorage.setItem('salink_logged_in', 'true');
+                    localStorage.setItem('salink_user', JSON.stringify(result.pengguna));
 
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
@@ -1731,10 +1742,12 @@
         });
 
         // ================================================================
-        // CLEAR DATA FUNCTIONS
+        // CLEAR DATA FUNCTIONS (DIPERBAIKI)
         // ================================================================
         function clearUserData() {
             if (confirm('⚠️ Hapus data user yang sedang login? Data user lain tetap tersimpan.')) {
+                localStorage.removeItem('user_data');
+                localStorage.removeItem('logged_in');
                 localStorage.removeItem('salink_user');
                 localStorage.removeItem('salink_logged_in');
                 showMessage('✅ Data user Anda berhasil dihapus!', 'success');
@@ -1748,6 +1761,8 @@
 
         function clearAllData() {
             if (confirm('⚠️ YAKIN ingin menghapus SEMUA data? Ini akan mereset semua pengaturan, user, dan postingan!')) {
+                localStorage.removeItem('user_data');
+                localStorage.removeItem('logged_in');
                 localStorage.removeItem('salink_user');
                 localStorage.removeItem('salink_logged_in');
                 localStorage.removeItem('sl_theme');
@@ -1790,10 +1805,10 @@
         });
 
         // ================================================================
-        // CEK APAKAH SUDAH LOGIN
+        // CEK APAKAH SUDAH LOGIN — DIPERBAIKI
         // ================================================================
-        var loggedInUser = localStorage.getItem('salink_user');
-        var isLoggedIn = localStorage.getItem('salink_logged_in') === 'true';
+        var loggedInUser = localStorage.getItem('user_data') || localStorage.getItem('salink_user');
+        var isLoggedIn = localStorage.getItem('logged_in') === 'true' || localStorage.getItem('salink_logged_in') === 'true';
 
         if (loggedInUser && isLoggedIn) {
             try {
@@ -1806,6 +1821,8 @@
                     }, 1000);
                 }, 500);
             } catch (e) {
+                localStorage.removeItem('user_data');
+                localStorage.removeItem('logged_in');
                 localStorage.removeItem('salink_user');
                 localStorage.removeItem('salink_logged_in');
             }
@@ -1814,6 +1831,7 @@
         console.log('🔐 SALINK Login Page - VERSI API');
         console.log('📌 Tema:', currentTheme);
         console.log('📡 Backend: Google Apps Script API');
+        console.log('✅ Session keys: logged_in, user_data (sinkron dengan dashboard)');
     </script>
 </body>
 </html>
