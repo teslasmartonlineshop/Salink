@@ -1,6 +1,72 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- ==================== PWA CONFIGURATION ==================== -->
+
+<!-- Manifest -->
+<link rel="manifest" href="manifest.json" />
+
+<!-- Apple Touch Icon (iOS) -->
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+<!-- Maskable Icon -->
+<link rel="mask-icon" href="assets/icons/icon-192.png" color="#071A2E" />
+
+<!-- PWA Manifest Inline -->
+<script type="application/json" id="manifest-placeholder">
+{
+  "name": "SALINK - Emergency Social Platform",
+  "short_name": "SALINK",
+  "description": "Platform darurat berbasis komunitas. Siap membantu Anda 24/7.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071A2E",
+  "theme_color": "#071A2E",
+  "categories": ["social", "emergency", "communication", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "assets/icons/icon-72.png", "sizes": "72x72", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
+</script>
+
+<!-- Service Worker Registration -->
+<script>
+  if ('serviceWorker' in navigator) {
+    // Register service worker
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(reg) {
+        console.log('✅ Service Worker registered successfully:', reg.scope);
+      })
+      .catch(function(err) {
+        console.log('❌ Service Worker registration failed:', err);
+      });
+
+    // Listen for app install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      console.log('✅ PWA install prompt available');
+      // You can show a custom install button here
+    });
+
+    // Listen for app installed
+    window.addEventListener('appinstalled', function() {
+      console.log('✅ SALINK app installed successfully!');
+    });
+  } else {
+    console.log('⚠️ Service Workers not supported in this browser');
+  }
+</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <meta name="theme-color" content="#071A2E" />
