@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <meta name="theme-color" content="#071A2E" />
     <meta name="description" content="SALINK — Smart Alert, Link & Integrated Notification Knowledge. Platform darurat berbasis komunitas." />
     <title>SALINK — Emergency Social Platform</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
         /* ================================================================
@@ -83,7 +81,6 @@
             --sl-color-text-secondary: #2C3E50;
             --sl-color-text-muted: #5A7A8C;
             --sl-color-border: rgba(0, 0, 0, 0.08);
-            --sl-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
         }
 
         [data-theme="emergency"] {
@@ -94,7 +91,6 @@
             --sl-color-text-secondary: #FFCDD2;
             --sl-color-primary: #FF1744;
             --sl-color-border: rgba(255, 59, 48, 0.3);
-            --sl-shadow-emergency: 0 0 80px rgba(255, 59, 48, 0.15);
         }
 
         [data-theme="command-center"] {
@@ -129,6 +125,139 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        /* ---------- PREVIEW MODE OVERLAY ---------- */
+        #sl-preview-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: var(--sl-spacing-4);
+        }
+
+        #sl-preview-overlay.active {
+            display: flex;
+        }
+
+        #sl-preview-overlay .sl-preview-card {
+            background: var(--sl-color-surface);
+            border-radius: var(--sl-radius-xl);
+            max-width: 400px;
+            width: 100%;
+            padding: var(--sl-spacing-6);
+            border: 1px solid var(--sl-color-border);
+            box-shadow: var(--sl-shadow-lg);
+            text-align: center;
+            animation: sl-modal-in var(--sl-duration-normal) var(--sl-ease-spring);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-icon {
+            font-size: 48px;
+            margin-bottom: var(--sl-spacing-3);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-title {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            margin-bottom: var(--sl-spacing-2);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-desc {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-secondary);
+            margin-bottom: var(--sl-spacing-4);
+            line-height: var(--sl-line-height-normal);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-buttons {
+            display: flex;
+            gap: var(--sl-spacing-2);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-buttons button {
+            flex: 1;
+            padding: var(--sl-spacing-3);
+            border-radius: var(--sl-radius-md);
+            border: none;
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            font-weight: var(--sl-font-weight-medium);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-buttons .sl-preview-btn-primary {
+            background: var(--sl-color-primary);
+            color: #fff;
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-buttons .sl-preview-btn-primary:hover {
+            background: var(--sl-color-primary-hover);
+            transform: scale(1.02);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-buttons .sl-preview-btn-secondary {
+            background: var(--sl-color-card);
+            color: var(--sl-color-text-secondary);
+        }
+
+        #sl-preview-overlay .sl-preview-card .sl-preview-buttons .sl-preview-btn-secondary:hover {
+            background: var(--sl-color-card-hover);
+            color: var(--sl-color-text-primary);
+        }
+
+        /* ---------- SPLASH SCREEN ---------- */
+        #sl-splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--sl-color-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--sl-spacing-4);
+            transition: opacity var(--sl-duration-slow) var(--sl-ease-default);
+        }
+
+        #sl-splash.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #sl-splash .sl-splash-logo {
+            font-size: 56px;
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        #sl-splash .sl-splash-sub {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-muted);
+        }
+
+        #sl-splash .sl-splash-loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--sl-color-primary);
+            border-radius: 50%;
+            animation: sl-spin 0.8s linear infinite;
+        }
+
+        @keyframes sl-spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ---------- APP SHELL ---------- */
@@ -316,9 +445,10 @@
         #sl-workspace {
             flex: 1;
             overflow-y: auto;
-            padding: var(--sl-spacing-4) var(--sl-spacing-4) 0 var(--sl-spacing-4);
+            padding: var(--sl-spacing-4);
             position: relative;
             scroll-behavior: smooth;
+            padding-bottom: 80px;
         }
 
         #sl-workspace::-webkit-scrollbar {
@@ -397,7 +527,7 @@
             margin-bottom: var(--sl-spacing-4);
             position: relative;
             overflow: hidden;
-            min-height: 280px;
+            min-height: 260px;
             box-shadow: 0 0 40px rgba(0, 194, 255, 0.05), inset 0 0 60px rgba(0, 194, 255, 0.02);
             cursor: pointer;
             transition: var(--sl-transition-all);
@@ -484,7 +614,7 @@
 
         .sl-hologram .sl-hologram-map {
             width: 100%;
-            height: 160px;
+            height: 120px;
             border-radius: var(--sl-radius-md);
             background: var(--sl-color-surface);
             display: flex;
@@ -504,27 +634,15 @@
             border-color: var(--sl-color-primary);
         }
 
-        .sl-hologram .sl-hologram-map iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            position: absolute;
-            inset: 0;
-        }
-
         .sl-hologram .sl-hologram-map .sl-map-placeholder {
             font-size: 48px;
             opacity: 0.3;
-            z-index: 1;
-            pointer-events: none;
         }
 
         .sl-hologram .sl-hologram-map .sl-map-coords {
             font-size: var(--sl-font-size-xs);
             color: var(--sl-color-text-muted);
             margin-top: var(--sl-spacing-1);
-            z-index: 1;
-            pointer-events: none;
         }
 
         .sl-hologram .sl-hologram-map .sl-map-click {
@@ -536,8 +654,6 @@
             border-radius: var(--sl-radius-sm);
             font-size: var(--sl-font-size-xs);
             color: var(--sl-color-text-secondary);
-            z-index: 2;
-            cursor: pointer;
         }
 
         .sl-hologram .sl-hologram-time {
@@ -552,14 +668,14 @@
             position: fixed;
             inset: 0;
             z-index: var(--sl-z-emergency-overlay);
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: none;
             align-items: center;
             justify-content: center;
             padding: var(--sl-spacing-4);
-            animation: sl-fade-in 0.5s ease;
+            animation: sl-fade-in var(--sl-duration-normal) var(--sl-ease-default);
         }
 
         .sl-hologram-overlay.active {
@@ -583,8 +699,8 @@
             max-width: 400px;
             width: 100%;
             padding: var(--sl-spacing-6);
-            border: 3px solid var(--sl-color-danger);
-            box-shadow: 0 0 80px rgba(255, 59, 48, 0.2);
+            border: 2px solid var(--sl-color-danger);
+            box-shadow: 0 0 80px rgba(255, 59, 48, 0.15);
             text-align: center;
             position: relative;
             animation: sl-alarm-pulse 1.5s ease-in-out infinite;
@@ -596,24 +712,13 @@
                 box-shadow: 0 0 60px rgba(255, 59, 48, 0.1);
             }
             50% {
-                box-shadow: 0 0 120px rgba(255, 59, 48, 0.25);
+                box-shadow: 0 0 100px rgba(255, 59, 48, 0.2);
             }
         }
 
         .sl-hologram-overlay .sl-hologram-overlay-icon {
             font-size: 56px;
             margin-bottom: var(--sl-spacing-3);
-            animation: sl-icon-bounce 1s ease-in-out infinite;
-        }
-
-        @keyframes sl-icon-bounce {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.15);
-            }
         }
 
         .sl-hologram-overlay .sl-hologram-overlay-title {
@@ -628,43 +733,6 @@
             color: var(--sl-color-text-secondary);
             margin-bottom: var(--sl-spacing-4);
             line-height: var(--sl-line-height-normal);
-        }
-
-        .sl-hologram-overlay .sl-hologram-overlay-actions {
-            display: flex;
-            gap: var(--sl-spacing-3);
-            justify-content: center;
-            margin-top: var(--sl-spacing-3);
-        }
-
-        .sl-hologram-overlay .sl-hologram-overlay-actions button {
-            flex: 1;
-            padding: var(--sl-spacing-3) var(--sl-spacing-4);
-            border: none;
-            border-radius: var(--sl-radius-md);
-            font-family: var(--sl-font-primary);
-            font-size: var(--sl-font-size-md);
-            font-weight: var(--sl-font-weight-bold);
-            cursor: pointer;
-            transition: var(--sl-transition-all);
-        }
-
-        .sl-hologram-overlay .sl-hologram-overlay-actions .sl-btn-detail {
-            background: var(--sl-color-primary);
-            color: #fff;
-        }
-
-        .sl-hologram-overlay .sl-hologram-overlay-actions .sl-btn-detail:hover {
-            background: var(--sl-color-primary-hover);
-        }
-
-        .sl-hologram-overlay .sl-hologram-overlay-actions .sl-btn-close {
-            background: var(--sl-color-danger);
-            color: #fff;
-        }
-
-        .sl-hologram-overlay .sl-hologram-overlay-actions .sl-btn-close:hover {
-            background: var(--sl-color-danger-hover);
         }
 
         .sl-hologram-overlay .sl-hologram-overlay-swipe {
@@ -750,21 +818,14 @@
             animation: sl-emergency-glow 1.5s ease-in-out infinite;
         }
 
-        .sl-emergency-btn.active.fire {
-            border-color: #FF3D00;
-            box-shadow: 0 0 60px rgba(255, 61, 0, 0.25);
-        }
-        .sl-emergency-btn.active.medical {
-            border-color: #00BCD4;
-            box-shadow: 0 0 60px rgba(0, 188, 212, 0.25);
-        }
-        .sl-emergency-btn.active.security {
-            border-color: #FFC107;
-            box-shadow: 0 0 60px rgba(255, 193, 7, 0.25);
-        }
-        .sl-emergency-btn.active.disaster {
-            border-color: #9C27B0;
-            box-shadow: 0 0 60px rgba(156, 39, 176, 0.25);
+        @keyframes sl-emergency-glow {
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(0, 194, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(0, 194, 255, 0.2);
+            }
         }
 
         .sl-emergency-btn .sl-emergency-pulse {
@@ -828,7 +889,7 @@
             }
         }
 
-        /* ---------- QUICK STATS ---------- */
+        /* ---------- QUICK STATS (Horizontal) ---------- */
         .sl-quick-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -1335,7 +1396,7 @@
         }
 
         .sl-grafik-container {
-            min-height: 140px;
+            min-height: 120px;
             display: flex;
             align-items: flex-end;
             justify-content: space-around;
@@ -1375,51 +1436,45 @@
         .sl-grafik-legend {
             display: flex;
             flex-wrap: wrap;
-            gap: var(--sl-spacing-3);
-            justify-content: center;
-            padding: var(--sl-spacing-2) 0;
-            border-top: 1px solid var(--sl-color-border);
-            margin-top: var(--sl-spacing-2);
-            font-size: var(--sl-font-size-xs);
-            color: var(--sl-color-text-secondary);
-        }
-
-        .sl-grafik-legend .sl-legend-item {
-            display: flex;
-            align-items: center;
-            gap: var(--sl-spacing-1);
-        }
-
-        .sl-grafik-legend .sl-legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: var(--sl-radius-full);
-        }
-
-        .sl-grafik-legend .sl-legend-dot.fire {
-            background: #FF3D00;
-        }
-        .sl-grafik-legend .sl-legend-dot.medical {
-            background: #00BCD4;
-        }
-        .sl-grafik-legend .sl-legend-dot.security {
-            background: #FFC107;
-        }
-        .sl-grafik-legend .sl-legend-dot.disaster {
-            background: #9C27B0;
-        }
-
-        .sl-grafik-footer {
-            font-size: var(--sl-font-size-xs);
-            color: var(--sl-color-text-muted);
-            text-align: center;
+            gap: var(--sl-spacing-2) var(--sl-spacing-4);
             padding-top: var(--sl-spacing-2);
             border-top: 1px solid var(--sl-color-border);
             margin-top: var(--sl-spacing-2);
         }
 
-        .sl-grafik-footer .sl-grafik-data {
+        .sl-grafik-legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-1);
+            font-size: var(--sl-font-size-xs);
             color: var(--sl-color-text-secondary);
+        }
+
+        .sl-grafik-legend-item .sl-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: var(--sl-radius-full);
+            flex-shrink: 0;
+        }
+
+        .sl-grafik-legend-item .sl-legend-dot.fire {
+            background: #FF3D00;
+        }
+        .sl-grafik-legend-item .sl-legend-dot.medical {
+            background: #00BCD4;
+        }
+        .sl-grafik-legend-item .sl-legend-dot.security {
+            background: #FFC107;
+        }
+        .sl-grafik-legend-item .sl-legend-dot.disaster {
+            background: #9C27B0;
+        }
+
+        .sl-grafik-info {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+            margin-top: var(--sl-spacing-1);
+            text-align: center;
         }
 
         .sl-grafik-search {
@@ -1452,102 +1507,60 @@
             border-color: var(--sl-color-primary);
         }
 
-        /* ---------- SOCIAL MEDIA CARD ---------- */
-        .sl-social-card {
+        /* ---------- MEDIA SOSIAL ---------- */
+        .sl-social-section {
             background: var(--sl-color-card);
             border-radius: var(--sl-radius-lg);
             padding: var(--sl-spacing-4);
             border: 1px solid var(--sl-color-border);
             margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-social-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--sl-spacing-3);
         }
 
         .sl-social-title {
             font-weight: var(--sl-font-weight-bold);
             color: var(--sl-color-text-primary);
             font-size: var(--sl-font-size-md);
-            margin-bottom: var(--sl-spacing-3);
         }
 
-        .sl-social-links {
+        .sl-social-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--sl-spacing-2);
+        }
+
+        .sl-social-btn {
             display: flex;
-            gap: var(--sl-spacing-3);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .sl-social-links a {
-            display: inline-flex;
             align-items: center;
             gap: var(--sl-spacing-2);
-            padding: var(--sl-spacing-2) var(--sl-spacing-4);
-            border-radius: var(--sl-radius-full);
+            padding: var(--sl-spacing-2) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-md);
             border: 1px solid var(--sl-color-border);
+            background: var(--sl-color-surface);
             color: var(--sl-color-text-secondary);
-            text-decoration: none;
-            font-size: var(--sl-font-size-sm);
+            cursor: pointer;
             transition: var(--sl-transition-all);
-            font-weight: var(--sl-font-weight-medium);
-        }
-
-        .sl-social-links a:hover {
-            border-color: var(--sl-color-primary);
-            color: var(--sl-color-text-primary);
-            background: var(--sl-color-card-hover);
-            transform: translateY(-2px);
-        }
-
-        .sl-social-links a i {
-            font-size: var(--sl-font-size-lg);
-            color: var(--sl-color-primary);
-        }
-
-        /* ---------- FOOTER TEXT CARD ---------- */
-        .sl-footer-card {
-            background: var(--sl-color-card);
-            border-radius: var(--sl-radius-lg);
-            padding: var(--sl-spacing-4);
-            border: 1px solid var(--sl-color-border);
-            margin-bottom: var(--sl-spacing-4);
-            text-align: center;
-        }
-
-        .sl-footer-card .sl-footer-copyright {
+            text-decoration: none;
+            font-family: var(--sl-font-primary);
             font-size: var(--sl-font-size-sm);
-            color: var(--sl-color-text-secondary);
-            font-weight: var(--sl-font-weight-medium);
-        }
-
-        /* ---------- ACTION LINKS CARD ---------- */
-        .sl-action-card {
-            background: var(--sl-color-card);
-            border-radius: var(--sl-radius-lg);
-            padding: var(--sl-spacing-4);
-            border: 1px solid var(--sl-color-border);
-            margin-bottom: var(--sl-spacing-4);
-        }
-
-        .sl-action-links {
-            display: flex;
-            gap: var(--sl-spacing-2);
             justify-content: center;
-            flex-wrap: wrap;
         }
 
-        .sl-action-links a {
-            padding: var(--sl-spacing-1) var(--sl-spacing-3);
-            border-radius: var(--sl-radius-full);
-            border: 1px solid var(--sl-color-border);
-            color: var(--sl-color-text-secondary);
-            text-decoration: none;
-            font-size: var(--sl-font-size-xs);
-            transition: var(--sl-transition-all);
-            font-weight: var(--sl-font-weight-medium);
-        }
-
-        .sl-action-links a:hover {
+        .sl-social-btn:hover {
             border-color: var(--sl-color-primary);
             color: var(--sl-color-text-primary);
-            background: var(--sl-color-card-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-sm);
+        }
+
+        .sl-social-btn .sl-social-icon {
+            font-size: var(--sl-font-size-xl);
         }
 
         /* ---------- SIDEBAR ---------- */
@@ -1566,6 +1579,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            padding-bottom: 20px;
         }
 
         .sl-sidebar.open {
@@ -1630,6 +1644,7 @@
             margin: 0;
             flex: 1;
             overflow-y: auto;
+            padding-bottom: 10px;
         }
 
         .sl-sidebar-menu li {
@@ -1691,6 +1706,7 @@
             border-top: 1px solid var(--sl-color-border);
             flex-shrink: 0;
             margin-top: auto;
+            padding-bottom: 10px;
         }
 
         .sl-sidebar-footer .sl-logout-btn {
@@ -1795,25 +1811,53 @@
             font-weight: var(--sl-font-weight-bold);
         }
 
-        /* ---------- FOOTER ---------- */
-        /* Footer berada di ATAS bottom navigation */
-        .sl-footer-wrapper {
-            flex-shrink: 0;
-            background: var(--sl-color-surface);
-            border-top: 1px solid var(--sl-color-border);
-        }
-
         .sl-footer-text {
             text-align: center;
             font-size: var(--sl-font-size-xs);
             color: var(--sl-color-text-muted);
             padding: var(--sl-spacing-2) var(--sl-spacing-4);
+            border-top: 1px solid var(--sl-color-border);
+            background: var(--sl-color-surface);
+            flex-shrink: 0;
+            order: 0;
         }
 
-        .sl-footer-text .sl-footer-copyright {
-            display: block;
-            font-weight: var(--sl-font-weight-medium);
-            color: var(--sl-color-text-secondary);
+        /* ---------- ORDERING ---------- */
+        .sl-order-1 {
+            order: 1;
+        }
+        .sl-order-2 {
+            order: 2;
+        }
+        .sl-order-3 {
+            order: 3;
+        }
+        .sl-order-4 {
+            order: 4;
+        }
+        .sl-order-5 {
+            order: 5;
+        }
+        .sl-order-6 {
+            order: 6;
+        }
+        .sl-order-7 {
+            order: 7;
+        }
+        .sl-order-8 {
+            order: 8;
+        }
+        .sl-order-9 {
+            order: 9;
+        }
+        .sl-order-10 {
+            order: 10;
+        }
+        .sl-order-11 {
+            order: 11;
+        }
+        .sl-order-12 {
+            order: 12;
         }
 
         /* ---------- MODAL ---------- */
@@ -1988,6 +2032,147 @@
             color: var(--sl-color-text-primary);
         }
 
+        /* ---------- TOGGLE SWITCH ---------- */
+        .sl-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .sl-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .sl-toggle-switch .sl-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--sl-color-text-muted);
+            border-radius: var(--sl-radius-full);
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-toggle-switch .sl-toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background: #fff;
+            border-radius: 50%;
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-toggle-switch input:checked+.sl-toggle-slider {
+            background: var(--sl-color-primary);
+        }
+
+        .sl-toggle-switch input:checked+.sl-toggle-slider::before {
+            transform: translateX(22px);
+        }
+
+        /* ---------- INVITE SEARCH ---------- */
+        .sl-invite-search-input {
+            width: 100%;
+            padding: var(--sl-spacing-2) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-full);
+            border: 2px solid var(--sl-color-border);
+            background: var(--sl-color-bg);
+            color: var(--sl-color-text-primary);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            min-height: 40px;
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-invite-search-input::placeholder {
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-invite-search-input:focus {
+            outline: none;
+            border-color: var(--sl-color-primary);
+        }
+
+        .sl-invite-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .sl-invite-item {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-3);
+            padding: var(--sl-spacing-2) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-md);
+            transition: var(--sl-transition-all);
+            cursor: pointer;
+            border-bottom: 1px solid var(--sl-color-border);
+        }
+
+        .sl-invite-item:last-child {
+            border-bottom: none;
+        }
+
+        .sl-invite-item:hover {
+            background: var(--sl-color-card);
+        }
+
+        .sl-invite-item .sl-invite-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--sl-font-size-lg);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-invite-item .sl-invite-avatar:hover {
+            border: 2px solid var(--sl-color-primary);
+        }
+
+        .sl-invite-item .sl-invite-name {
+            flex: 1;
+            font-weight: var(--sl-font-weight-medium);
+            color: var(--sl-color-text-primary);
+            cursor: pointer;
+        }
+
+        .sl-invite-item .sl-invite-name:hover {
+            color: var(--sl-color-primary);
+        }
+
+        .sl-invite-item .sl-invite-status {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-invite-item .sl-invite-btn {
+            padding: var(--sl-spacing-1) var(--sl-spacing-3);
+            border-radius: var(--sl-radius-full);
+            border: none;
+            background: var(--sl-color-primary);
+            color: #fff;
+            cursor: pointer;
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-xs);
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-invite-item .sl-invite-btn:hover {
+            background: var(--sl-color-primary-hover);
+        }
+
         /* ---------- RESPONSIVE ---------- */
         @media (max-width: 767px) {
             .sl-emergency-grid {
@@ -2026,12 +2211,12 @@
             }
 
             .sl-hologram {
-                min-height: 220px;
+                min-height: 200px;
                 padding: var(--sl-spacing-3);
             }
 
             .sl-hologram .sl-hologram-map {
-                height: 120px;
+                height: 100px;
             }
 
             .sl-sidebar {
@@ -2064,27 +2249,17 @@
                 font-size: var(--sl-font-size-xl);
             }
 
+            .sl-social-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--sl-spacing-2);
+            }
+
             .sl-grafik-legend {
+                gap: var(--sl-spacing-1) var(--sl-spacing-2);
+            }
+
+            .sl-grafik-legend-item {
                 font-size: var(--sl-font-size-xs);
-                gap: var(--sl-spacing-2);
-            }
-
-            .sl-social-links {
-                gap: var(--sl-spacing-2);
-            }
-
-            .sl-social-links a {
-                font-size: var(--sl-font-size-xs);
-                padding: var(--sl-spacing-1) var(--sl-spacing-3);
-            }
-
-            .sl-action-links {
-                gap: var(--sl-spacing-1);
-            }
-
-            .sl-action-links a {
-                font-size: var(--sl-font-size-xs);
-                padding: var(--sl-spacing-1) var(--sl-spacing-2);
             }
         }
 
@@ -2115,12 +2290,9 @@
                 max-width: 40px;
             }
 
-            .sl-social-links {
+            .sl-social-grid {
+                grid-template-columns: repeat(4, 1fr);
                 gap: var(--sl-spacing-4);
-            }
-
-            .sl-action-links {
-                gap: var(--sl-spacing-3);
             }
         }
 
@@ -2175,109 +2347,30 @@
         .sl-error-boundary.active {
             display: block;
         }
-
-        /* ---------- PREVIEW MODE OVERLAY ---------- */
-        .sl-preview-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9998;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: var(--sl-spacing-4);
-            animation: sl-fade-in 0.4s ease;
-        }
-
-        .sl-preview-overlay.active {
-            display: flex;
-        }
-
-        .sl-preview-overlay .sl-preview-content {
-            background: var(--sl-color-surface);
-            border-radius: var(--sl-radius-xl);
-            max-width: 400px;
-            width: 100%;
-            padding: var(--sl-spacing-6);
-            border: 2px solid var(--sl-color-primary);
-            text-align: center;
-            box-shadow: var(--sl-shadow-lg);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-icon {
-            font-size: 48px;
-            margin-bottom: var(--sl-spacing-3);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-title {
-            font-size: var(--sl-font-size-xl);
-            font-weight: var(--sl-font-weight-bold);
-            color: var(--sl-color-text-primary);
-            margin-bottom: var(--sl-spacing-2);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-desc {
-            font-size: var(--sl-font-size-sm);
-            color: var(--sl-color-text-secondary);
-            margin-bottom: var(--sl-spacing-4);
-            line-height: var(--sl-line-height-normal);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-actions {
-            display: flex;
-            gap: var(--sl-spacing-3);
-            justify-content: center;
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-actions button {
-            padding: var(--sl-spacing-2) var(--sl-spacing-5);
-            border-radius: var(--sl-radius-md);
-            border: none;
-            font-family: var(--sl-font-primary);
-            font-size: var(--sl-font-size-md);
-            font-weight: var(--sl-font-weight-bold);
-            cursor: pointer;
-            transition: var(--sl-transition-all);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-actions .sl-btn-login {
-            background: var(--sl-color-primary);
-            color: #fff;
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-actions .sl-btn-login:hover {
-            background: var(--sl-color-primary-hover);
-            transform: scale(1.02);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-actions .sl-btn-close {
-            background: var(--sl-color-surface);
-            color: var(--sl-color-text-secondary);
-            border: 1px solid var(--sl-color-border);
-        }
-
-        .sl-preview-overlay .sl-preview-content .sl-preview-actions .sl-btn-close:hover {
-            background: var(--sl-color-card);
-            color: var(--sl-color-text-primary);
-        }
     </style>
 </head>
 <body>
 
+    <!-- ==================== SPLASH SCREEN ==================== -->
+    <div id="sl-splash">
+        <div class="sl-splash-logo">🚨</div>
+        <div class="sl-splash-sub">SALINK — Emergency Social Platform</div>
+        <div class="sl-splash-loader"></div>
+        <div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-top:var(--sl-spacing-2);">Loading...</div>
+    </div>
+
     <!-- ==================== PREVIEW MODE OVERLAY ==================== -->
-    <div class="sl-preview-overlay" id="sl-preview-overlay">
-        <div class="sl-preview-content">
-            <div class="sl-preview-icon">🔐</div>
+    <div id="sl-preview-overlay">
+        <div class="sl-preview-card">
+            <div class="sl-preview-icon">👀</div>
             <div class="sl-preview-title">Mode Preview</div>
             <div class="sl-preview-desc">
-                Anda sedang melihat <strong>SALINK</strong> dalam mode baca. <br />
-                Untuk berinteraksi dan mengakses semua fitur, silakan masuk terlebih dahulu.
+                Anda sedang melihat dashboard dalam mode baca.<br />
+                <strong>Login</strong> untuk berinteraksi penuh.
             </div>
-            <div class="sl-preview-actions">
-                <button class="sl-btn-login" id="sl-preview-login">Masuk Sekarang</button>
-                <button class="sl-btn-close" id="sl-preview-close">Tutup</button>
+            <div class="sl-preview-buttons">
+                <button class="sl-preview-btn-secondary" id="sl-preview-cancel">Kembali</button>
+                <button class="sl-preview-btn-primary" id="sl-preview-login">Masuk Sekarang</button>
             </div>
         </div>
     </div>
@@ -2288,9 +2381,9 @@
             <div class="sl-hologram-overlay-icon" id="sl-hologram-icon">🚨</div>
             <div class="sl-hologram-overlay-title" id="sl-hologram-title">⚠️ DARURAT</div>
             <div class="sl-hologram-overlay-desc" id="sl-hologram-desc">Ada laporan darurat baru!</div>
-            <div class="sl-hologram-overlay-actions">
-                <button class="sl-btn-detail" id="sl-hologram-detail">Lihat Detail</button>
-                <button class="sl-btn-close" id="sl-hologram-close">Tutup</button>
+            <div style="display:flex;gap:var(--sl-spacing-3);justify-content:center;margin-top:var(--sl-spacing-3);">
+                <button class="sl-post-composer-submit" id="sl-hologram-detail" style="flex:1;">Lihat Detail</button>
+                <button class="sl-post-composer-submit" id="sl-hologram-close" style="flex:1;background:var(--sl-color-danger);">Tutup</button>
             </div>
             <div class="sl-hologram-overlay-swipe">
                 <span>👈 Usap ke kanan untuk mematikan alarm</span>
@@ -2346,11 +2439,9 @@
             </div>
         </main>
 
-        <!-- FOOTER WRAPPER (di atas bottom nav) -->
-        <div class="sl-footer-wrapper">
-            <div class="sl-footer-text" id="sl-footer-text">
-                <span class="sl-footer-copyright">SALINK — Emergency Social Platform © 2026 Powered by. TeslaSmart</span>
-            </div>
+        <!-- FOOTER TEXT (dipindahkan ke atas bottom nav) -->
+        <div class="sl-footer-text" id="sl-footer-text">
+            SALINK - Emergency Social Platform © 2026 Powered by. TeslaSmart
         </div>
 
         <!-- BOTTOM NAVIGATION -->
@@ -2377,7 +2468,6 @@
                 <span class="sl-nav-label">Profil</span>
             </a>
         </nav>
-
     </div>
 
     <!-- ==================== SIDEBAR ==================== -->
@@ -2440,9 +2530,9 @@
     <!-- ==================== TOAST ==================== -->
     <div class="sl-toast-container" id="sl-toast-container"></div>
 
-    <!-- ================================================================ -->
-    <!-- JAVASCRIPT — Full Implementation                                    -->
-    <!-- ================================================================ -->
+    <!-- ============================================================
+         ALL JAVASCRIPT IN ONE
+         ============================================================ -->
     <script>
         (function() {
             'use strict';
@@ -2468,34 +2558,43 @@
                         .disaster }
             };
 
-            const SOCIAL_LINKS = {
-                facebook: 'https://www.facebook.com/share/ZZZ7RYBWbxiF7S1t/?mibextid=qi2Omg',
-                tiktok: 'https://www.tiktok.com/@kang_l.01?_r=1&_t=ZS-97atOlBoJjM',
-                youtube: 'https://www.youtube.com/channel/UCqWjymCh1tyLa50nyn687PA',
-                portfolio: 'https://bio-data-pi-three.vercel.app/'
-            };
-
-            const CONTACT_LINKS = {
-                about: 'tentang-kami.html',
-                privacy: 'kebijakan.html',
-                terms: 'syarat.html',
-                whatsapp: 'https://wa.me/message/L3VQRRSNN7JAP1'
-            };
-
             // ==================== STATE ====================
             const STATE = {
                 theme: 'dark',
                 currentWorkspace: 'home',
                 isReady: false,
                 isLoggedIn: false,
-                user: null,
+                isPreview: true,
+                user: {
+                    id: 'usr-001',
+                    name: 'Pengguna',
+                    avatar: '👤',
+                    bio: 'Pengguna SALINK',
+                    location: 'Pamijahan, Bogor',
+                    joined: 'Januari 2025',
+                    posts: 0,
+                    followers: 0,
+                    following: 0,
+                    trustScore: 100,
+                    verified: false,
+                    fullName: 'Pengguna',
+                    gender: 'Laki-laki',
+                    username: '@pengguna',
+                    email: 'pengguna@salink.com',
+                    phone: '081234567890',
+                    country: 'Indonesia',
+                    province: 'Jawa Barat',
+                    regency: 'Kabupaten Bogor',
+                    district: 'Pamijahan',
+                    village: 'Ciasmara',
+                    address: 'Jl. Raya Pamijahan No. 123',
+                    password: 'password123'
+                },
                 posts: [],
                 notifications: [],
                 hologramPosts: [],
                 activeEmergency: null,
-                emergencyPlaying: false,
-                isPreviewMode: true,
-                previewLocked: false
+                emergencyPlaying: false
             };
 
             // ==================== STORAGE ====================
@@ -2653,6 +2752,7 @@
                     this._bindSidebar();
                     this._bindModal();
                     this._bindKeyboard();
+                    this._bindPreview();
                     return this;
                 },
 
@@ -2677,6 +2777,11 @@
                             const ws = link.dataset.workspace;
                             const contact = link.dataset.contact;
                             if (ws) {
+                                if (STATE.isPreview && ws !== 'home' && ws !== 'about' && ws !== 'privacy' &&
+                                    ws !== 'terms' && ws !== 'contact') {
+                                    document.getElementById('sl-preview-overlay').classList.add('active');
+                                    return;
+                                }
                                 EventBus.emit('router:navigate', { workspace: ws });
                                 this.closeSidebar();
                             } else if (contact) {
@@ -2705,7 +2810,7 @@
                     }
                     if (modal) {
                         modal.addEventListener('click', (e) => {
-                            if (e.target === modal) this.closeModal());
+                            if (e.target === modal) this.closeModal();
                         });
                     }
                 },
@@ -2717,8 +2822,6 @@
                             if (this.modalOpen) this.closeModal();
                             if (AudioManager.isPlaying) AudioManager.stop();
                             document.getElementById('sl-hologram-overlay')?.classList.remove('active');
-                            document.querySelectorAll('.sl-emergency-btn').forEach(b => b.classList.remove('active'));
-                            STATE.emergencyPlaying = false;
                             document.getElementById('sl-preview-overlay')?.classList.remove('active');
                         }
                         if (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
@@ -2726,6 +2829,10 @@
                             const target = map[e.key];
                             if (target) {
                                 e.preventDefault();
+                                if (STATE.isPreview && target !== 'home') {
+                                    document.getElementById('sl-preview-overlay').classList.add('active');
+                                    return;
+                                }
                                 EventBus.emit('router:navigate', { workspace: target });
                             }
                         }
@@ -2736,7 +2843,6 @@
                         }
                     });
 
-                    // Swipe to dismiss hologram overlay (touch)
                     const overlay = document.getElementById('sl-hologram-overlay');
                     if (overlay) {
                         let startX = 0;
@@ -2750,23 +2856,44 @@
                                 AudioManager.stop();
                                 STATE.emergencyPlaying = false;
                                 document.querySelectorAll('.sl-emergency-btn').forEach(b => b.classList.remove(
-                                'active'));
+                                    'active'));
                             }
                         });
-                        // Click close button
                         document.getElementById('sl-hologram-close')?.addEventListener('click', () => {
                             overlay.classList.remove('active');
                             AudioManager.stop();
                             STATE.emergencyPlaying = false;
                             document.querySelectorAll('.sl-emergency-btn').forEach(b => b.classList.remove(
-                            'active'));
+                                'active'));
                         });
-                        // Click detail button
                         document.getElementById('sl-hologram-detail')?.addEventListener('click', () => {
                             overlay.classList.remove('active');
                             EventBus.emit('router:navigate', { workspace: 'feed' });
                         });
                     }
+                },
+
+                _bindPreview() {
+                    const overlay = document.getElementById('sl-preview-overlay');
+                    const cancelBtn = document.getElementById('sl-preview-cancel');
+                    const loginBtn = document.getElementById('sl-preview-login');
+
+                    if (cancelBtn) {
+                        cancelBtn.addEventListener('click', () => {
+                            overlay.classList.remove('active');
+                        });
+                    }
+                    if (loginBtn) {
+                        loginBtn.addEventListener('click', () => {
+                            overlay.classList.remove('active');
+                            window.location.href = 'login.html';
+                        });
+                    }
+                    overlay?.addEventListener('click', (e) => {
+                        if (e.target === overlay) {
+                            overlay.classList.remove('active');
+                        }
+                    });
                 },
 
                 toggleSidebar() {
@@ -2802,7 +2929,8 @@
                         if (footer) {
                             footerEl.innerHTML = footer;
                         } else {
-                            footerEl.innerHTML = `<button class="sl-modal-close-btn" id="sl-modal-close-btn">Tutup</button>`;
+                            footerEl.innerHTML =
+                                `<button class="sl-modal-close-btn" id="sl-modal-close-btn">Tutup</button>`;
                             document.getElementById('sl-modal-close-btn')?.addEventListener('click', () => this
                                 .closeModal());
                         }
@@ -2870,6 +2998,14 @@
 
             // ==================== RENDER FUNCTIONS ====================
 
+            // Helper to get order class
+            function orderClass(index) {
+                const orders = ['sl-order-1', 'sl-order-2', 'sl-order-3', 'sl-order-4', 'sl-order-5', 'sl-order-6',
+                    'sl-order-7', 'sl-order-8', 'sl-order-9', 'sl-order-10', 'sl-order-11', 'sl-order-12'
+                ];
+                return orders[index] || '';
+            }
+
             function renderHome() {
                 const hasHologram = STATE.hologramPosts.length > 0;
                 const latestHologram = hasHologram ? STATE.hologramPosts[STATE.hologramPosts.length - 1] : null;
@@ -2893,9 +3029,6 @@
                 let hologramHtml = '';
                 if (hasHologram && latestHologram) {
                     const badgeClass = latestHologram.type || 'fire';
-                    const mapEmbed = latestHologram.coords ?
-                        `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${latestHologram.coords}&zoom=15` :
-                        '';
                     hologramHtml = `
                         <div class="sl-hologram" data-post-id="${latestHologram.id}">
                             <div class="sl-hologram-sender">
@@ -2910,9 +3043,8 @@
                                 ${latestHologram.content || 'Laporan darurat.'}
                             </div>
                             <div class="sl-hologram-map" data-post-id="${latestHologram.id}">
-                                ${mapEmbed ? `<iframe src="${mapEmbed}" allowfullscreen loading="lazy"></iframe>` : ''}
                                 <div class="sl-map-placeholder">📍</div>
-                                <div style="font-size:var(--sl-font-size-sm);margin-top:var(--sl-spacing-1);z-index:1;pointer-events:none;position:relative;">${latestHologram.location || 'Pamijahan, Bogor'}</div>
+                                <div style="font-size:var(--sl-font-size-sm);margin-top:var(--sl-spacing-1);">${latestHologram.location || 'Pamijahan, Bogor'}</div>
                                 <div class="sl-map-coords">${latestHologram.coords || '-6.6822, 106.6789'}</div>
                                 <div class="sl-map-click">Klik untuk detail</div>
                             </div>
@@ -2943,11 +3075,11 @@
                             <div class="sl-stat-label">✅ Selesai Ditangani</div>
                         </div>
                         <div class="sl-quick-stat">
-                            <div class="sl-stat-number">${STATE.user?.followers || 0}</div>
+                            <div class="sl-stat-number">${STATE.user.followers || 0}</div>
                             <div class="sl-stat-label">🚑 Tim Siaga</div>
                         </div>
                         <div class="sl-quick-stat">
-                            <div class="sl-stat-number">${STATE.user?.trustScore || 100}%</div>
+                            <div class="sl-stat-number">${STATE.user.trustScore || 100}%</div>
                             <div class="sl-stat-label">⚡ Tingkat Respon</div>
                         </div>
                     </div>
@@ -2987,7 +3119,13 @@
                 }
                 laporanHtml += `</div></div>`;
 
-                // Grafik Statistik (dengan legend di dalam)
+                // Grafik Statistik
+                const totalReports = STATE.posts.length;
+                const fireCount = STATE.posts.filter(p => p.type === 'fire').length;
+                const medicalCount = STATE.posts.filter(p => p.type === 'medical').length;
+                const securityCount = STATE.posts.filter(p => p.type === 'security').length;
+                const disasterCount = STATE.posts.filter(p => p.type === 'disaster').length;
+
                 const grafikHtml = `
                     <div class="sl-grafik-section">
                         <div class="sl-grafik-header">
@@ -3003,13 +3141,25 @@
                             ${renderChart('bar')}
                         </div>
                         <div class="sl-grafik-legend">
-                            <span class="sl-legend-item"><span class="sl-legend-dot fire"></span> 🔥 Kebakaran (0%)</span>
-                            <span class="sl-legend-item"><span class="sl-legend-dot medical"></span> 🚑 Medis & Kematian (0%)</span>
-                            <span class="sl-legend-item"><span class="sl-legend-dot security"></span> 🚓 Kriminal (0%)</span>
-                            <span class="sl-legend-item"><span class="sl-legend-dot disaster"></span> 🌪️ Bencana (100%)</span>
+                            <div class="sl-grafik-legend-item">
+                                <span class="sl-legend-dot fire"></span>
+                                🔥 Kebakaran (${totalReports > 0 ? Math.round((fireCount / totalReports) * 100) : 0}%)
+                            </div>
+                            <div class="sl-grafik-legend-item">
+                                <span class="sl-legend-dot medical"></span>
+                                🚑 Medis & Kematian (${totalReports > 0 ? Math.round((medicalCount / totalReports) * 100) : 0}%)
+                            </div>
+                            <div class="sl-grafik-legend-item">
+                                <span class="sl-legend-dot security"></span>
+                                🚓 Kriminal (${totalReports > 0 ? Math.round((securityCount / totalReports) * 100) : 0}%)
+                            </div>
+                            <div class="sl-grafik-legend-item">
+                                <span class="sl-legend-dot disaster"></span>
+                                🌪️ Bencana (${totalReports > 0 ? Math.round((disasterCount / totalReports) * 100) : 0}%)
+                            </div>
                         </div>
-                        <div class="sl-grafik-footer">
-                            <div class="sl-grafik-data">📊 Data: Semua Wilayah (${STATE.posts.length} laporan)</div>
+                        <div class="sl-grafik-info">
+                            📊 Data: Semua Wilayah (${totalReports} laporan)
                         </div>
                         <div class="sl-grafik-search">
                             <input type="text" placeholder="🔍 Negara" id="sl-search-negara" />
@@ -3023,34 +3173,48 @@
                     </div>
                 `;
 
-                // Social Media Card
+                // Media Sosial
                 const socialHtml = `
-                    <div class="sl-social-card">
-                        <div class="sl-social-title">🔗 Ikuti Kami</div>
-                        <div class="sl-social-links">
-                            <a href="${SOCIAL_LINKS.facebook}" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
-                            <a href="${SOCIAL_LINKS.tiktok}" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
-                            <a href="${SOCIAL_LINKS.youtube}" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
-                            <a href="${SOCIAL_LINKS.portfolio}" target="_blank"><i class="fas fa-briefcase"></i> Portfolio</a>
+                    <div class="sl-social-section">
+                        <div class="sl-social-header">
+                            <div class="sl-social-title">🌐 Media Sosial</div>
+                        </div>
+                        <div class="sl-social-grid">
+                            <a href="https://www.facebook.com/share/ZZZ7RYBWbxiF7S1t/?mibextid=qi2Omg" target="_blank" class="sl-social-btn">
+                                <span class="sl-social-icon">📘</span> Facebook
+                            </a>
+                            <a href="https://www.tiktok.com/@kang_l.01?_r=1&_t=ZS-97atOlBoJjM" target="_blank" class="sl-social-btn">
+                                <span class="sl-social-icon">🎵</span> TikTok
+                            </a>
+                            <a href="https://www.youtube.com/channel/UCqWjymCh1tyLa50nyn687PA" target="_blank" class="sl-social-btn">
+                                <span class="sl-social-icon">▶️</span> YouTube
+                            </a>
+                            <a href="https://bio-data-pi-three.vercel.app/" target="_blank" class="sl-social-btn">
+                                <span class="sl-social-icon">🌐</span> Portofolio
+                            </a>
                         </div>
                     </div>
                 `;
 
-                // Footer Text Card
-                const footerTextHtml = `
-                    <div class="sl-footer-card">
-                        <div class="sl-footer-copyright">SALINK - Emergency Social Platform © 2026 Powered by. TeslaSmart</div>
-                    </div>
-                `;
-
-                // Action Links Card
+                // Tombol Aksi (About, Privacy, Terms, Contact)
                 const actionHtml = `
-                    <div class="sl-action-card">
-                        <div class="sl-action-links">
-                            <a href="${CONTACT_LINKS.about}">📋 Tentang Kami</a>
-                            <a href="${CONTACT_LINKS.privacy}">🔒 Kebijakan Privasi</a>
-                            <a href="${CONTACT_LINKS.terms}">📜 Syarat & Ketentuan</a>
-                            <a href="${CONTACT_LINKS.whatsapp}" target="_blank">📧 Kontak</a>
+                    <div class="sl-social-section" style="margin-bottom:var(--sl-spacing-4);">
+                        <div class="sl-social-header">
+                            <div class="sl-social-title">📋 Informasi</div>
+                        </div>
+                        <div class="sl-social-grid">
+                            <button class="sl-social-btn" data-workspace="about">
+                                <span class="sl-social-icon">ℹ️</span> Tentang Kami
+                            </button>
+                            <button class="sl-social-btn" data-workspace="privacy">
+                                <span class="sl-social-icon">🔒</span> Kebijakan Privasi
+                            </button>
+                            <button class="sl-social-btn" data-workspace="terms">
+                                <span class="sl-social-icon">📜</span> Syarat & Ketentuan
+                            </button>
+                            <button class="sl-social-btn" data-workspace="contact">
+                                <span class="sl-social-icon">📧</span> Contact
+                            </button>
                         </div>
                     </div>
                 `;
@@ -3058,7 +3222,7 @@
                 // Create Post
                 const createPostHtml = `
                     <div class="sl-create-post" id="sl-create-post-trigger">
-                        <div class="sl-create-post-avatar">${STATE.user?.avatar || '👤'}</div>
+                        <div class="sl-create-post-avatar">${STATE.user.avatar || '👤'}</div>
                         <div class="sl-create-post-placeholder">Apa yang ingin Anda bagikan?</div>
                     </div>
                 `;
@@ -3067,7 +3231,7 @@
                 const composerHtml = `
                     <div class="sl-post-composer" id="sl-post-composer">
                         <div class="sl-post-composer-header">
-                            <div class="sl-post-composer-avatar">${STATE.user?.avatar || '👤'}</div>
+                            <div class="sl-post-composer-avatar">${STATE.user.avatar || '👤'}</div>
                             <input class="sl-post-composer-input" id="sl-post-input" placeholder="Tulis sesuatu..." />
                         </div>
                         <div class="sl-post-composer-actions">
@@ -3113,7 +3277,7 @@
                     posts.forEach(post => {
                         const isEmergency = post.type && post.type !== 'status';
                         const emoji = isEmergency ? EMERGENCY_TYPES[post.type]?.icon || '🚨' : '';
-                        const isOwner = post.author?.id === STATE.user?.id;
+                        const isOwner = post.author?.id === STATE.user.id;
                         feedHtml += `
                             <div class="sl-post-card" data-post-id="${post.id}">
                                 <div class="sl-post-header">
@@ -3143,16 +3307,19 @@
                                     <button class="sl-post-action" data-action="share" data-post="${post.id}">
                                         ↪️ <span class="sl-action-count">${post.shares || 0}</span>
                                     </button>
-                                    ${isOwner ? `<button class="sl-post-action" data-action="delete" data-post="${post.id}" style="color:var(--sl-color-danger);margin-left:auto;">🗑️ Hapus</button>` : ''}
+                                    ${isOwner && !STATE.isPreview ? `<button class="sl-post-action" data-action="delete" data-post="${post.id}" style="color:var(--sl-color-danger);margin-left:auto;">🗑️ Hapus</button>` : ''}
+                                    ${STATE.isPreview ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);">🔒 Preview</span>` : ''}
                                 </div>
                                 <div class="sl-comment-section" id="comments-${post.id}" style="margin-top:var(--sl-spacing-3);display:none;">
                                     <div class="sl-comment-list" id="comment-list-${post.id}">
                                         ${renderComments(post.id)}
                                     </div>
+                                    ${!STATE.isPreview ? `
                                     <div style="display:flex;gap:var(--sl-spacing-2);margin-top:var(--sl-spacing-2);">
                                         <input class="sl-search-input" style="flex:1;padding:var(--sl-spacing-1) var(--sl-spacing-3);" placeholder="Tulis komentar..." id="comment-input-${post.id}" />
                                         <button class="sl-post-composer-submit" style="padding:var(--sl-spacing-1) var(--sl-spacing-3);font-size:var(--sl-font-size-sm);" data-post="${post.id}">Kirim</button>
                                     </div>
+                                    ` : `<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);text-align:center;padding:var(--sl-spacing-2);">🔒 Login untuk berkomentar</div>`}
                                 </div>
                             </div>
                         `;
@@ -3160,24 +3327,48 @@
                 }
                 feedHtml += `</div>`;
 
+                // Return all sections with proper ordering
                 return `
-                    <div style="padding-bottom:var(--sl-spacing-4);">
-                        <div class="sl-stats-card">
-                            <div class="sl-stats-card-title">🚨 SELAMAT DATANG DI SALINK</div>
-                            <div class="sl-stats-card-sub">Platform darurat berbasis komunitas. Siap membantu Anda 24/7.</div>
+                    <div style="padding-bottom:var(--sl-spacing-4);display:flex;flex-direction:column;">
+
+                        <!-- 1. Selamat Datang -->
+                        <div class="${orderClass(0)}">
+                            <div class="sl-stats-card">
+                                <div class="sl-stats-card-title">🚨 SELAMAT DATANG DI SALINK</div>
+                                <div class="sl-stats-card-sub">Platform darurat berbasis komunitas. Siap membantu Anda 24/7.</div>
+                            </div>
                         </div>
 
-                        ${hologramHtml}
-                        ${emergencyGridHtml}
-                        ${quickStatsHtml}
-                        ${laporanHtml}
-                        ${createPostHtml}
-                        ${composerHtml}
-                        ${feedHtml}
-                        ${grafikHtml}
-                        ${socialHtml}
-                        ${footerTextHtml}
-                        ${actionHtml}
+                        <!-- 2. LCD/LED Hologram -->
+                        <div class="${orderClass(1)}">${hologramHtml}</div>
+
+                        <!-- 3. Emergency Grid 2x2 -->
+                        <div class="${orderClass(2)}">${emergencyGridHtml}</div>
+
+                        <!-- 4. Quick Stats (Laporan Aktif, Selesai, Tim Siaga, Tingkat Respon) -->
+                        <div class="${orderClass(3)}">${quickStatsHtml}</div>
+
+                        <!-- 5. Laporan Terkini -->
+                        <div class="${orderClass(4)}">${laporanHtml}</div>
+
+                        <!-- 6. Statistik Laporan (Grafik) -->
+                        <div class="${orderClass(5)}">${grafikHtml}</div>
+
+                        <!-- 7. Buat Postingan/Status -->
+                        <div class="${orderClass(6)}">${createPostHtml}</div>
+
+                        <!-- 8. Post Composer -->
+                        <div class="${orderClass(7)}">${composerHtml}</div>
+
+                        <!-- 9. Feed Terbaru -->
+                        <div class="${orderClass(8)}">${feedHtml}</div>
+
+                        <!-- 10. Link Media Sosial -->
+                        <div class="${orderClass(9)}">${socialHtml}</div>
+
+                        <!-- 11. Informasi (About, Privacy, Terms, Contact) -->
+                        <div class="${orderClass(10)}">${actionHtml}</div>
+
                     </div>
                 `;
             }
@@ -3231,7 +3422,7 @@
                                 <div style="color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);">${comment.content}</div>
                                 <div style="display:flex;gap:var(--sl-spacing-3);font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-top:var(--sl-spacing-1);">
                                     <span>${comment.time || 'baru saja'}</span>
-                                    <button class="sl-comment-reply-btn" style="background:none;border:none;color:var(--sl-color-primary);cursor:pointer;font-size:var(--sl-font-size-xs);" data-post="${postId}" data-comment="${comment.id}">Balas</button>
+                                    ${!STATE.isPreview ? `<button class="sl-comment-reply-btn" style="background:none;border:none;color:var(--sl-color-primary);cursor:pointer;font-size:var(--sl-font-size-xs);" data-post="${postId}" data-comment="${comment.id}">Balas</button>` : ''}
                                 </div>
                                 ${comment.replies && comment.replies.length > 0 ? `
                                     <div style="margin-left:var(--sl-spacing-4);margin-top:var(--sl-spacing-2);">
@@ -3254,23 +3445,9 @@
                 return html;
             }
 
-            // ===== RENDER STATIC PAGES =====
-            function renderStaticPage(title, content) {
-                return `
-                    <div style="padding-bottom:var(--sl-spacing-4);">
-                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
-                            ${title}
-                        </div>
-                        <div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);line-height:var(--sl-line-height-normal);">
-                            ${content}
-                        </div>
-                    </div>
-                `;
-            }
-
             // ===== RENDER BIODATA =====
             function renderBiodata() {
-                const u = STATE.user || {};
+                const u = STATE.user;
                 return `
                     <div style="padding-bottom:var(--sl-spacing-4);">
                         <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
@@ -3280,12 +3457,12 @@
                             <div style="display:flex;align-items:center;gap:var(--sl-spacing-4);margin-bottom:var(--sl-spacing-4);">
                                 <div style="font-size:48px;width:64px;height:64px;border-radius:var(--sl-radius-full);background:var(--sl-color-secondary);display:flex;align-items:center;justify-content:center;">${u.avatar || '👤'}</div>
                                 <div>
-                                    <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">${u.fullName || u.name || 'Pengguna'}</div>
+                                    <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">${u.fullName || u.name}</div>
                                     <div style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-muted);">${u.username || '@pengguna'}</div>
                                 </div>
                             </div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sl-spacing-2);">
-                                <div><strong>Nama Lengkap:</strong> ${u.fullName || u.name || '-'}</div>
+                                <div><strong>Nama Lengkap:</strong> ${u.fullName || u.name}</div>
                                 <div><strong>Jenis Kelamin:</strong> ${u.gender || '-'}</div>
                                 <div><strong>Username:</strong> ${u.username || '@pengguna'}</div>
                                 <div><strong>Email:</strong> ${u.email || '-'}</div>
@@ -3298,6 +3475,7 @@
                                 <div><strong>Alamat Lengkap:</strong> ${u.address || '-'}</div>
                                 <div><strong>Bio:</strong> ${u.bio || '-'}</div>
                                 <div><strong>Bergabung:</strong> ${u.joined || 'Januari 2025'}</div>
+                                <div><strong>Password:</strong> <span id="sl-password-display">••••••••</span> <button class="sl-toggle-eye" data-target="sl-password-display" data-password="${u.password || 'password123'}" style="background:none;border:none;color:var(--sl-color-primary);cursor:pointer;">👁️</button></div>
                             </div>
                         </div>
                     </div>
@@ -3306,7 +3484,7 @@
 
             // ===== RENDER SETTINGS =====
             function renderSettings() {
-                const u = STATE.user || {};
+                const u = STATE.user;
                 return `
                     <div style="padding-bottom:var(--sl-spacing-4);">
                         <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
@@ -3325,40 +3503,27 @@
                         <div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">
                             <div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-3);">👤 Edit Profil</div>
                             <div style="display:flex;flex-direction:column;gap:var(--sl-spacing-2);">
-                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Nama Lengkap</label><input class="sl-search-input" type="text" value="${u.fullName || u.name || ''}" id="sl-edit-fullname" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Upload Foto Profil</label><input class="sl-search-input" type="file" accept="image/*" style="padding:var(--sl-spacing-1);" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Nama Lengkap</label><input class="sl-search-input" type="text" value="${u.fullName || u.name}" id="sl-edit-fullname" /></div>
                                 <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Jenis Kelamin</label>
                                     <select class="sl-search-input" id="sl-edit-gender" style="padding:var(--sl-spacing-2);">
                                         <option value="Laki-laki" ${u.gender === 'Laki-laki' ? 'selected' : ''}>Laki-laki</option>
                                         <option value="Perempuan" ${u.gender === 'Perempuan' ? 'selected' : ''}>Perempuan</option>
                                     </select>
                                 </div>
-                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Username</label><input class="sl-search-input" type="text" value="${u.username || ''}" id="sl-edit-username" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Username</label><input class="sl-search-input" type="text" value="${u.username || '@pengguna'}" id="sl-edit-username" /></div>
                                 <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Email</label><input class="sl-search-input" type="email" value="${u.email || ''}" id="sl-edit-email" /></div>
                                 <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">No WhatsApp</label><input class="sl-search-input" type="tel" value="${u.phone || ''}" id="sl-edit-phone" /></div>
-                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Lama</label>
-                                    <div class="input-wrapper">
-                                        <input class="sl-search-input" type="password" placeholder="Masukkan password lama" id="sl-edit-oldpass" style="padding-left:12px;" />
-                                        <button type="button" class="password-toggle" onclick="togglePasswordVis('sl-edit-oldpass')" style="right:4px;">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Baru</label>
-                                    <div class="input-wrapper">
-                                        <input class="sl-search-input" type="password" placeholder="Masukkan password baru" id="sl-edit-newpass" style="padding-left:12px;" />
-                                        <button type="button" class="password-toggle" onclick="togglePasswordVis('sl-edit-newpass')" style="right:4px;">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Konfirmasi Password</label>
-                                    <div class="input-wrapper">
-                                        <input class="sl-search-input" type="password" placeholder="Konfirmasi password baru" id="sl-edit-confirmpass" style="padding-left:12px;" />
-                                        <button type="button" class="password-toggle" onclick="togglePasswordVis('sl-edit-confirmpass')" style="right:4px;">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Negara</label><input class="sl-search-input" type="text" value="${u.country || 'Indonesia'}" id="sl-edit-country" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Provinsi</label><input class="sl-search-input" type="text" value="${u.province || 'Jawa Barat'}" id="sl-edit-province" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Kabupaten/Kota</label><input class="sl-search-input" type="text" value="${u.regency || 'Kabupaten Bogor'}" id="sl-edit-regency" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Kecamatan</label><input class="sl-search-input" type="text" value="${u.district || 'Pamijahan'}" id="sl-edit-district" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Desa/Kelurahan</label><input class="sl-search-input" type="text" value="${u.village || 'Ciasmara'}" id="sl-edit-village" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Alamat Lengkap</label><input class="sl-search-input" type="text" value="${u.address || ''}" id="sl-edit-address" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Bio</label><input class="sl-search-input" type="text" value="${u.bio || ''}" id="sl-edit-bio" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Lama</label><input class="sl-search-input" type="password" placeholder="Masukkan password lama" id="sl-edit-oldpass" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Baru</label><input class="sl-search-input" type="password" placeholder="Masukkan password baru" id="sl-edit-newpass" /></div>
+                                <div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Konfirmasi Password</label><input class="sl-search-input" type="password" placeholder="Konfirmasi password baru" id="sl-edit-confirmpass" /></div>
                                 <button class="sl-post-composer-submit" id="sl-edit-save" style="margin-top:var(--sl-spacing-2);">Simpan</button>
                             </div>
                         </div>
@@ -3366,152 +3531,18 @@
                 `;
             }
 
-            // ===== RENDER MAP WORKSPACE =====
-            function renderMapWorkspace() {
+            // ===== RENDER STATIC PAGES =====
+            function renderStaticPage(title, content) {
                 return `
                     <div style="padding-bottom:var(--sl-spacing-4);">
                         <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
-                            🗺️ Peta Darurat
+                            ${title}
                         </div>
-                        <div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sl-color-text-muted);">
-                            <div style="font-size:64px;opacity:0.3;margin-bottom:var(--sl-spacing-3);">🗺️</div>
-                            <div style="font-size:var(--sl-font-size-md);">Peta Darurat</div>
-                            <div style="font-size:var(--sl-font-size-sm);">Lokasi insiden akan ditampilkan di sini</div>
-                            <div style="font-size:var(--sl-font-size-xs);margin-top:var(--sl-spacing-2);color:var(--sl-color-text-secondary);">-6.6822, 106.6789 · Pamijahan, Bogor</div>
-                            <div style="margin-top:var(--sl-spacing-4);display:flex;gap:var(--sl-spacing-2);flex-wrap:wrap;justify-content:center;">
-                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:var(--sl-color-danger);border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#fff;">🔥 Kebakaran</span>
-                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:#00BCD4;border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#fff;">🚑 Medis</span>
-                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:#FFC107;border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#333;">🚓 Kriminal</span>
-                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:#9C27B0;border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#fff;">🌪️ Bencana</span>
-                            </div>
+                        <div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);line-height:var(--sl-line-height-normal);">
+                            ${content}
                         </div>
                     </div>
                 `;
-            }
-
-            // ===== RENDER FEED WORKSPACE =====
-            function renderFeedWorkspace() {
-                let html = `
-                    <div style="padding-bottom:var(--sl-spacing-4);">
-                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
-                            📰 Feed
-                        </div>
-                        <div id="sl-feed-container">
-                `;
-                const posts = STATE.posts;
-                if (posts.length === 0) {
-                    html += `
-                        <div style="text-align:center;padding:var(--sl-spacing-6) 0;color:var(--sl-color-text-muted);">
-                            <div style="font-size:48px;opacity:0.3;margin-bottom:var(--sl-spacing-2);">📭</div>
-                            <p>Belum ada postingan.</p>
-                        </div>
-                    `;
-                } else {
-                    posts.forEach(post => {
-                        const isEmergency = post.type && post.type !== 'status';
-                        const emoji = isEmergency ? EMERGENCY_TYPES[post.type]?.icon || '🚨' : '';
-                        const isOwner = post.author?.id === STATE.user?.id;
-                        html += `
-                            <div class="sl-post-card" data-post-id="${post.id}">
-                                <div class="sl-post-header">
-                                    <div class="sl-post-avatar" data-user-id="${post.author?.id || 'unknown'}">${post.author?.avatar || '👤'}</div>
-                                    <div>
-                                        <div class="sl-post-author" data-user-id="${post.author?.id || 'unknown'}">${post.author?.name || 'Pengguna'}</div>
-                                        <div class="sl-post-time">${post.time || 'baru saja'}</div>
-                                    </div>
-                                    ${isEmergency ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-danger);font-weight:var(--sl-font-weight-bold);">${emoji} DARURAT</span>` : ''}
-                                    <div style="position:relative;">
-                                        <button class="sl-post-more-btn" data-post-id="${post.id}" style="background:none;border:none;color:var(--sl-color-text-secondary);cursor:pointer;font-size:var(--sl-font-size-lg);padding:var(--sl-spacing-1);">⋮</button>
-                                    </div>
-                                </div>
-                                <div class="sl-post-content">${isEmergency ? `<span class="sl-post-emergency-icon">${emoji}</span>` : ''} ${post.content || ''}</div>
-                                ${post.media ? `<div class="sl-post-media">${post.media}</div>` : ''}
-                                ${post.location ? `<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ${post.location}</div>` : ''}
-                                <div class="sl-post-actions">
-                                    <button class="sl-post-action" data-action="like" data-post="${post.id}">
-                                        ❤️ <span class="sl-action-count">${post.likes || 0}</span>
-                                    </button>
-                                    <button class="sl-post-action" data-action="comment" data-post="${post.id}">
-                                        💬 <span class="sl-action-count">${post.comments || 0}</span>
-                                    </button>
-                                    <button class="sl-post-action" data-action="viewer" data-post="${post.id}">
-                                        👁️ <span class="sl-action-count">${post.viewers || 0}</span>
-                                    </button>
-                                    <button class="sl-post-action" data-action="share" data-post="${post.id}">
-                                        ↪️ <span class="sl-action-count">${post.shares || 0}</span>
-                                    </button>
-                                    ${isOwner ? `<button class="sl-post-action" data-action="delete" data-post="${post.id}" style="color:var(--sl-color-danger);margin-left:auto;">🗑️ Hapus</button>` : ''}
-                                </div>
-                                <div class="sl-comment-section" id="comments-${post.id}" style="margin-top:var(--sl-spacing-3);display:none;">
-                                    <div class="sl-comment-list" id="comment-list-${post.id}">
-                                        ${renderComments(post.id)}
-                                    </div>
-                                    <div style="display:flex;gap:var(--sl-spacing-2);margin-top:var(--sl-spacing-2);">
-                                        <input class="sl-search-input" style="flex:1;padding:var(--sl-spacing-1) var(--sl-spacing-3);" placeholder="Tulis komentar..." id="comment-input-${post.id}" />
-                                        <button class="sl-post-composer-submit" style="padding:var(--sl-spacing-1) var(--sl-spacing-3);font-size:var(--sl-font-size-sm);" data-post="${post.id}">Kirim</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                html += `</div></div>`;
-                return html;
-            }
-
-            // ===== RENDER HISTORY WORKSPACE =====
-            function renderHistoryWorkspace() {
-                const userPosts = STATE.posts.filter(p => p.author?.id === STATE.user?.id);
-                let html = `
-                    <div style="padding-bottom:var(--sl-spacing-4);">
-                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
-                            📋 Riwayat Postingan
-                        </div>
-                        <div style="color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);margin-bottom:var(--sl-spacing-4);">
-                            Total ${userPosts.length} postingan
-                        </div>
-                        <div id="sl-history-container">
-                `;
-                if (userPosts.length === 0) {
-                    html += `
-                        <div style="text-align:center;padding:var(--sl-spacing-6) 0;color:var(--sl-color-text-muted);">
-                            <div style="font-size:48px;opacity:0.3;margin-bottom:var(--sl-spacing-2);">📭</div>
-                            <p>Belum ada postingan.</p>
-                        </div>
-                    `;
-                } else {
-                    userPosts.forEach(post => {
-                        const isEmergency = post.type && post.type !== 'status';
-                        const emoji = isEmergency ? EMERGENCY_TYPES[post.type]?.icon || '🚨' : '';
-                        html += `
-                            <div class="sl-post-card" data-post-id="${post.id}">
-                                <div class="sl-post-header">
-                                    <div class="sl-post-avatar">${post.author?.avatar || '👤'}</div>
-                                    <div>
-                                        <div class="sl-post-author">${post.author?.name || 'Pengguna'}</div>
-                                        <div class="sl-post-time">${post.time || 'baru saja'}</div>
-                                    </div>
-                                    ${isEmergency ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-danger);font-weight:var(--sl-font-weight-bold);">${emoji} DARURAT</span>` : ''}
-                                    <div style="position:relative;">
-                                        <button class="sl-post-more-btn" data-post-id="${post.id}" style="background:none;border:none;color:var(--sl-color-text-secondary);cursor:pointer;font-size:var(--sl-font-size-lg);padding:var(--sl-spacing-1);">⋮</button>
-                                    </div>
-                                </div>
-                                <div class="sl-post-content">${isEmergency ? `<span class="sl-post-emergency-icon">${emoji}</span>` : ''} ${post.content || ''}</div>
-                                ${post.media ? `<div class="sl-post-media">${post.media}</div>` : ''}
-                                ${post.location ? `<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ${post.location}</div>` : ''}
-                                <div class="sl-post-actions">
-                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">❤️ ${post.likes || 0}</span>
-                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">💬 ${post.comments || 0}</span>
-                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">👁️ ${post.viewers || 0}</span>
-                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">↪️ ${post.shares || 0}</span>
-                                    <button class="sl-post-action" data-action="delete" data-post="${post.id}" style="color:var(--sl-color-danger);margin-left:auto;">🗑️ Hapus</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                html += `</div></div>`;
-                return html;
             }
 
             // ==================== MAIN RENDER ====================
@@ -3566,16 +3597,24 @@
                                 content = renderSettings();
                                 break;
                             case 'about':
-                                content = renderStaticPage('ℹ️ Tentang Kami', 'SALINK adalah platform darurat berbasis komunitas yang menghubungkan masyarakat, relawan, dan instansi pemerintah dalam satu ekosistem yang cepat, aman, dan terpercaya.');
+                                content = renderStaticPage('ℹ️ Tentang Kami',
+                                    'SALINK adalah platform darurat berbasis komunitas yang menghubungkan masyarakat, relawan, dan instansi pemerintah dalam satu ekosistem yang cepat, aman, dan terpercaya.'
+                                    );
                                 break;
                             case 'privacy':
-                                content = renderStaticPage('🔒 Kebijakan Privasi', 'Kami menghargai privasi Anda. Data pribadi Anda dilindungi dan hanya digunakan untuk tujuan pelayanan darurat. Kami tidak membagikan data Anda kepada pihak ketiga tanpa izin Anda.');
+                                content = renderStaticPage('🔒 Kebijakan Privasi',
+                                    'Kami menghargai privasi Anda. Data pribadi Anda dilindungi dan hanya digunakan untuk tujuan pelayanan darurat. Kami tidak membagikan data Anda kepada pihak ketiga tanpa izin Anda.'
+                                    );
                                 break;
                             case 'terms':
-                                content = renderStaticPage('📜 Syarat & Ketentuan', 'Dengan menggunakan SALINK, Anda menyetujui untuk menggunakan platform ini dengan bertanggung jawab. Laporan palsu atau penyalahgunaan sistem dapat dikenakan sanksi sesuai ketentuan yang berlaku.');
+                                content = renderStaticPage('📜 Syarat & Ketentuan',
+                                    'Dengan menggunakan SALINK, Anda menyetujui untuk menggunakan platform ini dengan bertanggung jawab. Laporan palsu atau penyalahgunaan sistem dapat dikenakan sanksi sesuai ketentuan yang berlaku.'
+                                    );
                                 break;
                             case 'contact':
-                                content = renderStaticPage('📧 Contact', 'Hubungi kami di: support@salink.com atau melalui hotline 112 untuk keadaan darurat.');
+                                content = renderStaticPage('📧 Contact',
+                                    'Hubungi kami di: +6285218483129 (WhatsApp) atau melalui hotline 112 untuk keadaan darurat.'
+                                    );
                                 break;
                             default:
                                 throw new Error(`Workspace "${workspaceId}" tidak ditemukan`);
@@ -3585,7 +3624,6 @@
                         loader.style.display = 'none';
                         container.style.display = 'block';
 
-                        // Update navigation
                         document.querySelectorAll('.sl-nav-item').forEach(el => {
                             el.classList.toggle('active', el.dataset.workspace === workspaceId);
                         });
@@ -3593,7 +3631,6 @@
                             el.classList.toggle('active', el.dataset.workspace === workspaceId);
                         });
 
-                        // Update logo
                         const workspace = WORKSPACES[workspaceId];
                         if (workspace) {
                             document.querySelector('#sl-logo').innerHTML = `
@@ -3645,7 +3682,7 @@
                                 <span style="font-size:20px;">📍</span>
                                 <div>
                                     <div style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Lokasi Anda</div>
-                                    <div style="font-size:var(--sl-font-size-md);color:var(--sl-color-text-primary);">${STATE.user?.location || 'Pamijahan, Bogor'}</div>
+                                    <div style="font-size:var(--sl-font-size-md);color:var(--sl-color-text-primary);">${STATE.user.location || 'Pamijahan, Bogor'}</div>
                                 </div>
                             </div>
                             <div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-top:var(--sl-spacing-2);">
@@ -3657,23 +3694,195 @@
                 return html;
             }
 
+            // ===== RENDER FEED WORKSPACE =====
+            function renderFeedWorkspace() {
+                let html = `
+                    <div style="padding-bottom:var(--sl-spacing-4);">
+                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
+                            📰 Feed
+                        </div>
+                        <div id="sl-feed-container">
+                `;
+                const posts = STATE.posts;
+                if (posts.length === 0) {
+                    html += `
+                        <div style="text-align:center;padding:var(--sl-spacing-6) 0;color:var(--sl-color-text-muted);">
+                            <div style="font-size:48px;opacity:0.3;margin-bottom:var(--sl-spacing-2);">📭</div>
+                            <p>Belum ada postingan.</p>
+                        </div>
+                    `;
+                } else {
+                    posts.forEach(post => {
+                        const isEmergency = post.type && post.type !== 'status';
+                        const emoji = isEmergency ? EMERGENCY_TYPES[post.type]?.icon || '🚨' : '';
+                        const isOwner = post.author?.id === STATE.user.id;
+                        html += `
+                            <div class="sl-post-card" data-post-id="${post.id}">
+                                <div class="sl-post-header">
+                                    <div class="sl-post-avatar" data-user-id="${post.author?.id || 'unknown'}">${post.author?.avatar || '👤'}</div>
+                                    <div>
+                                        <div class="sl-post-author" data-user-id="${post.author?.id || 'unknown'}">${post.author?.name || 'Pengguna'}</div>
+                                        <div class="sl-post-time">${post.time || 'baru saja'}</div>
+                                    </div>
+                                    ${isEmergency ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-danger);font-weight:var(--sl-font-weight-bold);">${emoji} DARURAT</span>` : ''}
+                                    <div style="position:relative;">
+                                        <button class="sl-post-more-btn" data-post-id="${post.id}" style="background:none;border:none;color:var(--sl-color-text-secondary);cursor:pointer;font-size:var(--sl-font-size-lg);padding:var(--sl-spacing-1);">⋮</button>
+                                    </div>
+                                </div>
+                                <div class="sl-post-content">${isEmergency ? `<span class="sl-post-emergency-icon">${emoji}</span>` : ''} ${post.content || ''}</div>
+                                ${post.media ? `<div class="sl-post-media">${post.media}</div>` : ''}
+                                ${post.location ? `<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ${post.location}</div>` : ''}
+                                <div class="sl-post-actions">
+                                    <button class="sl-post-action" data-action="like" data-post="${post.id}">
+                                        ❤️ <span class="sl-action-count">${post.likes || 0}</span>
+                                    </button>
+                                    <button class="sl-post-action" data-action="comment" data-post="${post.id}">
+                                        💬 <span class="sl-action-count">${post.comments || 0}</span>
+                                    </button>
+                                    <button class="sl-post-action" data-action="viewer" data-post="${post.id}">
+                                        👁️ <span class="sl-action-count">${post.viewers || 0}</span>
+                                    </button>
+                                    <button class="sl-post-action" data-action="share" data-post="${post.id}">
+                                        ↪️ <span class="sl-action-count">${post.shares || 0}</span>
+                                    </button>
+                                    ${isOwner && !STATE.isPreview ? `<button class="sl-post-action" data-action="delete" data-post="${post.id}" style="color:var(--sl-color-danger);margin-left:auto;">🗑️ Hapus</button>` : ''}
+                                    ${STATE.isPreview ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);">🔒 Preview</span>` : ''}
+                                </div>
+                                <div class="sl-comment-section" id="comments-${post.id}" style="margin-top:var(--sl-spacing-3);display:none;">
+                                    <div class="sl-comment-list" id="comment-list-${post.id}">
+                                        ${renderComments(post.id)}
+                                    </div>
+                                    ${!STATE.isPreview ? `
+                                    <div style="display:flex;gap:var(--sl-spacing-2);margin-top:var(--sl-spacing-2);">
+                                        <input class="sl-search-input" style="flex:1;padding:var(--sl-spacing-1) var(--sl-spacing-3);" placeholder="Tulis komentar..." id="comment-input-${post.id}" />
+                                        <button class="sl-post-composer-submit" style="padding:var(--sl-spacing-1) var(--sl-spacing-3);font-size:var(--sl-font-size-sm);" data-post="${post.id}">Kirim</button>
+                                    </div>
+                                    ` : `<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);text-align:center;padding:var(--sl-spacing-2);">🔒 Login untuk berkomentar</div>`}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div>`;
+                return html;
+            }
+
+            // ===== RENDER HISTORY WORKSPACE =====
+            function renderHistoryWorkspace() {
+                const userPosts = STATE.posts.filter(p => p.author?.id === STATE.user.id);
+                let html = `
+                    <div style="padding-bottom:var(--sl-spacing-4);">
+                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
+                            📋 Riwayat Postingan
+                        </div>
+                        <div style="color:var(--sl-color-text-secondary);font-size:var(--sl-font-size-sm);margin-bottom:var(--sl-spacing-4);">
+                            Total ${userPosts.length} postingan
+                        </div>
+                        <div id="sl-history-container">
+                `;
+                if (userPosts.length === 0) {
+                    html += `
+                        <div style="text-align:center;padding:var(--sl-spacing-6) 0;color:var(--sl-color-text-muted);">
+                            <div style="font-size:48px;opacity:0.3;margin-bottom:var(--sl-spacing-2);">📭</div>
+                            <p>Belum ada postingan.</p>
+                        </div>
+                    `;
+                } else {
+                    userPosts.forEach(post => {
+                        const isEmergency = post.type && post.type !== 'status';
+                        const emoji = isEmergency ? EMERGENCY_TYPES[post.type]?.icon || '🚨' : '';
+                        html += `
+                            <div class="sl-post-card" data-post-id="${post.id}">
+                                <div class="sl-post-header">
+                                    <div class="sl-post-avatar">${post.author?.avatar || '👤'}</div>
+                                    <div>
+                                        <div class="sl-post-author">${post.author?.name || 'Pengguna'}</div>
+                                        <div class="sl-post-time">${post.time || 'baru saja'}</div>
+                                    </div>
+                                    ${isEmergency ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-danger);font-weight:var(--sl-font-weight-bold);">${emoji} DARURAT</span>` : ''}
+                                    <div style="position:relative;">
+                                        <button class="sl-post-more-btn" data-post-id="${post.id}" style="background:none;border:none;color:var(--sl-color-text-secondary);cursor:pointer;font-size:var(--sl-font-size-lg);padding:var(--sl-spacing-1);">⋮</button>
+                                    </div>
+                                </div>
+                                <div class="sl-post-content">${isEmergency ? `<span class="sl-post-emergency-icon">${emoji}</span>` : ''} ${post.content || ''}</div>
+                                ${post.media ? `<div class="sl-post-media">${post.media}</div>` : ''}
+                                ${post.location ? `<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ${post.location}</div>` : ''}
+                                <div class="sl-post-actions">
+                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">❤️ ${post.likes || 0}</span>
+                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">💬 ${post.comments || 0}</span>
+                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">👁️ ${post.viewers || 0}</span>
+                                    <span style="color:var(--sl-color-text-muted);font-size:var(--sl-font-size-sm);">↪️ ${post.shares || 0}</span>
+                                    ${!STATE.isPreview ? `<button class="sl-post-action" data-action="delete" data-post="${post.id}" style="color:var(--sl-color-danger);margin-left:auto;">🗑️ Hapus</button>` : ''}
+                                    ${STATE.isPreview ? `<span style="margin-left:auto;font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);">🔒 Preview</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div>`;
+                return html;
+            }
+
+            // ===== RENDER MAP WORKSPACE =====
+            function renderMapWorkspace() {
+                return `
+                    <div style="padding-bottom:var(--sl-spacing-4);">
+                        <div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">
+                            🗺️ Peta Darurat
+                        </div>
+                        <div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sl-color-text-muted);">
+                            <div style="font-size:64px;opacity:0.3;margin-bottom:var(--sl-spacing-3);">🗺️</div>
+                            <div style="font-size:var(--sl-font-size-md);">Peta Darurat</div>
+                            <div style="font-size:var(--sl-font-size-sm);">Lokasi insiden akan ditampilkan di sini</div>
+                            <div style="font-size:var(--sl-font-size-xs);margin-top:var(--sl-spacing-2);color:var(--sl-color-text-secondary);">-6.6822, 106.6789 · Pamijahan, Bogor</div>
+                            <div style="margin-top:var(--sl-spacing-4);display:flex;gap:var(--sl-spacing-2);flex-wrap:wrap;justify-content:center;">
+                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:var(--sl-color-danger);border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#fff;">🔥 Kebakaran</span>
+                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:#00BCD4;border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#fff;">🚑 Medis</span>
+                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:#FFC107;border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#333;">🚓 Kriminal</span>
+                                <span style="padding:var(--sl-spacing-1) var(--sl-spacing-3);background:#9C27B0;border-radius:var(--sl-radius-full);font-size:var(--sl-font-size-xs);color:#fff;">🌪️ Bencana</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             // ==================== BIND EVENTS ====================
             function bindWorkspaceEvents(workspaceId) {
-                // ===== PREVIEW MODE LOCK =====
-                function checkPreviewLock() {
-                    if (STATE.isPreviewMode && !STATE.isLoggedIn) {
-                        document.getElementById('sl-preview-overlay')?.classList.add('active');
-                        return true;
+                // ===== SOCIAL BUTTONS (navigate) =====
+                document.querySelectorAll('.sl-social-btn[data-workspace]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const ws = this.dataset.workspace;
+                        if (ws === 'contact') {
+                            // Contact: WhatsApp
+                            if (confirm('Apakah Anda ingin menghubungi Admin SALINK melalui WhatsApp?')) {
+                                window.location.href = 'https://wa.me/6285218483129';
+                            }
+                            return;
+                        }
+                        if (ws) {
+                            EventBus.emit('router:navigate', { workspace: ws });
+                        }
+                    });
+                });
+
+                // ===== CONTACT BUTTON in sidebar =====
+                document.querySelector('.sl-sidebar-menu a[data-workspace="contact"]')?.addEventListener('click',
+                function(e) {
+                    e.preventDefault();
+                    if (confirm('Apakah Anda ingin menghubungi Admin SALINK melalui WhatsApp?')) {
+                        window.location.href = 'https://wa.me/6285218483129';
                     }
-                    return false;
-                }
+                });
 
                 // ===== POST COMPOSER =====
                 const trigger = document.getElementById('sl-create-post-trigger');
                 const composer = document.getElementById('sl-post-composer');
                 if (trigger && composer) {
                     trigger.addEventListener('click', () => {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         composer.classList.toggle('active');
                         if (composer.classList.contains('active')) {
                             document.getElementById('sl-post-input')?.focus();
@@ -3681,7 +3890,6 @@
                     });
                 }
 
-                // Post type change — show/hide map
                 const postType = document.getElementById('sl-post-type');
                 const mapSection = document.getElementById('sl-post-composer-map');
                 if (postType && mapSection) {
@@ -3689,15 +3897,13 @@
                         const isEmergency = postType.value !== 'status';
                         mapSection.classList.toggle('active', isEmergency);
                         if (isEmergency) {
-                            document.getElementById('sl-post-input').placeholder =
-                            'Deskripsi kejadian darurat...';
+                            document.getElementById('sl-post-input').placeholder = 'Deskripsi kejadian darurat...';
                         } else {
                             document.getElementById('sl-post-input').placeholder = 'Tulis sesuatu...';
                         }
                     });
                 }
 
-                // Map link add
                 const mapAddBtn = document.getElementById('sl-map-add');
                 const mapLink = document.getElementById('sl-map-link');
                 const mapPreview = document.getElementById('sl-map-preview');
@@ -3706,7 +3912,6 @@
                 if (mapAddBtn && mapLink) {
                     mapAddBtn.addEventListener('click', () => {
                         if (mapLink.value.trim()) {
-                            if (checkPreviewLock()) return;
                             mapPreview.style.display = 'flex';
                             mapAddress.textContent = 'Lokasi ditambahkan';
                             mapCoords.textContent = '-6.6822, 106.6789';
@@ -3718,12 +3923,14 @@
                     });
                 }
 
-                // Post submit
                 const submitBtn = document.getElementById('sl-post-submit');
                 const postInput = document.getElementById('sl-post-input');
 
                 function handlePostSubmit() {
-                    if (checkPreviewLock()) return;
+                    if (STATE.isPreview) {
+                        document.getElementById('sl-preview-overlay').classList.add('active');
+                        return;
+                    }
                     if (!postInput || !postInput.value.trim()) {
                         Toast.show('Silakan tulis sesuatu terlebih dahulu', 'warning', '📝');
                         return;
@@ -3732,7 +3939,7 @@
                     const type = postType?.value || 'status';
                     const content = postInput.value.trim();
                     const isEmergency = type !== 'status';
-                    const author = STATE.user || { id: 'guest', name: 'Pengguna', avatar: '👤' };
+                    const author = STATE.user;
 
                     const post = {
                         id: 'post-' + Date.now(),
@@ -3753,7 +3960,7 @@
                     };
 
                     STATE.posts.unshift(post);
-                    if (STATE.user) STATE.user.posts = (STATE.user.posts || 0) + 1;
+                    STATE.user.posts = (STATE.user.posts || 0) + 1;
 
                     if (isEmergency) {
                         STATE.hologramPosts.push({ ...post, reportedBy: author.name });
@@ -3771,7 +3978,6 @@
                             type: 'emergency'
                         });
 
-                        // Show hologram overlay
                         const overlay = document.getElementById('sl-hologram-overlay');
                         if (overlay) {
                             document.getElementById('sl-hologram-icon').textContent = emoji;
@@ -3781,7 +3987,6 @@
                             overlay.classList.add('active');
                         }
 
-                        // Activate emergency button
                         document.querySelectorAll('.sl-emergency-btn').forEach(b => {
                             b.classList.toggle('active', b.dataset.emergency === type);
                         });
@@ -3824,6 +4029,10 @@
                     postInput.addEventListener('keydown', (e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
+                            if (STATE.isPreview) {
+                                document.getElementById('sl-preview-overlay').classList.add('active');
+                                return;
+                            }
                             handlePostSubmit();
                         }
                     });
@@ -3832,8 +4041,10 @@
                 // ===== EMERGENCY GRID BUTTONS =====
                 document.querySelectorAll('.sl-emergency-btn[data-emergency]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
-
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const type = this.dataset.emergency;
                         const config = EMERGENCY_TYPES[type];
                         if (!config) return;
@@ -3857,7 +4068,7 @@
 
                         AudioManager.playEmergency(type);
 
-                        const author = STATE.user || { id: 'guest', name: 'Pengguna', avatar: '👤' };
+                        const author = STATE.user;
                         const post = {
                             id: 'post-' + Date.now(),
                             author: author,
@@ -3877,7 +4088,7 @@
                         };
 
                         STATE.posts.unshift(post);
-                        if (STATE.user) STATE.user.posts = (STATE.user.posts || 0) + 1;
+                        STATE.user.posts = (STATE.user.posts || 0) + 1;
                         STATE.hologramPosts.push({ ...post, reportedBy: author.name });
 
                         STATE.notifications.unshift({
@@ -3890,7 +4101,6 @@
                             type: 'emergency'
                         });
 
-                        // Show hologram overlay
                         const overlay = document.getElementById('sl-hologram-overlay');
                         if (overlay) {
                             document.getElementById('sl-hologram-icon').textContent = config.icon;
@@ -3917,7 +4127,10 @@
                 // ===== LIKE =====
                 document.querySelectorAll('.sl-post-action[data-action="like"]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const postId = this.dataset.post;
                         const post = STATE.posts.find(p => p.id === postId);
                         if (post) {
@@ -3943,7 +4156,10 @@
                 // ===== COMMENT =====
                 document.querySelectorAll('.sl-post-action[data-action="comment"]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const postId = this.dataset.post;
                         const section = document.getElementById(`comments-${postId}`);
                         if (section) {
@@ -3954,7 +4170,10 @@
 
                 document.querySelectorAll('.sl-comment-submit, .sl-post-composer-submit[data-post]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const postId = this.dataset.post;
                         const input = document.getElementById(`comment-input-${postId}`);
                         if (input && input.value.trim()) {
@@ -3963,7 +4182,7 @@
                                 if (!post.commentList) post.commentList = [];
                                 post.commentList.push({
                                     id: 'cmt-' + Date.now(),
-                                    author: STATE.user || { id: 'guest', name: 'Pengguna', avatar: '👤' },
+                                    author: STATE.user,
                                     content: input.value.trim(),
                                     time: 'baru saja',
                                     replies: []
@@ -3982,44 +4201,13 @@
                     });
                 });
 
-                // ===== COMMENT REPLY =====
-                document.querySelectorAll('.sl-comment-reply-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
-                        const postId = this.dataset.post;
-                        const commentId = this.dataset.comment;
-                        const reply = prompt('Balas komentar:');
-                        if (reply && reply.trim()) {
-                            const post = STATE.posts.find(p => p.id === postId);
-                            if (post && post.commentList) {
-                                const comment = post.commentList.find(c => c.id === commentId);
-                                if (comment) {
-                                    if (!comment.replies) comment.replies = [];
-                                    comment.replies.push({
-                                        id: 'cmt-reply-' + Date.now(),
-                                        author: STATE.user || { id: 'guest', name: 'Pengguna',
-                                            avatar: '👤' },
-                                        content: reply.trim(),
-                                        time: 'baru saja'
-                                    });
-                                    post.comments = (post.comments || 0) + 1;
-                                    Toast.show('Balasan berhasil ditambahkan!', 'success', '💬');
-                                    const list = document.getElementById(`comment-list-${postId}`);
-                                    if (list) list.innerHTML = renderComments(postId);
-                                    const actionBtn = document.querySelector(
-                                        `.sl-post-action[data-action="comment"][data-post="${postId}"] .sl-action-count`
-                                        );
-                                    if (actionBtn) actionBtn.textContent = post.comments;
-                                }
-                            }
-                        }
-                    });
-                });
-
                 // ===== VIEWER =====
                 document.querySelectorAll('.sl-post-action[data-action="viewer"]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const postId = this.dataset.post;
                         const post = STATE.posts.find(p => p.id === postId);
                         if (post) {
@@ -4034,7 +4222,6 @@
                 // ===== SHARE =====
                 document.querySelectorAll('.sl-post-action[data-action="share"]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
                         const postId = this.dataset.post;
                         const post = STATE.posts.find(p => p.id === postId);
                         if (post) {
@@ -4058,11 +4245,14 @@
                 // ===== DELETE =====
                 document.querySelectorAll('.sl-post-action[data-action="delete"]').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const postId = this.dataset.post;
                         if (confirm('Apakah Anda yakin ingin menghapus postingan ini?')) {
                             STATE.posts = STATE.posts.filter(p => p.id !== postId);
-                            if (STATE.user) STATE.user.posts = STATE.user.posts - 1;
+                            STATE.user.posts = STATE.user.posts - 1;
                             renderWorkspace(workspaceId);
                             Toast.show('Postingan berhasil dihapus', 'success', '🗑️');
                         }
@@ -4072,8 +4262,11 @@
                 // ===== MORE BUTTON (Edit) =====
                 document.querySelectorAll('.sl-post-more-btn').forEach(btn => {
                     btn.addEventListener('click', function(e) {
-                        if (checkPreviewLock()) return;
                         e.stopPropagation();
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const postId = this.dataset.postId;
                         const post = STATE.posts.find(p => p.id === postId);
                         if (!post) return;
@@ -4088,16 +4281,16 @@
 
                 // ===== LAPORAN TERKINI - Lihat Semua =====
                 document.getElementById('sl-laporan-lihat-semua')?.addEventListener('click', () => {
-                    if (checkPreviewLock()) return;
                     const posts = STATE.posts;
                     let listHtml = '';
                     if (posts.length === 0) {
-                        listHtml = `<div style="text-align:center;padding:var(--sl-spacing-4) 0;color:var(--sl-color-text-muted);">Belum ada laporan</div>`;
+                        listHtml =
+                            `<div style="text-align:center;padding:var(--sl-spacing-4) 0;color:var(--sl-color-text-muted);">Belum ada laporan</div>`;
                     } else {
                         listHtml = posts.map(post => {
                             const isEmergency = post.type && post.type !== 'status';
                             const icon = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') :
-                                '📝';
+                            '📝';
                             return `
                                 <div class="sl-laporan-item" data-post-id="${post.id}" style="cursor:pointer;">
                                     <span class="sl-laporan-icon">${icon}</span>
@@ -4146,7 +4339,6 @@
                 // ===== GRAFIK TABS =====
                 document.querySelectorAll('.sl-grafik-tab').forEach(tab => {
                     tab.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
                         document.querySelectorAll('.sl-grafik-tab').forEach(t => t.classList.remove('active'));
                         this.classList.add('active');
                         const chartType = this.dataset.chart;
@@ -4159,7 +4351,6 @@
 
                 // ===== GRAFIK FILTER =====
                 document.getElementById('sl-search-filter')?.addEventListener('click', () => {
-                    if (checkPreviewLock()) return;
                     const negara = document.getElementById('sl-search-negara')?.value || '';
                     const provinsi = document.getElementById('sl-search-provinsi')?.value || '';
                     const kabupaten = document.getElementById('sl-search-kabupaten')?.value || '';
@@ -4174,7 +4365,6 @@
                 // ===== THEME OPTIONS =====
                 document.querySelectorAll('.sl-theme-option').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
                         const theme = this.dataset.theme;
                         if (theme) {
                             ThemeManager.apply(theme);
@@ -4187,33 +4377,38 @@
                 });
 
                 // ===== TOGGLE EYE (Password) =====
-                function togglePasswordVis(inputId) {
-                    const input = document.getElementById(inputId);
-                    if (!input) return;
-                    const wrapper = input.closest('.input-wrapper');
-                    if (!wrapper) return;
-                    const toggleBtn = wrapper.querySelector('.password-toggle');
-                    if (!toggleBtn) return;
-                    const icon = toggleBtn.querySelector('i');
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        if (icon) icon.className = 'fas fa-eye-slash';
-                    } else {
-                        input.type = 'password';
-                        if (icon) icon.className = 'fas fa-eye';
-                    }
-                }
-                window.togglePasswordVis = togglePasswordVis;
+                document.querySelectorAll('.sl-toggle-eye').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const targetId = this.dataset.target;
+                        const password = this.dataset.password || 'password123';
+                        const target = document.getElementById(targetId);
+                        if (target) {
+                            if (target.textContent === '••••••••') {
+                                target.textContent = password;
+                                this.textContent = '🙈';
+                            } else {
+                                target.textContent = '••••••••';
+                                this.textContent = '👁️';
+                            }
+                        }
+                    });
+                });
 
                 // ===== EDIT SAVE =====
                 document.getElementById('sl-edit-save')?.addEventListener('click', () => {
-                    if (checkPreviewLock()) return;
-                    const u = STATE.user || {};
+                    const u = STATE.user;
                     u.fullName = document.getElementById('sl-edit-fullname')?.value || u.name;
                     u.gender = document.getElementById('sl-edit-gender')?.value || u.gender;
                     u.username = document.getElementById('sl-edit-username')?.value || u.username;
                     u.email = document.getElementById('sl-edit-email')?.value || u.email;
                     u.phone = document.getElementById('sl-edit-phone')?.value || u.phone;
+                    u.country = document.getElementById('sl-edit-country')?.value || u.country;
+                    u.province = document.getElementById('sl-edit-province')?.value || u.province;
+                    u.regency = document.getElementById('sl-edit-regency')?.value || u.regency;
+                    u.district = document.getElementById('sl-edit-district')?.value || u.district;
+                    u.village = document.getElementById('sl-edit-village')?.value || u.village;
+                    u.address = document.getElementById('sl-edit-address')?.value || u.address;
+                    u.bio = document.getElementById('sl-edit-bio')?.value || u.bio;
                     const newPass = document.getElementById('sl-edit-newpass')?.value;
                     const confirmPass = document.getElementById('sl-edit-confirmpass')?.value;
                     if (newPass && confirmPass && newPass === confirmPass) {
@@ -4227,41 +4422,22 @@
                     renderWorkspace('settings');
                 });
 
-                // ===== PREVIEW OVERLAY =====
-                const previewOverlay = document.getElementById('sl-preview-overlay');
-                const previewLogin = document.getElementById('sl-preview-login');
-                const previewClose = document.getElementById('sl-preview-close');
-
-                if (previewLogin) {
-                    previewLogin.addEventListener('click', () => {
-                        previewOverlay?.classList.remove('active');
-                        window.location.href = 'login.html';
-                    });
-                }
-
-                if (previewClose) {
-                    previewClose.addEventListener('click', () => {
-                        previewOverlay?.classList.remove('active');
-                    });
-                }
-
                 // ===== LOGOUT =====
                 document.getElementById('sl-logout-btn')?.addEventListener('click', () => {
                     if (confirm('Apakah Anda yakin ingin logout?')) {
-                        localStorage.removeItem('salink_user');
-                        localStorage.removeItem('salink_logged_in');
                         STATE.isLoggedIn = false;
-                        STATE.user = null;
-                        STATE.isPreviewMode = true;
+                        STATE.isPreview = true;
                         Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
-                        window.location.href = 'dashboard.html';
+                        EventBus.emit('router:navigate', { workspace: 'home' });
+                        setTimeout(() => {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                        }, 500);
                     }
                 });
 
                 // ===== HOLOGRAM MAP CLICK =====
                 document.querySelectorAll('.sl-hologram-map').forEach(el => {
                     el.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
                         const postId = this.dataset.postId;
                         const post = STATE.hologramPosts.find(p => p.id === postId);
                         if (post) {
@@ -4285,13 +4461,12 @@
                 // ===== HOLOGRAM CLICK (to post) =====
                 document.querySelectorAll('.sl-hologram').forEach(el => {
                     el.addEventListener('click', function() {
-                        if (checkPreviewLock()) return;
                         const postId = this.dataset.postId;
                         const post = STATE.hologramPosts.find(p => p.id === postId);
                         if (post) {
                             if (!STATE.posts.find(p => p.id === postId)) {
                                 STATE.posts.unshift({ ...post });
-                                if (STATE.user) STATE.user.posts = (STATE.user.posts || 0) + 1;
+                                STATE.user.posts = (STATE.user.posts || 0) + 1;
                                 Toast.show('Laporan darurat masuk ke Feed!', 'info', '📰');
                                 renderWorkspace('home');
                             } else {
@@ -4305,7 +4480,10 @@
                 const inviteBtn = document.querySelector('.sl-nav-item[data-workspace="invite"]');
                 if (inviteBtn) {
                     inviteBtn.addEventListener('click', () => {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const users = [
                             { id: 'usr-002', name: 'Anisa Putri', avatar: '👩', status: 'Online' },
                             { id: 'usr-003', name: 'Bambang S', avatar: '👨‍🦳', status: 'Offline' },
@@ -4322,7 +4500,7 @@
                         `).join('');
 
                         Layout.openModal('📨 Undang Teman', `
-                            <input class="sl-invite-search-input" type="text" placeholder="🔍 Cari pengguna..." id="sl-invite-search" style="width:100%;padding:var(--sl-spacing-2) var(--sl-spacing-3);border-radius:var(--sl-radius-full);border:2px solid var(--sl-color-border);background:var(--sl-color-bg);color:var(--sl-color-text-primary);font-family:var(--sl-font-primary);font-size:var(--sl-font-size-md);min-height:40px;margin-bottom:var(--sl-spacing-4);" />
+                            <input class="sl-invite-search-input" type="text" placeholder="🔍 Cari pengguna..." id="sl-invite-search" />
                             <div class="sl-invite-list" id="sl-invite-list">
                                 ${listHtml}
                             </div>
@@ -4362,7 +4540,10 @@
                 const notifBtn = document.querySelector('.sl-nav-item[data-workspace="notification"]');
                 if (notifBtn) {
                     notifBtn.addEventListener('click', () => {
-                        if (checkPreviewLock()) return;
+                        if (STATE.isPreview) {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            return;
+                        }
                         const notifs = STATE.notifications;
                         let listHtml = '';
                         if (notifs.length === 0) {
@@ -4397,8 +4578,8 @@
                                     notif.read = true;
                                     updateNotificationBadge();
                                     if (notif.message && notif.message.includes('Dilaporkan oleh')) {
-                                        const name = notif.message.replace('Dilaporkan oleh ', '')
-                                            .split(' at')[0];
+                                        const name = notif.message.replace('Dilaporkan oleh ', '').split(
+                                        ' at')[0];
                                         Toast.show(`Membuka profil ${name}...`, 'info', '👤');
                                         window.location.href =
                                             `profile-user.html?name=${encodeURIComponent(name)}`;
@@ -4421,29 +4602,33 @@
                 // ===== PROFILE AVATAR CLICK =====
                 document.querySelectorAll('.sl-post-avatar, .sl-post-author').forEach(el => {
                     el.addEventListener('click', function() {
-                        if (checkPreviewLock()) {
-                            document.getElementById('sl-preview-overlay')?.classList.add('active');
-                            return;
-                        }
                         const userId = this.dataset.userId;
-                        if (userId && userId !== STATE.user?.id) {
+                        if (userId && userId !== STATE.user.id) {
                             window.location.href = `profile-user.html?id=${userId}`;
-                        } else if (userId === STATE.user?.id) {
+                        } else if (userId === STATE.user.id) {
                             window.location.href = 'profil.html';
+                        } else {
+                            if (STATE.isPreview) {
+                                document.getElementById('sl-preview-overlay').classList.add('active');
+                            } else {
+                                window.location.href = 'profil.html';
+                            }
                         }
                     });
                 });
 
-                // Preview lock for all interactive elements
-                document.querySelectorAll(
-                    '.sl-post-action, .sl-laporan-item, .sl-nav-item, .sl-sidebar-menu a, .sl-profile-avatar-header'
-                    ).forEach(el => {
-                    el.addEventListener('click', function(e) {
-                        if (STATE.isPreviewMode && !STATE.isLoggedIn) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            document.getElementById('sl-preview-overlay')?.classList.add('active');
-                        }
+                // ===== BOTTOM NAV PROFILE =====
+                document.querySelector('.sl-nav-item[data-workspace="profile"]')?.addEventListener('click', function(e) {
+                    if (STATE.isPreview) {
+                        e.preventDefault();
+                        document.getElementById('sl-preview-overlay').classList.add('active');
+                    }
+                });
+
+                // ===== ANY ACTION (data-action="login") =====
+                document.querySelectorAll('[data-action="login"]').forEach(el => {
+                    el.addEventListener('click', () => {
+                        document.getElementById('sl-preview-overlay').classList.add('active');
                     });
                 });
             }
@@ -4501,8 +4686,8 @@
 
                 document.getElementById('sl-profile-avatar')?.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if (STATE.isPreviewMode && !STATE.isLoggedIn) {
-                        document.getElementById('sl-preview-overlay')?.classList.add('active');
+                    if (STATE.isPreview) {
+                        document.getElementById('sl-preview-overlay').classList.add('active');
                         return;
                     }
                     window.location.href = 'profil.html';
@@ -4524,32 +4709,9 @@
                 console.log('[SALINK] 🚀 Initializing...');
 
                 try {
-                    // Check login status
-                    const userData = localStorage.getItem('salink_user');
-                    const isLoggedIn = localStorage.getItem('salink_logged_in') === 'true';
-
-                    if (userData && isLoggedIn) {
-                        try {
-                            STATE.user = JSON.parse(userData);
-                            STATE.isLoggedIn = true;
-                            STATE.isPreviewMode = false;
-                            console.log('[SALINK] ✅ User loaded:', STATE.user?.fullName || STATE.user?.username);
-                        } catch (e) {
-                            STATE.user = null;
-                            STATE.isLoggedIn = false;
-                            STATE.isPreviewMode = true;
-                        }
-                    } else {
-                        STATE.isPreviewMode = true;
-                        STATE.user = {
-                            id: 'guest',
-                            name: 'Preview Mode',
-                            avatar: '👤',
-                            fullName: 'Preview User',
-                            username: '@preview'
-                        };
-                        console.log('[SALINK] 🔍 Preview Mode — Login to interact');
-                    }
+                    const loggedIn = Storage.get('logged_in', false);
+                    STATE.isLoggedIn = loggedIn;
+                    STATE.isPreview = !loggedIn;
 
                     ThemeManager.init();
                     console.log('[SALINK] ✅ Theme Engine ready');
@@ -4567,29 +4729,33 @@
                     updateSystemStatus();
                     updateNotificationBadge();
 
-                    // No splash screen — langsung render workspace
+                    setTimeout(() => {
+                        document.getElementById('sl-splash')?.classList.add('hide');
+                        setTimeout(() => {
+                            document.getElementById('sl-splash')?.remove();
+                            if (!STATE.isLoggedIn) {
+                                setTimeout(() => {
+                                    document.getElementById('sl-preview-overlay').classList.add(
+                                        'active');
+                                }, 300);
+                            }
+                        }, 500);
+                    }, 1500);
+
                     const initial = Router.current;
                     renderWorkspace(initial);
 
                     STATE.isReady = true;
                     console.log('[SALINK] ✅ Application ready');
                     console.log('[SALINK] 🎉 SALINK Citizen App v1.0 ready');
-                    console.log('[SALINK] 📌 Mode:', STATE.isLoggedIn ? 'Full Mode' : 'Preview Mode');
 
                     EventBus.emit('app:ready', {
                         timestamp: new Date().toISOString(),
                         version: '1.0',
                         theme: ThemeManager.current,
                         workspace: Router.current,
-                        mode: STATE.isLoggedIn ? 'full' : 'preview'
+                        isPreview: STATE.isPreview
                     });
-
-                    // 🔥 If preview mode, show preview overlay after 1.5s
-                    if (STATE.isPreviewMode) {
-                        setTimeout(() => {
-                            document.getElementById('sl-preview-overlay')?.classList.add('active');
-                        }, 1500);
-                    }
 
                 } catch (error) {
                     console.error('[SALINK] ❌ Bootstrap error:', error);
