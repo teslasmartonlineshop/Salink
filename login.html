@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="theme-color" content="#071A2E" />
+    <meta name="description" content="SALINK — Login" />
+    <title>Login — SALINK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #071A2E;
+            color: #FFFFFF;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .sl-login-container {
+            width: 100%;
+            max-width: 400px;
+            background: #0B223D;
+            border-radius: 24px;
+            padding: 32px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .sl-login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .sl-login-header .sl-logo {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .sl-login-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .sl-login-header p {
+            font-size: 14px;
+            color: #6A8BA0;
+            margin-top: 4px;
+        }
+
+        .sl-login-tabs {
+            display: flex;
+            gap: 4px;
+            background: #071A2E;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .sl-login-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: #6A8BA0;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .sl-login-tab.active {
+            background: #00C2FF;
+            color: #FFFFFF;
+        }
+
+        .sl-login-tab:hover:not(.active) {
+            color: #B0C4DE;
+        }
+
+        .sl-form-group {
+            margin-bottom: 16px;
+        }
+
+        .sl-form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #B0C4DE;
+            margin-bottom: 4px;
+        }
+
+        .sl-form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: #071A2E;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .sl-form-group input:focus {
+            outline: none;
+            border-color: #00C2FF;
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+        }
+
+        .sl-form-group input::placeholder {
+            color: #3A5A70;
+        }
+
+        .sl-form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .sl-form-row label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6A8BA0;
+            cursor: pointer;
+        }
+
+        .sl-form-row label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #00C2FF;
+        }
+
+        .sl-form-row a {
+            font-size: 12px;
+            color: #00C2FF;
+            text-decoration: none;
+        }
+
+        .sl-form-row a:hover {
+            text-decoration: underline;
+        }
+
+        .sl-btn-login {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #00C2FF;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .sl-btn-login:hover {
+            background: #33D0FF;
+            transform: scale(1.02);
+        }
+
+        .sl-btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .sl-btn-login:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .sl-error-msg {
+            display: none;
+            background: rgba(255, 59, 48, 0.15);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #FF3B30;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .sl-error-msg.active {
+            display: block;
+        }
+
+        .sl-success-msg {
+            display: none;
+            background: rgba(0, 200, 83, 0.15);
+            border: 1px solid rgba(0, 200, 83, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #00C853;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .sl-success-msg.active {
+            display: block;
+        }
+
+        .sl-register-fields {
+            display: none;
+        }
+
+        .sl-register-fields.active {
+            display: block;
+        }
+
+        .sl-login-footer {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #6A8BA0;
+        }
+
+        .sl-login-footer a {
+            color: #00C2FF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .sl-login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .sl-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6A8BA0;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .sl-back-link:hover {
+            color: #B0C4DE;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 480px) {
+            .sl-login-container {
+                padding: 24px 16px;
+            }
+
+            .sl-login-header h1 {
+                font-size: 20px;
+            }
+
+            .sl-login-header .sl-logo {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sl-login-container">
+        <a href="dashboard.html" class="sl-back-link">← Kembali</a>
+
+        <div class="sl-login-header">
+            <div class="sl-logo">🚨</div>
+            <h1>SALINK</h1>
+            <p>Emergency Social Platform</p>
+        </div>
+
+        <div class="sl-login-tabs">
+            <button class="sl-login-tab active" data-tab="login">Login</button>
+            <button class="sl-login-tab" data-tab="register">Daftar</button>
+        </div>
+
+        <!-- Error Message -->
+        <div class="sl-error-msg" id="sl-error-msg">⚠️ <span id="sl-error-text">Terjadi kesalahan</span></div>
+
+        <!-- Success Message -->
+        <div class="sl-success-msg" id="sl-success-msg">✅ <span id="sl-success-text">Berhasil!</span></div>
+
+        <!-- LOGIN FORM -->
+        <form id="sl-login-form">
+            <div class="sl-form-group">
+                <label>Email atau Username</label>
+                <input type="text" id="sl-login-username" placeholder="Masukkan username atau email" required />
+            </div>
+            <div class="sl-form-group">
+                <label>Password</label>
+                <input type="password" id="sl-login-password" placeholder="Masukkan password" required />
+            </div>
+            <div class="sl-form-row">
+                <label><input type="checkbox" checked /> Ingat saya</label>
+                <a href="#">Lupa password?</a>
+            </div>
+            <button type="submit" class="sl-btn-login" id="sl-login-btn">Masuk</button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="sl-register-form" style="display:none;">
+            <div class="sl-form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="sl-register-name" placeholder="Masukkan nama lengkap" required />
+            </div>
+            <div class="sl-form-group">
+                <label>Username</label>
+                <input type="text" id="sl-register-username" placeholder="Pilih username" required />
+            </div>
+            <div class="sl-form-group">
+                <label>Email</label>
+                <input type="email" id="sl-register-email" placeholder="Masukkan email" required />
+            </div>
+            <div class="sl-form-group">
+                <label>No WhatsApp</label>
+                <input type="tel" id="sl-register-phone" placeholder="Masukkan nomor WhatsApp" />
+            </div>
+            <div class="sl-form-group">
+                <label>Lokasi</label>
+                <input type="text" id="sl-register-location" placeholder="Kota/Kabupaten" />
+            </div>
+            <div class="sl-form-group">
+                <label>Password</label>
+                <input type="password" id="sl-register-password" placeholder="Buat password" required />
+            </div>
+            <div class="sl-form-group">
+                <label>Konfirmasi Password</label>
+                <input type="password" id="sl-register-confirm" placeholder="Konfirmasi password" required />
+            </div>
+            <button type="submit" class="sl-btn-login" id="sl-register-btn">Daftar Sekarang</button>
+        </form>
+
+        <div class="sl-login-footer">
+            <span id="sl-toggle-text">Belum punya akun? <a href="#" id="sl-toggle-link">Daftar di sini</a></span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            const loginForm = document.getElementById('sl-login-form');
+            const registerForm = document.getElementById('sl-register-form');
+            const errorMsg = document.getElementById('sl-error-msg');
+            const errorText = document.getElementById('sl-error-text');
+            const successMsg = document.getElementById('sl-success-msg');
+            const successText = document.getElementById('sl-success-text');
+            const toggleLink = document.getElementById('sl-toggle-link');
+            const toggleText = document.getElementById('sl-toggle-text');
+            const tabs = document.querySelectorAll('.sl-login-tab');
+            const loginBtn = document.getElementById('sl-login-btn');
+            const registerBtn = document.getElementById('sl-register-btn');
+
+            let isLoginMode = true;
+
+            // ===== STORAGE HELPER =====
+            function setStorage(key, value) {
+                try {
+                    localStorage.setItem('sl_' + key, JSON.stringify(value));
+                } catch (e) {}
+            }
+
+            function getStorage(key, defaultValue = null) {
+                try {
+                    const raw = localStorage.getItem('sl_' + key);
+                    return raw ? JSON.parse(raw) : defaultValue;
+                } catch (e) {
+                    return defaultValue;
+                }
+            }
+
+            function removeStorage(key) {
+                try {
+                    localStorage.removeItem('sl_' + key);
+                } catch (e) {}
+            }
+
+            // ===== SHOW ERROR =====
+            function showError(message) {
+                errorText.textContent = message;
+                errorMsg.classList.add('active');
+                successMsg.classList.remove('active');
+                setTimeout(function() {
+                    errorMsg.classList.remove('active');
+                }, 4000);
+            }
+
+            // ===== SHOW SUCCESS =====
+            function showSuccess(message) {
+                successText.textContent = message;
+                successMsg.classList.add('active');
+                errorMsg.classList.remove('active');
+                setTimeout(function() {
+                    successMsg.classList.remove('active');
+                }, 4000);
+            }
+
+            // ===== TOGGLE TABS =====
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    tabs.forEach(function(t) { t.classList.remove('active'); });
+                    this.classList.add('active');
+
+                    const mode = this.dataset.tab;
+                    isLoginMode = (mode === 'login');
+
+                    if (isLoginMode) {
+                        loginForm.style.display = 'block';
+                        registerForm.style.display = 'none';
+                        toggleText.innerHTML = 'Belum punya akun? <a href="#" id="sl-toggle-link">Daftar di sini</a>';
+                        document.getElementById('sl-toggle-link').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.querySelector('.sl-login-tab[data-tab="register"]').click();
+                        });
+                    } else {
+                        loginForm.style.display = 'none';
+                        registerForm.style.display = 'block';
+                        toggleText.innerHTML = 'Sudah punya akun? <a href="#" id="sl-toggle-link">Login di sini</a>';
+                        document.getElementById('sl-toggle-link').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            document.querySelector('.sl-login-tab[data-tab="login"]').click();
+                        });
+                    }
+                    errorMsg.classList.remove('active');
+                    successMsg.classList.remove('active');
+                });
+            });
+
+            // ===== TOGGLE LINK =====
+            document.addEventListener('click', function(e) {
+                if (e.target.id === 'sl-toggle-link') {
+                    e.preventDefault();
+                    const nextTab = isLoginMode ? 'register' : 'login';
+                    document.querySelector('.sl-login-tab[data-tab="' + nextTab + '"]').click();
+                }
+            });
+
+            // ===== GET USERS FROM STORAGE =====
+            function getUsers() {
+                return getStorage('users', []);
+            }
+
+            function saveUsers(users) {
+                setStorage('users', users);
+            }
+
+            // ===== GET CURRENT USER =====
+            function getCurrentUser() {
+                return getStorage('current_user', null);
+            }
+
+            // ===== LOGIN =====
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const username = document.getElementById('sl-login-username').value.trim();
+                const password = document.getElementById('sl-login-password').value.trim();
+
+                if (!username || !password) {
+                    showError('Harap isi semua field!');
+                    return;
+                }
+
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Memproses...';
+
+                setTimeout(function() {
+                    const users = getUsers();
+                    const found = users.find(function(u) {
+                        return (u.username === username || u.email === username) && u.password === password;
+                    });
+
+                    if (found) {
+                        setStorage('logged_in', true);
+                        setStorage('current_user', {
+                            id: found.id || 'usr-' + Date.now(),
+                            name: found.name || found.username,
+                            username: found.username,
+                            email: found.email,
+                            avatar: found.avatar || '👤',
+                            bio: found.bio || 'Pengguna SALINK',
+                            location: found.location || 'Indonesia',
+                            joined: found.joined || new Date().toLocaleDateString('id-ID', { month: 'long',
+                                year: 'numeric' }),
+                            phone: found.phone || '',
+                            posts: found.posts || 0,
+                            followers: found.followers || 0,
+                            following: found.following || 0,
+                            trustScore: found.trustScore || 100,
+                            verified: found.verified || false
+                        });
+                        showSuccess('Login berhasil! Mengarahkan ke dashboard...');
+                        setTimeout(function() {
+                            window.location.href = 'dashboard.html';
+                        }, 500);
+                    } else {
+                        showError('Username/Email atau password salah!');
+                    }
+
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Masuk';
+                }, 500);
+            });
+
+            // ===== REGISTER =====
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const name = document.getElementById('sl-register-name').value.trim();
+                const username = document.getElementById('sl-register-username').value.trim();
+                const email = document.getElementById('sl-register-email').value.trim();
+                const phone = document.getElementById('sl-register-phone').value.trim();
+                const location = document.getElementById('sl-register-location').value.trim();
+                const password = document.getElementById('sl-register-password').value;
+                const confirm = document.getElementById('sl-register-confirm').value;
+
+                if (!name || !username || !email || !password || !confirm) {
+                    showError('Harap isi semua field yang wajib!');
+                    return;
+                }
+
+                if (password !== confirm) {
+                    showError('Password tidak cocok!');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showError('Password minimal 6 karakter!');
+                    return;
+                }
+
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Memproses...';
+
+                setTimeout(function() {
+                    const users = getUsers();
+
+                    // Check if username exists
+                    if (users.some(function(u) { return u.username === username; })) {
+                        showError('Username sudah digunakan!');
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = 'Daftar Sekarang';
+                        return;
+                    }
+
+                    // Check if email exists
+                    if (users.some(function(u) { return u.email === email; })) {
+                        showError('Email sudah terdaftar!');
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = 'Daftar Sekarang';
+                        return;
+                    }
+
+                    // Create new user
+                    const newUser = {
+                        id: 'usr-' + Date.now(),
+                        name: name,
+                        username: username,
+                        email: email,
+                        phone: phone || '',
+                        location: location || 'Indonesia',
+                        password: password,
+                        avatar: '👤',
+                        bio: 'Pengguna SALINK',
+                        joined: new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }),
+                        posts: 0,
+                        followers: 0,
+                        following: 0,
+                        trustScore: 100,
+                        verified: false,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    users.push(newUser);
+                    saveUsers(users);
+
+                    // Auto login after register
+                    setStorage('logged_in', true);
+                    setStorage('current_user', {
+                        id: newUser.id,
+                        name: newUser.name,
+                        username: newUser.username,
+                        email: newUser.email,
+                        avatar: newUser.avatar,
+                        bio: newUser.bio,
+                        location: newUser.location,
+                        joined: newUser.joined,
+                        phone: newUser.phone,
+                        posts: newUser.posts,
+                        followers: newUser.followers,
+                        following: newUser.following,
+                        trustScore: newUser.trustScore,
+                        verified: newUser.verified
+                    });
+
+                    showSuccess('Pendaftaran berhasil! Mengarahkan ke dashboard...');
+                    setTimeout(function() {
+                        window.location.href = 'dashboard.html';
+                    }, 500);
+
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = 'Daftar Sekarang';
+                }, 500);
+            });
+
+            // ===== CHECK IF ALREADY LOGGED IN =====
+            const loggedIn = getStorage('logged_in', false);
+            if (loggedIn) {
+                window.location.href = 'dashboard.html';
+            }
+
+            // ===== ENTER KEY SUPPORT =====
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    if (isLoginMode) {
+                        loginForm.dispatchEvent(new Event('submit'));
+                    } else {
+                        registerForm.dispatchEvent(new Event('submit'));
+                    }
+                }
+            });
+
+        })();
+    </script>
+
+</body>
+</html>
