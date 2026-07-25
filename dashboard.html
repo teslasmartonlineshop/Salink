@@ -1,77 +1,67 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <!-- ==================== PWA CONFIGURATION ==================== -->
-
-<!-- Manifest -->
-<link rel="manifest" href="manifest.json" />
-
-<!-- Apple Touch Icon (iOS) -->
-<link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
-
-<!-- Maskable Icon -->
-<link rel="mask-icon" href="assets/icons/icon-192.png" color="#071A2E" />
-
-<!-- PWA Manifest Inline -->
-<script type="application/json" id="manifest-placeholder">
-{
-  "name": "SALINK - Emergency Social Platform",
-  "short_name": "SALINK",
-  "description": "Platform darurat berbasis komunitas. Siap membantu Anda 24/7.",
-  "start_url": "/index.html",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#071A2E",
-  "theme_color": "#071A2E",
-  "categories": ["social", "emergency", "communication", "productivity"],
-  "prefer_related_applications": false,
-  "icons": [
-    { "src": "assets/icons/icon-72.png", "sizes": "72x72", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
-  ]
-}
-</script>
-
-<!-- Service Worker Registration -->
-<script>
-  if ('serviceWorker' in navigator) {
-    // Register service worker
-    navigator.serviceWorker.register('/sw.js')
-      .then(function(reg) {
-        console.log('✅ Service Worker registered successfully:', reg.scope);
-      })
-      .catch(function(err) {
-        console.log('❌ Service Worker registration failed:', err);
-      });
-
-    // Listen for app install prompt
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', function(e) {
-      e.preventDefault();
-      deferredPrompt = e;
-      console.log('✅ PWA install prompt available');
-      // You can show a custom install button here
-    });
-
-    // Listen for app installed
-    window.addEventListener('appinstalled', function() {
-      console.log('✅ SALINK app installed successfully!');
-    });
-  } else {
-    console.log('⚠️ Service Workers not supported in this browser');
-  }
-</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <meta name="theme-color" content="#071A2E" />
     <meta name="description" content="SALINK — Smart Alert, Link & Integrated Notification Knowledge. Platform darurat berbasis komunitas." />
     <title>SALINK — Emergency Social Platform</title>
+
+    <!-- ==================== PWA CONFIGURATION ==================== -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+    <link rel="mask-icon" href="assets/icons/icon-192.png" color="#071A2E" />
+
+    <script type="application/json" id="manifest-placeholder">
+    {
+      "name": "SALINK - Emergency Social Platform",
+      "short_name": "SALINK",
+      "description": "Platform darurat berbasis komunitas. Siap membantu Anda 24/7.",
+      "start_url": "/index.html",
+      "display": "standalone",
+      "orientation": "portrait",
+      "background_color": "#071A2E",
+      "theme_color": "#071A2E",
+      "categories": ["social", "emergency", "communication", "productivity"],
+      "prefer_related_applications": false,
+      "icons": [
+        { "src": "assets/icons/icon-72.png", "sizes": "72x72", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+        { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+      ]
+    }
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) {
+            console.log('✅ Service Worker registered successfully:', reg.scope);
+          })
+          .catch(function(err) {
+            console.log('❌ Service Worker registration failed:', err);
+          });
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', function(e) {
+          e.preventDefault();
+          deferredPrompt = e;
+          console.log('✅ PWA install prompt available');
+        });
+
+        window.addEventListener('appinstalled', function() {
+          console.log('✅ SALINK app installed successfully!');
+        });
+      } else {
+        console.log('⚠️ Service Workers not supported in this browser');
+      }
+    </script>
 
     <style>
         /* ================================================================
@@ -137,7 +127,6 @@
             --sl-transition-all: all var(--sl-duration-normal) var(--sl-ease-default);
         }
 
-        /* ---------- THEMES ---------- */
         [data-theme="light"] {
             --sl-color-bg: #F0F4F8;
             --sl-color-surface: #FFFFFF;
@@ -166,7 +155,6 @@
             --sl-font-size-2xl: 28px;
         }
 
-        /* ---------- RESET ---------- */
         *,
         *::before,
         *::after {
@@ -1787,6 +1775,7 @@
             font-weight: var(--sl-font-weight-medium);
             cursor: pointer;
             transition: var(--sl-transition-all);
+            margin-top: var(--sl-spacing-2);
         }
 
         .sl-sidebar-footer .sl-logout-btn:hover {
@@ -1886,44 +1875,6 @@
             background: var(--sl-color-surface);
             flex-shrink: 0;
             order: 0;
-        }
-
-        /* ---------- ORDERING ---------- */
-        .sl-order-1 {
-            order: 1;
-        }
-        .sl-order-2 {
-            order: 2;
-        }
-        .sl-order-3 {
-            order: 3;
-        }
-        .sl-order-4 {
-            order: 4;
-        }
-        .sl-order-5 {
-            order: 5;
-        }
-        .sl-order-6 {
-            order: 6;
-        }
-        .sl-order-7 {
-            order: 7;
-        }
-        .sl-order-8 {
-            order: 8;
-        }
-        .sl-order-9 {
-            order: 9;
-        }
-        .sl-order-10 {
-            order: 10;
-        }
-        .sl-order-11 {
-            order: 11;
-        }
-        .sl-order-12 {
-            order: 12;
         }
 
         /* ---------- MODAL ---------- */
@@ -2027,6 +1978,72 @@
             color: var(--sl-color-text-primary);
         }
 
+        /* ---------- CUSTOM CONFIRM MODAL ---------- */
+        .sl-confirm-modal .sl-modal {
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .sl-confirm-modal .sl-modal-icon {
+            font-size: 48px;
+            margin-bottom: var(--sl-spacing-3);
+        }
+
+        .sl-confirm-modal .sl-modal-title {
+            font-size: var(--sl-font-size-lg);
+        }
+
+        .sl-confirm-modal .sl-modal-body {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-secondary);
+            margin-bottom: var(--sl-spacing-4);
+        }
+
+        .sl-confirm-modal .sl-modal-footer {
+            display: flex;
+            gap: var(--sl-spacing-2);
+            justify-content: center;
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .sl-confirm-modal .sl-modal-footer .sl-btn-call {
+            background: var(--sl-color-success);
+            color: #fff;
+            border: none;
+            padding: var(--sl-spacing-2) var(--sl-spacing-5);
+            border-radius: var(--sl-radius-md);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            font-weight: var(--sl-font-weight-medium);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-confirm-modal .sl-modal-footer .sl-btn-call:hover {
+            transform: scale(1.02);
+            box-shadow: var(--sl-shadow-sm);
+        }
+
+        .sl-confirm-modal .sl-modal-footer .sl-btn-cancel {
+            background: var(--sl-color-card);
+            color: var(--sl-color-text-secondary);
+            border: none;
+            padding: var(--sl-spacing-2) var(--sl-spacing-5);
+            border-radius: var(--sl-radius-md);
+            font-family: var(--sl-font-primary);
+            font-size: var(--sl-font-size-md);
+            font-weight: var(--sl-font-weight-medium);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+        }
+
+        .sl-confirm-modal .sl-modal-footer .sl-btn-cancel:hover {
+            background: var(--sl-color-card-hover);
+            color: var(--sl-color-text-primary);
+        }
+
         /* ---------- TOAST ---------- */
         .sl-toast-container {
             position: fixed;
@@ -2096,50 +2113,6 @@
 
         .sl-toast-close:hover {
             color: var(--sl-color-text-primary);
-        }
-
-        /* ---------- TOGGLE SWITCH ---------- */
-        .sl-toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 28px;
-            flex-shrink: 0;
-        }
-
-        .sl-toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .sl-toggle-switch .sl-toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background: var(--sl-color-text-muted);
-            border-radius: var(--sl-radius-full);
-            transition: var(--sl-transition-all);
-        }
-
-        .sl-toggle-switch .sl-toggle-slider::before {
-            content: "";
-            position: absolute;
-            height: 20px;
-            width: 20px;
-            left: 4px;
-            bottom: 4px;
-            background: #fff;
-            border-radius: 50%;
-            transition: var(--sl-transition-all);
-        }
-
-        .sl-toggle-switch input:checked+.sl-toggle-slider {
-            background: var(--sl-color-primary);
-        }
-
-        .sl-toggle-switch input:checked+.sl-toggle-slider::before {
-            transform: translateX(22px);
         }
 
         /* ---------- INVITE SEARCH ---------- */
@@ -2327,6 +2300,11 @@
             .sl-grafik-legend-item {
                 font-size: var(--sl-font-size-xs);
             }
+
+            .sl-confirm-modal .sl-modal {
+                max-width: 320px;
+                padding: var(--sl-spacing-4);
+            }
         }
 
         @media (min-width: 768px) {
@@ -2505,7 +2483,7 @@
             </div>
         </main>
 
-        <!-- FOOTER TEXT (dipindahkan ke atas bottom nav) -->
+        <!-- FOOTER TEXT -->
         <div class="sl-footer-text" id="sl-footer-text">
             SALINK - Emergency Social Platform © 2026 Powered by. TeslaSmart
         </div>
@@ -2573,9 +2551,12 @@
             <li><a data-workspace="privacy"><span class="sl-menu-icon">🔒</span> Kebijakan Privasi</a></li>
             <li><a data-workspace="terms"><span class="sl-menu-icon">📜</span> Syarat &amp; Ketentuan</a></li>
             <li><a data-workspace="contact"><span class="sl-menu-icon">📧</span> Contact</a></li>
+
+            <li class="sl-menu-divider"></li>
+
+            <li><a data-workspace="logout" id="sl-sidebar-logout"><span class="sl-menu-icon">🚪</span> Logout</a></li>
         </ul>
         <div class="sl-sidebar-footer">
-            <button class="sl-logout-btn" id="sl-logout-btn">🚪 Logout</button>
             <div class="sl-version">SALINK v1.0 Enterprise</div>
         </div>
     </aside>
@@ -2590,6 +2571,19 @@
             </div>
             <div class="sl-modal-body" id="sl-modal-body"></div>
             <div class="sl-modal-footer" id="sl-modal-footer"></div>
+        </div>
+    </div>
+
+    <!-- ==================== CONFIRM MODAL (Custom) ==================== -->
+    <div class="sl-modal-overlay sl-confirm-modal" id="sl-confirm-overlay">
+        <div class="sl-modal">
+            <div class="sl-modal-icon" id="sl-confirm-icon">📞</div>
+            <div class="sl-modal-title" id="sl-confirm-title">Konfirmasi Panggilan</div>
+            <div class="sl-modal-body" id="sl-confirm-desc">Apakah Anda ingin menghubungi nomor ini?</div>
+            <div class="sl-modal-footer" id="sl-confirm-footer">
+                <button class="sl-btn-call" id="sl-confirm-yes">✅ Ya, Hubungi</button>
+                <button class="sl-btn-cancel" id="sl-confirm-no">❌ Batal</button>
+            </div>
         </div>
     </div>
 
@@ -2611,7 +2605,8 @@
                     security: 'https://cdn.jsdelivr.net/gh/Kangeldzi/salink@main/Music/pencurian.mp3',
                     disaster: 'https://cdn.jsdelivr.net/gh/Kangeldzi/salink@main/Music/bencana_tsunami.mp3'
                 },
-                regularSound: 'https://cdn.jsdelivr.net/gh/Kangeldzi/salink@main/Music/smsblackber_4a537f155087133.mp3'
+                regularSound: 'https://cdn.jsdelivr.net/gh/Kangeldzi/salink@main/Music/smsblackber_4a537f155087133.mp3',
+                adminEmail: 'teslasmartonlineshop@gmail.com'
             };
 
             const EMERGENCY_TYPES = {
@@ -2622,6 +2617,15 @@
                         .security },
                 disaster: { label: '🌪️ Bencana Alam', icon: '🌪️', class: 'disaster', sound: CONFIG.emergencySounds
                         .disaster }
+            };
+
+            const CONTACTS = {
+                polisi: { label: 'Polisi', number: '0251-8647398', icon: '🚓' },
+                damkar: { label: 'Damkar', number: '0251-8642333', icon: '🔥' },
+                ambulance: { label: 'Ambulance', number: '119', icon: '🚑' },
+                bpbd: { label: 'BPBD', number: '021-87914800', icon: '🌋' },
+                pln: { label: 'PLN', number: '123', icon: '⚡' },
+                emergency: { label: 'Emergency 112', number: '112', icon: '🚨' }
             };
 
             // ==================== STATE ====================
@@ -2813,12 +2817,14 @@
             const Layout = {
                 sidebarOpen: false,
                 modalOpen: false,
+                confirmOpen: false,
 
                 init() {
                     this._bindSidebar();
                     this._bindModal();
                     this._bindKeyboard();
                     this._bindPreview();
+                    this._bindConfirm();
                     return this;
                 },
 
@@ -2837,11 +2843,30 @@
                     if (overlay) {
                         overlay.addEventListener('click', () => this.closeSidebar());
                     }
+
+                    // Sidebar menu items
                     sidebar?.querySelectorAll('.sl-sidebar-menu a').forEach(link => {
                         link.addEventListener('click', (e) => {
                             e.preventDefault();
                             const ws = link.dataset.workspace;
                             const contact = link.dataset.contact;
+
+                            if (ws === 'logout') {
+                                if (confirm('Apakah Anda yakin ingin logout?')) {
+                                    STATE.isLoggedIn = false;
+                                    STATE.isPreview = true;
+                                    Toast.show('Anda telah logout, kembali ke Preview Mode', 'info',
+                                        '👋');
+                                    EventBus.emit('router:navigate', { workspace: 'home' });
+                                    setTimeout(() => {
+                                        document.getElementById('sl-preview-overlay').classList.add(
+                                            'active');
+                                    }, 500);
+                                }
+                                this.closeSidebar();
+                                return;
+                            }
+
                             if (ws) {
                                 if (STATE.isPreview && ws !== 'home' && ws !== 'about' && ws !== 'privacy' &&
                                     ws !== 'terms' && ws !== 'contact') {
@@ -2851,17 +2876,17 @@
                                 EventBus.emit('router:navigate', { workspace: ws });
                                 this.closeSidebar();
                             } else if (contact) {
-                                const numbers = {
-                                    polisi: '0251-8647398',
-                                    damkar: '0251-8642333',
-                                    ambulance: '119',
-                                    bpbd: '021-87914800',
-                                    pln: '123',
-                                    emergency: '112'
-                                };
-                                const num = numbers[contact] || '112';
-                                if (confirm(`Apakah Anda ingin menghubungi ${contact.toUpperCase()} di ${num}?`)) {
-                                    window.location.href = `tel:${num}`;
+                                const contactData = CONTACTS[contact];
+                                if (contactData) {
+                                    this.showConfirmDialog(
+                                        `📞 ${contactData.label}`,
+                                        `Apakah Anda ingin menghubungi ${contactData.label} di <strong>${contactData.number}</strong>?`,
+                                        contactData.icon,
+                                        () => {
+                                            window.location.href = `tel:${contactData.number}`;
+                                        }
+                                    );
+                                    this.closeSidebar();
                                 }
                             }
                         });
@@ -2881,11 +2906,41 @@
                     }
                 },
 
+                _bindConfirm() {
+                    const overlay = document.getElementById('sl-confirm-overlay');
+                    const yesBtn = document.getElementById('sl-confirm-yes');
+                    const noBtn = document.getElementById('sl-confirm-no');
+
+                    if (yesBtn) {
+                        yesBtn.addEventListener('click', () => {
+                            if (this._confirmCallback) {
+                                this._confirmCallback();
+                            }
+                            this.closeConfirm();
+                        });
+                    }
+                    if (noBtn) {
+                        noBtn.addEventListener('click', () => {
+                            this.closeConfirm();
+                            Toast.show('Panggilan dibatalkan', 'info', '❌');
+                        });
+                    }
+                    if (overlay) {
+                        overlay.addEventListener('click', (e) => {
+                            if (e.target === overlay) {
+                                this.closeConfirm();
+                                Toast.show('Panggilan dibatalkan', 'info', '❌');
+                            }
+                        });
+                    }
+                },
+
                 _bindKeyboard() {
                     document.addEventListener('keydown', (e) => {
                         if (e.key === 'Escape') {
                             if (this.sidebarOpen) this.closeSidebar();
                             if (this.modalOpen) this.closeModal();
+                            if (this.confirmOpen) this.closeConfirm();
                             if (AudioManager.isPlaying) AudioManager.stop();
                             document.getElementById('sl-hologram-overlay')?.classList.remove('active');
                             document.getElementById('sl-preview-overlay')?.classList.remove('active');
@@ -2960,6 +3015,30 @@
                             overlay.classList.remove('active');
                         }
                     });
+                },
+
+                showConfirmDialog(title, desc, icon = '📞', callback) {
+                    const overlay = document.getElementById('sl-confirm-overlay');
+                    const titleEl = document.getElementById('sl-confirm-title');
+                    const descEl = document.getElementById('sl-confirm-desc');
+                    const iconEl = document.getElementById('sl-confirm-icon');
+
+                    if (titleEl) titleEl.textContent = title;
+                    if (descEl) descEl.innerHTML = desc;
+                    if (iconEl) iconEl.textContent = icon || '📞';
+
+                    this._confirmCallback = callback;
+                    overlay?.classList.add('active');
+                    this.confirmOpen = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeConfirm() {
+                    const overlay = document.getElementById('sl-confirm-overlay');
+                    overlay?.classList.remove('active');
+                    this.confirmOpen = false;
+                    this._confirmCallback = null;
+                    document.body.style.overflow = '';
                 },
 
                 toggleSidebar() {
@@ -3064,7 +3143,6 @@
 
             // ==================== RENDER FUNCTIONS ====================
 
-            // Helper to get order class
             function orderClass(index) {
                 const orders = ['sl-order-1', 'sl-order-2', 'sl-order-3', 'sl-order-4', 'sl-order-5', 'sl-order-6',
                     'sl-order-7', 'sl-order-8', 'sl-order-9', 'sl-order-10', 'sl-order-11', 'sl-order-12'
@@ -3076,7 +3154,6 @@
                 const hasHologram = STATE.hologramPosts.length > 0;
                 const latestHologram = hasHologram ? STATE.hologramPosts[STATE.hologramPosts.length - 1] : null;
 
-                // Emergency grid buttons
                 let emergencyGridHtml = `
                     <div class="sl-emergency-grid">
                 `;
@@ -3091,7 +3168,6 @@
                 });
                 emergencyGridHtml += `</div>`;
 
-                // Hologram
                 let hologramHtml = '';
                 if (hasHologram && latestHologram) {
                     const badgeClass = latestHologram.type || 'fire';
@@ -3129,7 +3205,6 @@
                     `;
                 }
 
-                // Quick stats
                 const quickStatsHtml = `
                     <div class="sl-quick-stats">
                         <div class="sl-quick-stat">
@@ -3151,7 +3226,6 @@
                     </div>
                 `;
 
-                // Laporan Terkini
                 const laporanItems = STATE.posts.slice(0, 3);
                 let laporanHtml = `
                     <div class="sl-laporan-section">
@@ -3185,7 +3259,6 @@
                 }
                 laporanHtml += `</div></div>`;
 
-                // Grafik Statistik
                 const totalReports = STATE.posts.length;
                 const fireCount = STATE.posts.filter(p => p.type === 'fire').length;
                 const medicalCount = STATE.posts.filter(p => p.type === 'medical').length;
@@ -3239,7 +3312,6 @@
                     </div>
                 `;
 
-                // Media Sosial
                 const socialHtml = `
                     <div class="sl-social-section">
                         <div class="sl-social-header">
@@ -3262,7 +3334,6 @@
                     </div>
                 `;
 
-                // Tombol Aksi (About, Privacy, Terms, Contact)
                 const actionHtml = `
                     <div class="sl-social-section" style="margin-bottom:var(--sl-spacing-4);">
                         <div class="sl-social-header">
@@ -3285,7 +3356,6 @@
                     </div>
                 `;
 
-                // Create Post
                 const createPostHtml = `
                     <div class="sl-create-post" id="sl-create-post-trigger">
                         <div class="sl-create-post-avatar">${STATE.user.avatar || '👤'}</div>
@@ -3293,7 +3363,6 @@
                     </div>
                 `;
 
-                // Post Composer
                 const composerHtml = `
                     <div class="sl-post-composer" id="sl-post-composer">
                         <div class="sl-post-composer-header">
@@ -3323,7 +3392,6 @@
                     </div>
                 `;
 
-                // Feed
                 let feedHtml = `
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sl-spacing-3);">
                         <div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">📰 Feed Terbaru</div>
@@ -3393,48 +3461,24 @@
                 }
                 feedHtml += `</div>`;
 
-                // Return all sections with proper ordering
                 return `
                     <div style="padding-bottom:var(--sl-spacing-4);display:flex;flex-direction:column;">
-
-                        <!-- 1. Selamat Datang -->
                         <div class="${orderClass(0)}">
                             <div class="sl-stats-card">
                                 <div class="sl-stats-card-title">🚨 SELAMAT DATANG DI SALINK</div>
                                 <div class="sl-stats-card-sub">Platform darurat berbasis komunitas. Siap membantu Anda 24/7.</div>
                             </div>
                         </div>
-
-                        <!-- 2. LCD/LED Hologram -->
                         <div class="${orderClass(1)}">${hologramHtml}</div>
-
-                        <!-- 3. Emergency Grid 2x2 -->
                         <div class="${orderClass(2)}">${emergencyGridHtml}</div>
-
-                        <!-- 4. Quick Stats (Laporan Aktif, Selesai, Tim Siaga, Tingkat Respon) -->
                         <div class="${orderClass(3)}">${quickStatsHtml}</div>
-
-                        <!-- 5. Laporan Terkini -->
                         <div class="${orderClass(4)}">${laporanHtml}</div>
-
-                        <!-- 6. Statistik Laporan (Grafik) -->
                         <div class="${orderClass(5)}">${grafikHtml}</div>
-
-                        <!-- 7. Buat Postingan/Status -->
                         <div class="${orderClass(6)}">${createPostHtml}</div>
-
-                        <!-- 8. Post Composer -->
                         <div class="${orderClass(7)}">${composerHtml}</div>
-
-                        <!-- 9. Feed Terbaru -->
                         <div class="${orderClass(8)}">${feedHtml}</div>
-
-                        <!-- 10. Link Media Sosial -->
                         <div class="${orderClass(9)}">${socialHtml}</div>
-
-                        <!-- 11. Informasi (About, Privacy, Terms, Contact) -->
                         <div class="${orderClass(10)}">${actionHtml}</div>
-
                     </div>
                 `;
             }
@@ -3679,7 +3723,7 @@
                                 break;
                             case 'contact':
                                 content = renderStaticPage('📧 Contact',
-                                    'Hubungi kami di: +6285218483129 (WhatsApp) atau melalui hotline 112 untuk keadaan darurat.'
+                                    `Hubungi kami di: <a href="mailto:${CONFIG.adminEmail}" style="color:var(--sl-color-primary);text-decoration:none;">${CONFIG.adminEmail}</a> atau melalui hotline 112 untuk keadaan darurat.`
                                     );
                                 break;
                             default:
@@ -3914,15 +3958,19 @@
 
             // ==================== BIND EVENTS ====================
             function bindWorkspaceEvents(workspaceId) {
-                // ===== SOCIAL BUTTONS (navigate) =====
+                // ===== SOCIAL BUTTONS =====
                 document.querySelectorAll('.sl-social-btn[data-workspace]').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const ws = this.dataset.workspace;
                         if (ws === 'contact') {
-                            // Contact: WhatsApp
-                            if (confirm('Apakah Anda ingin menghubungi Admin SALINK melalui WhatsApp?')) {
-                                window.location.href = 'https://wa.me/6285218483129';
-                            }
+                            Layout.showConfirmDialog(
+                                '📧 Contact Admin',
+                                `Apakah Anda ingin menghubungi Admin SALINK via Email di <strong>${CONFIG.adminEmail}</strong>?`,
+                                '📧',
+                                () => {
+                                    window.location.href = `mailto:${CONFIG.adminEmail}`;
+                                }
+                            );
                             return;
                         }
                         if (ws) {
@@ -3931,12 +3979,17 @@
                     });
                 });
 
-                // ===== CONTACT BUTTON in sidebar =====
-                document.querySelector('.sl-sidebar-menu a[data-workspace="contact"]')?.addEventListener('click',
-                function(e) {
+                // ===== SIDEBAR LOGOUT =====
+                document.getElementById('sl-sidebar-logout')?.addEventListener('click', function(e) {
                     e.preventDefault();
-                    if (confirm('Apakah Anda ingin menghubungi Admin SALINK melalui WhatsApp?')) {
-                        window.location.href = 'https://wa.me/6285218483129';
+                    if (confirm('Apakah Anda yakin ingin logout?')) {
+                        STATE.isLoggedIn = false;
+                        STATE.isPreview = true;
+                        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
+                        EventBus.emit('router:navigate', { workspace: 'home' });
+                        setTimeout(() => {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                        }, 500);
                     }
                 });
 
@@ -4345,7 +4398,7 @@
                     });
                 });
 
-                // ===== LAPORAN TERKINI - Lihat Semua =====
+                // ===== LAPORAN TERKINI =====
                 document.getElementById('sl-laporan-lihat-semua')?.addEventListener('click', () => {
                     const posts = STATE.posts;
                     let listHtml = '';
@@ -4442,7 +4495,7 @@
                     });
                 });
 
-                // ===== TOGGLE EYE (Password) =====
+                // ===== TOGGLE EYE =====
                 document.querySelectorAll('.sl-toggle-eye').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const targetId = this.dataset.target;
@@ -4488,19 +4541,6 @@
                     renderWorkspace('settings');
                 });
 
-                // ===== LOGOUT =====
-                document.getElementById('sl-logout-btn')?.addEventListener('click', () => {
-                    if (confirm('Apakah Anda yakin ingin logout?')) {
-                        STATE.isLoggedIn = false;
-                        STATE.isPreview = true;
-                        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
-                        EventBus.emit('router:navigate', { workspace: 'home' });
-                        setTimeout(() => {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
-                        }, 500);
-                    }
-                });
-
                 // ===== HOLOGRAM MAP CLICK =====
                 document.querySelectorAll('.sl-hologram-map').forEach(el => {
                     el.addEventListener('click', function() {
@@ -4524,7 +4564,7 @@
                     });
                 });
 
-                // ===== HOLOGRAM CLICK (to post) =====
+                // ===== HOLOGRAM CLICK =====
                 document.querySelectorAll('.sl-hologram').forEach(el => {
                     el.addEventListener('click', function() {
                         const postId = this.dataset.postId;
@@ -4683,7 +4723,6 @@
                     });
                 });
 
-                // ===== BOTTOM NAV PROFILE =====
                 document.querySelector('.sl-nav-item[data-workspace="profile"]')?.addEventListener('click', function(e) {
                     if (STATE.isPreview) {
                         e.preventDefault();
@@ -4691,7 +4730,6 @@
                     }
                 });
 
-                // ===== ANY ACTION (data-action="login") =====
                 document.querySelectorAll('[data-action="login"]').forEach(el => {
                     el.addEventListener('click', () => {
                         document.getElementById('sl-preview-overlay').classList.add('active');
