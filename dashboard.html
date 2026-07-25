@@ -2628,6 +2628,14 @@
                 emergency: { label: 'Emergency 112', number: '112', icon: '🚨' }
             };
 
+            // ==================== STORAGE KEYS ====================
+            const STORAGE_KEYS = {
+                LOGGED_IN: 'sl_logged_in',
+                USER: 'sl_user',
+                THEME: 'sl_theme',
+                LAST_WORKSPACE: 'sl_last_workspace'
+            };
+
             // ==================== STATE ====================
             const STATE = {
                 theme: 'dark',
@@ -2670,21 +2678,39 @@
             // ==================== STORAGE ====================
             const Storage = {
                 prefix: 'sl_',
-                set(key, value) { try { localStorage.setItem(this.prefix + key, JSON.stringify(value)); } catch (e) {} },
-                get(key, defaultValue = null) { try { const raw = localStorage.getItem(this.prefix + key); return raw ?
-                        JSON.parse(raw) : defaultValue; } catch (e) { return defaultValue; } },
-                remove(key) { try { localStorage.removeItem(this.prefix + key); } catch (e) {} }
+                set(key, value) {
+                    try {
+                        localStorage.setItem(this.prefix + key, JSON.stringify(value));
+                    } catch (e) {}
+                },
+                get(key, defaultValue = null) {
+                    try {
+                        const raw = localStorage.getItem(this.prefix + key);
+                        return raw ? JSON.parse(raw) : defaultValue;
+                    } catch (e) { return defaultValue; }
+                },
+                remove(key) {
+                    try { localStorage.removeItem(this.prefix + key); } catch (e) {}
+                }
             };
 
             // ==================== EVENT BUS ====================
             const EventBus = {
                 listeners: {},
-                on(event, callback) { if (!this.listeners[event]) this.listeners[event] = []; this.listeners[event].push(
-                        callback); },
-                emit(event, data) { if (this.listeners[event]) { this.listeners[event].forEach(cb => { try { cb(data); }
-                            catch (e) {} }); } },
-                off(event, callback) { if (this.listeners[event]) { this.listeners[event] = this.listeners[event].filter(
-                        cb => cb !== callback); } }
+                on(event, callback) {
+                    if (!this.listeners[event]) this.listeners[event] = [];
+                    this.listeners[event].push(callback);
+                },
+                emit(event, data) {
+                    if (this.listeners[event]) {
+                        this.listeners[event].forEach(cb => { try { cb(data); } catch (e) {} });
+                    }
+                },
+                off(event, callback) {
+                    if (this.listeners[event]) {
+                        this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+                    }
+                }
             };
 
             // ==================== AUDIO MANAGER ====================
@@ -2744,7 +2770,7 @@
                 current: 'dark',
 
                 init() {
-                    const saved = Storage.get('theme', 'dark');
+                    const saved = Storage.get(STORAGE_KEYS.THEME, 'dark');
                     this.current = saved;
                     this.apply(saved);
                     return this;
@@ -2755,7 +2781,7 @@
                     const next = this.themes[(idx + 1) % this.themes.length];
                     this.apply(next);
                     this.current = next;
-                    Storage.set('theme', next);
+                    Storage.set(STORAGE_KEYS.THEME, next);
                     EventBus.emit('theme:changed', { theme: next });
                     return next;
                 },
@@ -2844,7 +2870,6 @@
                         overlay.addEventListener('click', () => this.closeSidebar());
                     }
 
-                    // Sidebar menu items
                     sidebar?.querySelectorAll('.sl-sidebar-menu a').forEach(link => {
                         link.addEventListener('click', (e) => {
                             e.preventDefault();
@@ -2852,17 +2877,7 @@
                             const contact = link.dataset.contact;
 
                             if (ws === 'logout') {
-                                if (confirm('Apakah Anda yakin ingin logout?')) {
-                                    STATE.isLoggedIn = false;
-                                    STATE.isPreview = true;
-                                    Toast.show('Anda telah logout, kembali ke Preview Mode', 'info',
-                                        '👋');
-                                    EventBus.emit('router:navigate', { workspace: 'home' });
-                                    setTimeout(() => {
-                                        document.getElementById('sl-preview-overlay').classList.add(
-                                            'active');
-                                    }, 500);
-                                }
+                                this._handleLogout();
                                 this.closeSidebar();
                                 return;
                             }
@@ -3017,6 +3032,51 @@
                     });
                 },
 
+                _handleLogout() {
+                    if (confirm('Apakah Anda yakin ingin logout?')) {
+                        // Clear login status
+                        Storage.remove(STORAGE_KEYS.LOGGED_IN);
+                        Storage.remove(STORAGE_KEYS.USER);
+                        STATE.isLoggedIn = false;
+                        STATE.isPreview = true;
+                        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
+                        EventBus.emit('router:navigate', { workspace: 'home' });
+                        // Remove user data from state
+                        STATE.user = {
+                            id: 'usr-001',
+                            name: 'Pengguna',
+                            avatar: '👤',
+                            bio: 'Pengguna SALINK',
+                            location: 'Pamijahan, Bogor',
+                            joined: 'Januari 2025',
+                            posts: 0,
+                            followers: 0,
+                            following: 0,
+                            trustScore: 100,
+                            verified: false,
+                            fullName: 'Pengguna',
+                            gender: 'Laki-laki',
+                            username: '@pengguna',
+                            email: 'pengguna@salink.com',
+                            phone: '081234567890',
+                            country: 'Indonesia',
+                            province: 'Jawa Barat',
+                            regency: 'Kabupaten Bogor',
+                            district: 'Pamijahan',
+                            village: 'Ciasmara',
+                            address: 'Jl. Raya Pamijahan No. 123',
+                            password: 'password123'
+                        };
+                        // Clear posts and notifications
+                        STATE.posts = [];
+                        STATE.notifications = [];
+                        STATE.hologramPosts = [];
+                        setTimeout(() => {
+                            document.getElementById('sl-preview-overlay').classList.add('active');
+                        }, 500);
+                    }
+                },
+
                 showConfirmDialog(title, desc, icon = '📞', callback) {
                     const overlay = document.getElementById('sl-confirm-overlay');
                     const titleEl = document.getElementById('sl-confirm-title');
@@ -3125,7 +3185,7 @@
                             this.navigate(workspace);
                         }
                     });
-                    const last = Storage.get('last_workspace', 'home');
+                    const last = Storage.get(STORAGE_KEYS.LAST_WORKSPACE, 'home');
                     const target = WORKSPACES[last] ? last : 'home';
                     this.navigate(target);
                     return this;
@@ -3133,7 +3193,7 @@
                 navigate(workspaceId) {
                     if (!WORKSPACES[workspaceId]) return;
                     this.current = workspaceId;
-                    Storage.set('last_workspace', workspaceId);
+                    Storage.set(STORAGE_KEYS.LAST_WORKSPACE, workspaceId);
                     if (window.location.hash !== `#/${workspaceId}`) {
                         window.location.hash = `#/${workspaceId}`;
                     }
@@ -3982,15 +4042,7 @@
                 // ===== SIDEBAR LOGOUT =====
                 document.getElementById('sl-sidebar-logout')?.addEventListener('click', function(e) {
                     e.preventDefault();
-                    if (confirm('Apakah Anda yakin ingin logout?')) {
-                        STATE.isLoggedIn = false;
-                        STATE.isPreview = true;
-                        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
-                        EventBus.emit('router:navigate', { workspace: 'home' });
-                        setTimeout(() => {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
-                        }, 500);
-                    }
+                    Layout._handleLogout();
                 });
 
                 // ===== POST COMPOSER =====
@@ -4488,7 +4540,7 @@
                         if (theme) {
                             ThemeManager.apply(theme);
                             ThemeManager.current = theme;
-                            Storage.set('theme', theme);
+                            Storage.set(STORAGE_KEYS.THEME, theme);
                             Toast.show(`Tema: ${theme}`, 'info', '🎨');
                             renderWorkspace('settings');
                         }
@@ -4813,9 +4865,18 @@
                 console.log('[SALINK] 🚀 Initializing...');
 
                 try {
-                    const loggedIn = Storage.get('logged_in', false);
+                    // Cek status login dari Local Storage
+                    const loggedIn = Storage.get(STORAGE_KEYS.LOGGED_IN, false);
                     STATE.isLoggedIn = loggedIn;
                     STATE.isPreview = !loggedIn;
+
+                    // Jika sudah login, load user data
+                    if (STATE.isLoggedIn) {
+                        const userData = Storage.get(STORAGE_KEYS.USER, null);
+                        if (userData) {
+                            STATE.user = { ...STATE.user, ...userData };
+                        }
+                    }
 
                     ThemeManager.init();
                     console.log('[SALINK] ✅ Theme Engine ready');
@@ -4837,6 +4898,7 @@
                         document.getElementById('sl-splash')?.classList.add('hide');
                         setTimeout(() => {
                             document.getElementById('sl-splash')?.remove();
+                            // Jika belum login, tampilkan preview overlay
                             if (!STATE.isLoggedIn) {
                                 setTimeout(() => {
                                     document.getElementById('sl-preview-overlay').classList.add(
@@ -4852,13 +4914,15 @@
                     STATE.isReady = true;
                     console.log('[SALINK] ✅ Application ready');
                     console.log('[SALINK] 🎉 SALINK Citizen App v1.0 ready');
+                    console.log('[SALINK] 📌 Login Status:', STATE.isLoggedIn ? '✅ Logged In' : '❌ Preview Mode');
 
                     EventBus.emit('app:ready', {
                         timestamp: new Date().toISOString(),
                         version: '1.0',
                         theme: ThemeManager.current,
                         workspace: Router.current,
-                        isPreview: STATE.isPreview
+                        isPreview: STATE.isPreview,
+                        isLoggedIn: STATE.isLoggedIn
                     });
 
                 } catch (error) {
@@ -4886,7 +4950,8 @@
                 Router,
                 WORKSPACES,
                 EMERGENCY_TYPES,
-                renderWorkspace
+                renderWorkspace,
+                STORAGE_KEYS
             };
 
         })();
