@@ -4809,44 +4809,67 @@
             }
 
             // ==================== BOOTSTRAP ====================
-            
             function bootstrap() {
                 console.log('[SALINK] 🚀 Initializing...');
 
                 try {
-                    // ==================== CHECK LOGIN STATUS ====================
-function checkLoginStatus() {
-    // Cek dari kedua key (kompatibilitas)
-    const loggedIn = localStorage.getItem('logged_in') === 'true' || 
-                     localStorage.getItem('salink_logged_in') === 'true';
-    const userData = localStorage.getItem('user_data') || 
-                     localStorage.getItem('salink_user');
-
-    if (loggedIn && userData) {
-        try {
-            const user = JSON.parse(userData);
-            STATE.isLoggedIn = true;
-            STATE.isPreview = false;
-            STATE.user = { ...STATE.user, ...user };
-            console.log('[SALINK] ✅ User logged in:', user.username || user.fullName);
-            return true;
-        } catch (e) {
-            console.warn('[SALINK] ⚠️ Failed to parse user data');
-            return false;
-        }
-    } else {
-        STATE.isLoggedIn = false;
-        STATE.isPreview = true;
-        console.log('[SALINK] 👀 Preview mode');
-        return false;
-    }
-}
-
-// ==================== DI DALAM BOOTSTRAP() ====================
-function bootstrap() {
-    console.log('[SALINK] 🚀 Initializing...');
-
-    try {
+                    ‎// ==================== CHECK LOGIN STATUS ====================
+‎function checkLoginStatus() {
+‎    // Cek dari kedua key (kompatibilitas)
+‎    const loggedIn = localStorage.getItem('logged_in') === 'true' || 
+‎                     localStorage.getItem('salink_logged_in') === 'true';
+‎    const userData = localStorage.getItem('user_data') || 
+‎                     localStorage.getItem('salink_user');
+‎
+‎    if (loggedIn && userData) {
+‎        try {
+‎            const user = JSON.parse(userData);
+‎            STATE.isLoggedIn = true;
+‎            STATE.isPreview = false;
+‎            STATE.user = { ...STATE.user, ...user };
+‎            console.log('[SALINK] ✅ User logged in:', user.username || user.fullName);
+‎            return true;
+‎        } catch (e) {
+‎            console.warn('[SALINK] ⚠️ Failed to parse user data');
+‎            return false;
+‎        }
+‎    } else {
+‎        STATE.isLoggedIn = false;
+‎        STATE.isPreview = true;
+‎        console.log('[SALINK] 👀 Preview mode');
+‎        return false;
+‎    }
+‎}
+‎
+‎// ==================== DI DALAM BOOTSTRAP() ====================
+‎function bootstrap() {
+‎    console.log('[SALINK] 🚀 Initializing...');
+‎
+‎    try {
+‎        // ===== CEK LOGIN STATUS DI AWAL =====
+‎        const isLoggedIn = checkLoginStatus();
+‎
+‎        ThemeManager.init();
+‎        console.log('[SALINK] ✅ Theme Engine ready');
+‎
+‎        Toast.init();
+‎        console.log('[SALINK] ✅ Toast ready');
+‎
+‎        Layout.init();
+‎        console.log('[SALINK] ✅ Layout Engine ready');
+‎
+‎        Router.init();
+‎        console.log('[SALINK] ✅ Router Engine ready');
+‎
+‎        bindGlobalEvents();
+‎        updateSystemStatus();
+‎        updateNotificationBadge();
+‎
+‎        // ===== HIDE PREVIEW IF LOGGED IN =====
+‎        if (isLoggedIn) {
+‎            document.getElementById('sl-preview-overlay')?.classList.remove('active');
+‎        }
+‎
                     const loggedIn = Storage.get('logged_in', false);
                     STATE.isLoggedIn = loggedIn;
                     STATE.isPreview = !loggedIn;
