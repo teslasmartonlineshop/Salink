@@ -7,7 +7,7 @@
     <meta name="description" content="SALINK — Smart Alert, Link & Integrated Notification Knowledge. Platform darurat berbasis komunitas." />
     <title>SALINK — Emergency Social Platform</title>
 
-    <!-- ==================== PWA CONFIGURATION ==================== -->
+    <!-- PWA CONFIGURATION -->
     <link rel="manifest" href="manifest.json" />
     <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
     <link rel="mask-icon" href="assets/icons/icon-192.png" color="#071A2E" />
@@ -70,10 +70,8 @@
       function showInstallNotification() {
         var container = document.getElementById('sl-toast-container');
         if (!container) return;
-
         var existing = document.getElementById('sl-install-notif');
         if (existing) return;
-
         var notif = document.createElement('div');
         notif.id = 'sl-install-notif';
         notif.className = 'sl-toast sl-toast-install';
@@ -89,10 +87,8 @@
         requestAnimationFrame(function() {
           notif.classList.add('show');
         });
-
         var installBtn = document.getElementById('sl-install-btn');
         var closeBtn = document.getElementById('sl-install-close');
-
         if (installBtn) {
           installBtn.addEventListener('click', function() {
             if (deferredPrompt) {
@@ -110,7 +106,6 @@
             }
           });
         }
-
         if (closeBtn) {
           closeBtn.addEventListener('click', function() {
             notif.classList.remove('show');
@@ -122,7 +117,7 @@
 
     <style>
         /* ================================================================
-           SALINK DESIGN SYSTEM — All in One
+           SALINK DESIGN SYSTEM — All in One (FULL FIX)
            ================================================================ */
 
         :root {
@@ -167,6 +162,7 @@
             --sl-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.20);
             --sl-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
             --sl-shadow-emergency: 0 0 60px rgba(255, 59, 48, 0.20);
+            --sl-shadow-glow: 0 0 40px rgba(0, 194, 255, 0.15);
             --sl-duration-fast: 150ms;
             --sl-duration-normal: 300ms;
             --sl-duration-slow: 500ms;
@@ -484,8 +480,8 @@
         }
 
         .sl-profile-avatar-header {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: var(--sl-radius-full);
             background: var(--sl-color-card);
             display: flex;
@@ -494,13 +490,21 @@
             font-size: var(--sl-font-size-lg);
             color: var(--sl-color-text-primary);
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 2px solid var(--sl-color-primary);
             transition: var(--sl-transition-all);
             text-decoration: none;
+            overflow: hidden;
         }
 
         .sl-profile-avatar-header:hover {
-            border-color: var(--sl-color-primary);
+            border-color: var(--sl-color-primary-hover);
+            transform: scale(1.05);
+        }
+
+        .sl-profile-avatar-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* ---------- SEARCH BAR ---------- */
@@ -601,6 +605,14 @@
             border: 1px solid var(--sl-color-border);
             position: relative;
             overflow: hidden;
+            transition: var(--sl-transition-all);
+            cursor: default;
+        }
+
+        .sl-stats-card:hover {
+            border-color: var(--sl-color-border-light);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-stats-card::after {
@@ -646,6 +658,8 @@
 
         .sl-hologram:hover {
             border-color: rgba(0, 194, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-glow);
         }
 
         .sl-hologram::before {
@@ -871,7 +885,7 @@
             }
         }
 
-        /* ---------- EMERGENCY GRID 2x2 ---------- */
+        /* ---------- EMERGENCY GRID 2x2 (DENGAN EFEK LENGKAP) ---------- */
         .sl-emergency-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -891,7 +905,7 @@
             background: var(--sl-color-card);
             color: var(--sl-color-text-primary);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
             font-family: var(--sl-font-primary);
             font-size: var(--sl-font-size-sm);
             font-weight: var(--sl-font-weight-bold);
@@ -914,9 +928,9 @@
         }
 
         .sl-emergency-btn:hover {
-            transform: scale(1.03);
+            transform: scale(1.05) translateY(-4px);
             border-color: var(--sl-color-border-light);
-            box-shadow: var(--sl-shadow-md);
+            box-shadow: var(--sl-shadow-lg);
         }
 
         .sl-emergency-btn:active {
@@ -925,18 +939,8 @@
 
         .sl-emergency-btn.active {
             border-color: var(--sl-color-primary);
-            box-shadow: 0 0 40px rgba(0, 194, 255, 0.15);
+            box-shadow: 0 0 40px rgba(0, 194, 255, 0.2);
             animation: sl-emergency-glow 1.5s ease-in-out infinite;
-        }
-
-        @keyframes sl-emergency-glow {
-            0%,
-            100% {
-                box-shadow: 0 0 30px rgba(0, 194, 255, 0.1);
-            }
-            50% {
-                box-shadow: 0 0 60px rgba(0, 194, 255, 0.2);
-            }
         }
 
         .sl-emergency-btn .sl-emergency-pulse {
@@ -960,6 +964,10 @@
             border-color: #FF3D00;
             background: rgba(255, 61, 0, 0.15);
         }
+        .sl-emergency-btn.fire:hover {
+            border-color: #FF3D00;
+            box-shadow: 0 0 30px rgba(255, 61, 0, 0.2);
+        }
 
         .sl-emergency-btn.medical .sl-emergency-pulse {
             border: 2px solid #00BCD4;
@@ -968,6 +976,10 @@
         .sl-emergency-btn.medical.active {
             border-color: #00BCD4;
             background: rgba(0, 188, 212, 0.15);
+        }
+        .sl-emergency-btn.medical:hover {
+            border-color: #00BCD4;
+            box-shadow: 0 0 30px rgba(0, 188, 212, 0.2);
         }
 
         .sl-emergency-btn.security .sl-emergency-pulse {
@@ -978,6 +990,10 @@
             border-color: #FFC107;
             background: rgba(255, 193, 7, 0.15);
         }
+        .sl-emergency-btn.security:hover {
+            border-color: #FFC107;
+            box-shadow: 0 0 30px rgba(255, 193, 7, 0.2);
+        }
 
         .sl-emergency-btn.disaster .sl-emergency-pulse {
             border: 2px solid #9C27B0;
@@ -986,6 +1002,45 @@
         .sl-emergency-btn.disaster.active {
             border-color: #9C27B0;
             background: rgba(156, 39, 176, 0.15);
+        }
+        .sl-emergency-btn.disaster:hover {
+            border-color: #9C27B0;
+            box-shadow: 0 0 30px rgba(156, 39, 176, 0.2);
+        }
+
+        /* Efek Floating, Zoom, Goyang saat aktif */
+        .sl-emergency-btn.active .sl-icon {
+            animation: sl-emergency-float 1.2s ease-in-out infinite, sl-emergency-zoom 1.2s ease-in-out infinite;
+        }
+
+        @keyframes sl-emergency-float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes sl-emergency-zoom {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes sl-emergency-glow {
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(0, 194, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(0, 194, 255, 0.25);
+            }
         }
 
         @keyframes sl-pulse {
@@ -1014,11 +1069,14 @@
             padding: var(--sl-spacing-2) var(--sl-spacing-1);
             text-align: center;
             border: 1px solid var(--sl-color-border);
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
+            cursor: default;
         }
 
         .sl-quick-stat:hover {
             border-color: var(--sl-color-border-light);
+            transform: translateY(-4px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-quick-stat .sl-stat-number {
@@ -1044,12 +1102,14 @@
             align-items: center;
             gap: var(--sl-spacing-3);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
         }
 
         .sl-create-post:hover {
             border-color: var(--sl-color-border-light);
             background: var(--sl-color-card-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-create-post-avatar {
@@ -1064,6 +1124,13 @@
             color: var(--sl-color-text-primary);
             flex-shrink: 0;
             font-size: var(--sl-font-size-lg);
+            overflow: hidden;
+        }
+
+        .sl-create-post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .sl-create-post-placeholder {
@@ -1105,6 +1172,13 @@
             color: var(--sl-color-text-primary);
             flex-shrink: 0;
             font-size: var(--sl-font-size-lg);
+            overflow: hidden;
+        }
+
+        .sl-post-composer-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .sl-post-composer-input {
@@ -1179,13 +1253,14 @@
             font-size: var(--sl-font-size-md);
             font-weight: var(--sl-font-weight-medium);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-spring);
             min-height: var(--sl-touch-target-min);
         }
 
         .sl-post-composer-submit:hover {
             background: var(--sl-color-primary-hover);
             transform: scale(1.02);
+            box-shadow: var(--sl-shadow-sm);
         }
 
         .sl-post-composer-map {
@@ -1241,6 +1316,48 @@
             font-family: monospace;
         }
 
+        /* Upload file */
+        .sl-upload-area {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-2);
+            padding: var(--sl-spacing-2) var(--sl-spacing-3);
+            background: var(--sl-color-surface);
+            border-radius: var(--sl-radius-md);
+            border: 2px dashed var(--sl-color-border);
+            cursor: pointer;
+            transition: var(--sl-transition-all);
+            flex: 1;
+        }
+
+        .sl-upload-area:hover {
+            border-color: var(--sl-color-primary);
+        }
+
+        .sl-upload-area input[type="file"] {
+            display: none;
+        }
+
+        .sl-upload-area .sl-upload-label {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-muted);
+        }
+
+        .sl-upload-area .sl-upload-preview {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-2);
+            flex-wrap: wrap;
+        }
+
+        .sl-upload-area .sl-upload-preview img,
+        .sl-upload-area .sl-upload-preview video {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--sl-radius-sm);
+            object-fit: cover;
+        }
+
         /* ---------- POST CARD ---------- */
         .sl-post-card {
             background: var(--sl-color-card);
@@ -1248,11 +1365,13 @@
             padding: var(--sl-spacing-4);
             border: 1px solid var(--sl-color-border);
             margin-bottom: var(--sl-spacing-4);
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
         }
 
         .sl-post-card:hover {
             border-color: var(--sl-color-border-light);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-post-header {
@@ -1276,6 +1395,13 @@
             font-size: var(--sl-font-size-lg);
             cursor: pointer;
             transition: var(--sl-transition-all);
+            overflow: hidden;
+        }
+
+        .sl-post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .sl-post-avatar:hover {
@@ -1316,6 +1442,13 @@
             justify-content: center;
             font-size: 36px;
             padding: var(--sl-spacing-3);
+        }
+
+        .sl-post-media img,
+        .sl-post-media video {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
         }
 
         .sl-post-actions {
@@ -1382,6 +1515,13 @@
             padding: var(--sl-spacing-4);
             border: 1px solid var(--sl-color-border);
             margin-bottom: var(--sl-spacing-4);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
+        }
+
+        .sl-laporan-section:hover {
+            border-color: var(--sl-color-border-light);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-laporan-header {
@@ -1461,6 +1601,13 @@
             padding: var(--sl-spacing-4);
             border: 1px solid var(--sl-color-border);
             margin-bottom: var(--sl-spacing-4);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
+        }
+
+        .sl-grafik-section:hover {
+            border-color: var(--sl-color-border-light);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-grafik-header {
@@ -1625,6 +1772,13 @@
             padding: var(--sl-spacing-4);
             border: 1px solid var(--sl-color-border);
             margin-bottom: var(--sl-spacing-4);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
+        }
+
+        .sl-social-section:hover {
+            border-color: var(--sl-color-border-light);
+            transform: translateY(-2px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-social-header {
@@ -1656,7 +1810,7 @@
             background: var(--sl-color-surface);
             color: var(--sl-color-text-secondary);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-normal) var(--sl-ease-spring);
             text-decoration: none;
             font-family: var(--sl-font-primary);
             font-size: var(--sl-font-size-sm);
@@ -1666,8 +1820,8 @@
         .sl-social-btn:hover {
             border-color: var(--sl-color-primary);
             color: var(--sl-color-text-primary);
-            transform: translateY(-2px);
-            box-shadow: var(--sl-shadow-sm);
+            transform: translateY(-4px);
+            box-shadow: var(--sl-shadow-md);
         }
 
         .sl-social-btn .sl-social-icon {
@@ -1770,7 +1924,7 @@
             border-radius: var(--sl-radius-md);
             color: var(--sl-color-text-secondary);
             text-decoration: none;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-default);
             cursor: pointer;
             font-size: var(--sl-font-size-md);
         }
@@ -1778,6 +1932,7 @@
         .sl-sidebar-menu a:hover {
             background: var(--sl-color-card);
             color: var(--sl-color-text-primary);
+            transform: translateX(4px);
         }
 
         .sl-sidebar-menu a.active {
@@ -1831,12 +1986,13 @@
             font-size: var(--sl-font-size-md);
             font-weight: var(--sl-font-weight-medium);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-spring);
             margin-top: var(--sl-spacing-2);
         }
 
         .sl-sidebar-footer .sl-logout-btn:hover {
             background: var(--sl-color-danger-hover);
+            transform: scale(1.02);
         }
 
         .sl-sidebar-footer .sl-version {
@@ -1934,6 +2090,77 @@
             order: 0;
         }
 
+        /* ---------- MODAL BIODATA (RAPIH) ---------- */
+        .sl-modal-biodata .sl-modal {
+            max-width: 580px;
+        }
+
+        .sl-modal-biodata .sl-biodata-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sl-spacing-2) var(--sl-spacing-4);
+        }
+
+        .sl-modal-biodata .sl-biodata-item {
+            padding: var(--sl-spacing-1) 0;
+            border-bottom: 1px solid var(--sl-color-border);
+        }
+
+        .sl-modal-biodata .sl-biodata-item .sl-biodata-label {
+            font-size: var(--sl-font-size-xs);
+            color: var(--sl-color-text-muted);
+            font-weight: var(--sl-font-weight-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sl-modal-biodata .sl-biodata-item .sl-biodata-value {
+            font-size: var(--sl-font-size-md);
+            color: var(--sl-color-text-primary);
+            font-weight: var(--sl-font-weight-medium);
+            margin-top: 2px;
+            word-break: break-word;
+        }
+
+        .sl-modal-biodata .sl-biodata-avatar {
+            display: flex;
+            align-items: center;
+            gap: var(--sl-spacing-4);
+            margin-bottom: var(--sl-spacing-4);
+            padding-bottom: var(--sl-spacing-4);
+            border-bottom: 2px solid var(--sl-color-border);
+        }
+
+        .sl-modal-biodata .sl-biodata-avatar .sl-avatar-large {
+            width: 72px;
+            height: 72px;
+            border-radius: var(--sl-radius-full);
+            background: var(--sl-color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid var(--sl-color-primary);
+            overflow: hidden;
+        }
+
+        .sl-modal-biodata .sl-biodata-avatar .sl-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sl-modal-biodata .sl-biodata-avatar .sl-avatar-name {
+            font-size: var(--sl-font-size-xl);
+            font-weight: var(--sl-font-weight-bold);
+            color: var(--sl-color-text-primary);
+        }
+
+        .sl-modal-biodata .sl-biodata-avatar .sl-avatar-username {
+            font-size: var(--sl-font-size-sm);
+            color: var(--sl-color-text-muted);
+        }
+
         /* ---------- MODAL ---------- */
         .sl-modal-overlay {
             position: fixed;
@@ -2027,7 +2254,7 @@
             cursor: pointer;
             font-family: var(--sl-font-primary);
             font-size: var(--sl-font-size-md);
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-default);
         }
 
         .sl-modal-footer .sl-modal-close-btn:hover {
@@ -2075,7 +2302,7 @@
             font-size: var(--sl-font-size-md);
             font-weight: var(--sl-font-weight-medium);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-spring);
         }
 
         .sl-confirm-modal .sl-modal-footer .sl-btn-call:hover {
@@ -2093,7 +2320,7 @@
             font-size: var(--sl-font-size-md);
             font-weight: var(--sl-font-weight-medium);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-default);
         }
 
         .sl-confirm-modal .sl-modal-footer .sl-btn-cancel:hover {
@@ -2186,7 +2413,7 @@
             font-size: var(--sl-font-size-sm);
             font-weight: var(--sl-font-weight-bold);
             cursor: pointer;
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-spring);
             pointer-events: auto;
         }
 
@@ -2237,6 +2464,34 @@
 
         .sl-toggle-switch input:checked+.sl-toggle-slider::before {
             transform: translateX(22px);
+        }
+
+        /* ---------- PASSWORD TOGGLE EYE ---------- */
+        .sl-password-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .sl-password-wrap input {
+            flex: 1;
+            padding-right: 44px;
+        }
+
+        .sl-password-toggle {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--sl-color-text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            padding: var(--sl-spacing-1);
+            transition: var(--sl-transition-color);
+        }
+
+        .sl-password-toggle:hover {
+            color: var(--sl-color-text-primary);
         }
 
         /* ---------- INVITE SEARCH ---------- */
@@ -2298,6 +2553,13 @@
             flex-shrink: 0;
             cursor: pointer;
             transition: var(--sl-transition-all);
+            overflow: hidden;
+        }
+
+        .sl-invite-item .sl-invite-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .sl-invite-item .sl-invite-avatar:hover {
@@ -2329,11 +2591,12 @@
             cursor: pointer;
             font-family: var(--sl-font-primary);
             font-size: var(--sl-font-size-xs);
-            transition: var(--sl-transition-all);
+            transition: all var(--sl-duration-fast) var(--sl-ease-spring);
         }
 
         .sl-invite-item .sl-invite-btn:hover {
             background: var(--sl-color-primary-hover);
+            transform: scale(1.05);
         }
 
         /* ---------- RESPONSIVE ---------- */
@@ -2438,6 +2701,15 @@
                 padding: var(--sl-spacing-2) var(--sl-spacing-3);
                 font-size: var(--sl-font-size-sm);
                 border-radius: var(--sl-radius-sm);
+            }
+
+            .sl-modal-biodata .sl-biodata-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sl-modal-biodata .sl-biodata-avatar {
+                flex-direction: column;
+                text-align: center;
             }
         }
 
@@ -2595,7 +2867,9 @@
             <div class="sl-header-right">
                 <button class="sl-icon-btn" id="sl-search-btn" aria-label="Search">🔍</button>
                 <button class="sl-icon-btn" id="sl-theme-btn" aria-label="Toggle Theme" data-theme="dark">🌙</button>
-                <a href="profil.html" class="sl-profile-avatar-header" id="sl-profile-avatar" aria-label="Profile">👤</a>
+                <a href="profil.html" class="sl-profile-avatar-header" id="sl-profile-avatar" aria-label="Profile">
+                    <span id="sl-header-avatar-text">👤</span>
+                </a>
             </div>
         </header>
 
@@ -2716,10 +2990,10 @@
     <div class="sl-modal-overlay sl-confirm-modal" id="sl-confirm-overlay">
         <div class="sl-modal">
             <div class="sl-modal-icon" id="sl-confirm-icon">📞</div>
-            <div class="sl-modal-title" id="sl-confirm-title">Konfirmasi Panggilan</div>
-            <div class="sl-modal-body" id="sl-confirm-desc">Apakah Anda ingin menghubungi nomor ini?</div>
+            <div class="sl-modal-title" id="sl-confirm-title">Konfirmasi</div>
+            <div class="sl-modal-body" id="sl-confirm-desc">Apakah Anda yakin?</div>
             <div class="sl-modal-footer" id="sl-confirm-footer">
-                <button class="sl-btn-call" id="sl-confirm-yes">✅ Ya, Hubungi</button>
+                <button class="sl-btn-call" id="sl-confirm-yes">✅ Ya</button>
                 <button class="sl-btn-cancel" id="sl-confirm-no">❌ Batal</button>
             </div>
         </div>
@@ -2966,8 +3240,8 @@
                     if (closeBtn) {
                         closeBtn.addEventListener('click', function() {
                             toast.classList.remove('show');
-                            setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); },
-                            300);
+                            setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(
+                                    toast); }, 300);
                         });
                     }
                     var timer = setTimeout(function() {
@@ -3098,14 +3372,14 @@
                     if (noBtn) {
                         noBtn.addEventListener('click', function() {
                             Layout.closeConfirm();
-                            Toast.show('Panggilan dibatalkan', 'info', '❌');
+                            Toast.show('Dibatalkan', 'info', '❌');
                         });
                     }
                     if (overlay) {
                         overlay.addEventListener('click', function(e) {
                             if (e.target === overlay) {
                                 Layout.closeConfirm();
-                                Toast.show('Panggilan dibatalkan', 'info', '❌');
+                                Toast.show('Dibatalkan', 'info', '❌');
                             }
                         });
                     }
@@ -3250,12 +3524,20 @@
                     document.body.style.overflow = '';
                 },
 
-                openModal: function(title, body, footer) {
+                openModal: function(title, body, footer, isBiodata) {
                     footer = footer || '';
                     var modal = document.getElementById('sl-modal-overlay');
                     var titleEl = document.getElementById('sl-modal-title');
                     var bodyEl = document.getElementById('sl-modal-body');
                     var footerEl = document.getElementById('sl-modal-footer');
+
+                    // Add biodata class if needed
+                    if (isBiodata) {
+                        modal.classList.add('sl-modal-biodata');
+                    } else {
+                        modal.classList.remove('sl-modal-biodata');
+                    }
+
                     if (titleEl) titleEl.textContent = title;
                     if (bodyEl) bodyEl.innerHTML = body;
                     if (footerEl) {
@@ -3335,31 +3617,10 @@
 
             // ==================== RENDER FUNCTIONS ====================
 
-            // Helper function to get element safely
             function safeGetElement(id) {
                 var el = document.getElementById(id);
                 if (!el) {
                     console.warn('[SALINK] Element not found:', id);
-                }
-                return el;
-            }
-
-            // Helper function to add event listener safely
-            function safeAddListener(id, event, callback) {
-                var el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener(event, callback);
-                    return true;
-                }
-                console.warn('[SALINK] Cannot add listener, element not found:', id);
-                return false;
-            }
-
-            // Helper function to query selector safely
-            function safeQuery(selector) {
-                var el = document.querySelector(selector);
-                if (!el) {
-                    console.warn('[SALINK] Element not found:', selector);
                 }
                 return el;
             }
@@ -3369,6 +3630,140 @@
                     'sl-order-7', 'sl-order-8', 'sl-order-9', 'sl-order-10', 'sl-order-11', 'sl-order-12'
                 ];
                 return orders[index] || '';
+            }
+
+            // ===== RENDER BIODATA (RAPIH) =====
+            function renderBiodata() {
+                var u = STATE.user;
+                var avatarDisplay = u.avatar && u.avatar !== '👤' ?
+                    '<img src="' + u.avatar + '" alt="Foto Profil" />' :
+                    '<span>' + (u.avatar || '👤') + '</span>';
+
+                return '<div style="padding-bottom:var(--sl-spacing-4);">' +
+                    '<div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">📋 Biodata</div>' +
+                    '<div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);">' +
+                    '<div class="sl-biodata-avatar">' +
+                    '<div class="sl-avatar-large">' + avatarDisplay + '</div>' +
+                    '<div>' +
+                    '<div class="sl-avatar-name">' + (u.fullName || u.name) + '</div>' +
+                    '<div class="sl-avatar-username">' + (u.username || '@pengguna') + '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="sl-biodata-grid">' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Nama Lengkap</div><div class="sl-biodata-value">' +
+                    (u.fullName || u.name) + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Jenis Kelamin</div><div class="sl-biodata-value">' +
+                    (u.gender || '-') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Username</div><div class="sl-biodata-value">' +
+                    (u.username || '@pengguna') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Email</div><div class="sl-biodata-value">' +
+                    (u.email || '-') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">No WhatsApp</div><div class="sl-biodata-value">' +
+                    (u.phone || '-') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Negara</div><div class="sl-biodata-value">' +
+                    (u.country || 'Indonesia') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Provinsi</div><div class="sl-biodata-value">' +
+                    (u.province || 'Jawa Barat') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Kabupaten/Kota</div><div class="sl-biodata-value">' +
+                    (u.regency || 'Kabupaten Bogor') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Kecamatan</div><div class="sl-biodata-value">' +
+                    (u.district || 'Pamijahan') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Desa/Kelurahan</div><div class="sl-biodata-value">' +
+                    (u.village || 'Ciasmara') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Alamat Lengkap</div><div class="sl-biodata-value">' +
+                    (u.address || '-') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Bio</div><div class="sl-biodata-value">' +
+                    (u.bio || '-') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Bergabung</div><div class="sl-biodata-value">' +
+                    (u.joined || 'Januari 2025') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Link Google Maps</div><div class="sl-biodata-value">' +
+                    (u.maps ?
+                        '<a href="' + u.maps + '" target="_blank" style="color:var(--sl-color-primary);text-decoration:none;">📍 Buka Maps</a>' :
+                        '-') + '</div></div>' +
+                    '<div class="sl-biodata-item"><div class="sl-biodata-label">Password</div><div class="sl-biodata-value"><span id="sl-biodata-password">••••••••</span> <button class="sl-toggle-eye-biodata" data-target="sl-biodata-password" data-password="' +
+                    (u.password || 'password123') +
+                    '" style="background:none;border:none;color:var(--sl-color-primary);cursor:pointer;">👁️</button></div></div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            // ===== RENDER SETTINGS =====
+            function renderSettings() {
+                var u = STATE.user;
+                return '<div style="padding-bottom:var(--sl-spacing-4);">' +
+                    '<div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">⚙️ Pengaturan</div>' +
+                    '<div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">' +
+                    '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-3);">🎨 Tema</div>' +
+                    '<div style="display:flex;gap:var(--sl-spacing-2);flex-wrap:wrap;">' +
+                    ThemeManager.themes.map(function(t) {
+                        return '<button class="sl-theme-option" data-theme="' + t +
+                            '" style="padding:var(--sl-spacing-2) var(--sl-spacing-4);border-radius:var(--sl-radius-full);border:2px solid ' +
+                            (ThemeManager.current === t ? 'var(--sl-color-primary)' : 'var(--sl-color-border)') +
+                            ';background:' + (ThemeManager.current === t ? 'var(--sl-color-primary)' :
+                                'transparent') + ';color:' + (ThemeManager.current === t ? '#fff' :
+                                'var(--sl-color-text-secondary)') +
+                            ';cursor:pointer;font-family:var(--sl-font-primary);font-size:var(--sl-font-size-sm);transition:var(--sl-transition-all);">' +
+                            (t === 'dark' ? '🌙' : t === 'light' ? '☀️' : t === 'emergency' ? '🚨' : '🖥️') + ' ' +
+                            t.charAt(0).toUpperCase() + t.slice(1) +
+                            '</button>';
+                    }).join('') +
+                    '</div>' +
+                    '</div>' +
+                    '<div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">' +
+                    '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-3);">👤 Edit Profil</div>' +
+                    '<div style="display:flex;flex-direction:column;gap:var(--sl-spacing-2);">' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Upload Foto Profil</label><input class="sl-search-input" type="file" accept="image/*" id="sl-edit-avatar-file" style="padding:var(--sl-spacing-1);" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Nama Lengkap</label><input class="sl-search-input" type="text" value="' +
+                    (u.fullName || u.name) + '" id="sl-edit-fullname" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Jenis Kelamin</label>' +
+                    '<select class="sl-search-input" id="sl-edit-gender" style="padding:var(--sl-spacing-2);">' +
+                    '<option value="Laki-laki" ' + (u.gender === 'Laki-laki' ? 'selected' : '') + '>Laki-laki</option>' +
+                    '<option value="Perempuan" ' + (u.gender === 'Perempuan' ? 'selected' : '') + '>Perempuan</option>' +
+                    '</select></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Username</label><input class="sl-search-input" type="text" value="' +
+                    (u.username || '@pengguna') + '" id="sl-edit-username" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Email</label><input class="sl-search-input" type="email" value="' +
+                    (u.email || '') + '" id="sl-edit-email" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">No WhatsApp</label><input class="sl-search-input" type="tel" value="' +
+                    (u.phone || '') + '" id="sl-edit-phone" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Negara</label><input class="sl-search-input" type="text" value="' +
+                    (u.country || 'Indonesia') + '" id="sl-edit-country" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Provinsi</label><input class="sl-search-input" type="text" value="' +
+                    (u.province || 'Jawa Barat') + '" id="sl-edit-province" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Kabupaten/Kota</label><input class="sl-search-input" type="text" value="' +
+                    (u.regency || 'Kabupaten Bogor') + '" id="sl-edit-regency" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Kecamatan</label><input class="sl-search-input" type="text" value="' +
+                    (u.district || 'Pamijahan') + '" id="sl-edit-district" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Desa/Kelurahan</label><input class="sl-search-input" type="text" value="' +
+                    (u.village || 'Ciasmara') + '" id="sl-edit-village" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Alamat Lengkap</label><input class="sl-search-input" type="text" value="' +
+                    (u.address || '') + '" id="sl-edit-address" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Bio</label><input class="sl-search-input" type="text" value="' +
+                    (u.bio || '') + '" id="sl-edit-bio" /></div>' +
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Link Google Maps</label><input class="sl-search-input" type="url" value="' +
+                    (u.maps || '') + '" id="sl-edit-maps" placeholder="https://maps.google.com/..." /></div>' +
+
+                    // Password fields with Toggle Eye
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Lama</label>' +
+                    '<div class="sl-password-wrap"><input class="sl-search-input" type="password" placeholder="Masukkan password lama" id="sl-edit-oldpass" />' +
+                    '<button class="sl-password-toggle" data-target="sl-edit-oldpass">👁️</button></div></div>' +
+
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Baru</label>' +
+                    '<div class="sl-password-wrap"><input class="sl-search-input" type="password" placeholder="Masukkan password baru" id="sl-edit-newpass" />' +
+                    '<button class="sl-password-toggle" data-target="sl-edit-newpass">👁️</button></div></div>' +
+
+                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Konfirmasi Password</label>' +
+                    '<div class="sl-password-wrap"><input class="sl-search-input" type="password" placeholder="Konfirmasi password baru" id="sl-edit-confirmpass" />' +
+                    '<button class="sl-password-toggle" data-target="sl-edit-confirmpass">👁️</button></div></div>' +
+
+                    '<div style="display:flex;gap:var(--sl-spacing-2);margin-top:var(--sl-spacing-2);">' +
+                    '<button class="sl-post-composer-submit" id="sl-edit-save" style="flex:1;">💾 Simpan</button>' +
+                    '<button class="sl-post-composer-submit" id="sl-edit-reset" style="flex:1;background:var(--sl-color-danger);">🔄 Reset</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
             }
 
             // ===== RENDER FUNCTIONS =====
@@ -3392,10 +3787,14 @@
                 if (hasHologram && latestHologram) {
                     var badgeClass = latestHologram.type || 'fire';
                     var userMap = latestHologram.maps || STATE.user.maps || '';
+                    var avatarDisplay = (latestHologram.author && latestHologram.author.avatar && latestHologram.author
+                        .avatar !== '👤') ?
+                        '<img src="' + latestHologram.author.avatar + '" alt="Foto Profil" />' :
+                        '<span>' + (latestHologram.author?.avatar || '👤') + '</span>';
                     hologramHtml =
                         '<div class="sl-hologram" data-post-id="' + latestHologram.id + '">' +
                         '<div class="sl-hologram-sender">' +
-                        '<div class="sl-hologram-avatar">' + (latestHologram.author?.avatar || '👤') + '</div>' +
+                        '<div class="sl-hologram-avatar">' + avatarDisplay + '</div>' +
                         '<div>' +
                         '<div class="sl-hologram-name">' + (latestHologram.author?.name || 'Pengguna') + '</div>' +
                         '<div class="sl-hologram-type">' + (EMERGENCY_TYPES[latestHologram.type]?.label ||
@@ -3579,6 +3978,7 @@
                     '</div>' +
                     '</div>';
 
+                // Create Post with upload
                 var createPostHtml =
                     '<div class="sl-create-post" id="sl-create-post-trigger">' +
                     '<div class="sl-create-post-avatar">' + (STATE.user.avatar || '👤') + '</div>' +
@@ -3600,6 +4000,11 @@
                     '<option value="disaster">🌪️ Bencana Alam</option>' +
                     '</select>' +
                     '<button class="sl-post-composer-submit" id="sl-post-submit">Posting</button>' +
+                    '</div>' +
+                    '<div class="sl-upload-area" id="sl-upload-area">' +
+                    '<input type="file" id="sl-upload-file" accept="image/*,video/*" multiple />' +
+                    '<span class="sl-upload-label">📷 Upload Foto/Video</span>' +
+                    '<div class="sl-upload-preview" id="sl-upload-preview"></div>' +
                     '</div>' +
                     '<div class="sl-post-composer-map" id="sl-post-composer-map">' +
                     '<div class="sl-map-input">' +
@@ -3632,11 +4037,14 @@
                         var emoji = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') : '';
                         var isOwner = post.author?.id === STATE.user.id;
                         var userMap = post.author?.maps || '';
+                        var avatarDisplay = (post.author && post.author.avatar && post.author.avatar !== '👤') ?
+                            '<img src="' + post.author.avatar + '" alt="Foto Profil" />' :
+                            '<span>' + (post.author?.avatar || '👤') + '</span>';
                         feedHtml +=
                             '<div class="sl-post-card" data-post-id="' + post.id + '">' +
                             '<div class="sl-post-header">' +
                             '<div class="sl-post-avatar" data-user-id="' + (post.author?.id || 'unknown') +
-                            '">' + (post.author?.avatar || '👤') + '</div>' +
+                            '">' + avatarDisplay + '</div>' +
                             '<div>' +
                             '<div class="sl-post-author" data-user-id="' + (post.author?.id || 'unknown') +
                             '">' + (post.author?.name || 'Pengguna') + '</div>' +
@@ -3653,7 +4061,8 @@
                             '<div class="sl-post-content">' + (isEmergency ?
                                 '<span class="sl-post-emergency-icon">' + emoji + '</span>' : '') + ' ' + (post
                                 .content || '') + '</div>' +
-                            (post.media ? '<div class="sl-post-media">' + post.media + '</div>' : '') +
+                            (post.media ?
+                                '<div class="sl-post-media">' + post.media + '</div>' : '') +
                             (post.location ?
                                 '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ' +
                                 post.location + '</div>' : '') +
@@ -3768,10 +4177,14 @@
                 }
                 var html = '';
                 post.commentList.forEach(function(comment) {
+                    var avatarDisplay = (comment.author && comment.author.avatar && comment.author.avatar !==
+                        '👤') ?
+                        '<img src="' + comment.author.avatar + '" alt="Foto Profil" />' :
+                        '<span>' + (comment.author?.avatar || '👤') + '</span>';
                     html +=
                         '<div style="display:flex;gap:var(--sl-spacing-2);padding:var(--sl-spacing-2);border-bottom:1px solid var(--sl-color-border);">' +
                         '<div class="sl-post-avatar" style="width:28px;height:28px;font-size:var(--sl-font-size-sm);">' +
-                        (comment.author?.avatar || '👤') + '</div>' +
+                        avatarDisplay + '</div>' +
                         '<div style="flex:1;">' +
                         '<div style="font-weight:var(--sl-font-weight-medium);color:var(--sl-color-text-primary);font-size:var(--sl-font-size-sm);">' +
                         (comment.author?.name || 'Pengguna') + '</div>' +
@@ -3786,9 +4199,13 @@
                         (comment.replies && comment.replies.length > 0 ?
                             '<div style="margin-left:var(--sl-spacing-4);margin-top:var(--sl-spacing-2);">' +
                             comment.replies.map(function(reply) {
+                                var replyAvatar = (reply.author && reply.author.avatar && reply.author
+                                    .avatar !== '👤') ?
+                                    '<img src="' + reply.author.avatar + '" alt="Foto Profil" />' :
+                                    '<span>' + (reply.author?.avatar || '👤') + '</span>';
                                 return '<div style="display:flex;gap:var(--sl-spacing-2);padding:var(--sl-spacing-1);border-left:2px solid var(--sl-color-border);">' +
                                     '<div class="sl-post-avatar" style="width:24px;height:24px;font-size:var(--sl-font-size-xs);">' +
-                                    (reply.author?.avatar || '👤') + '</div>' +
+                                    replyAvatar + '</div>' +
                                     '<div>' +
                                     '<div style="font-weight:var(--sl-font-weight-medium);color:var(--sl-color-text-primary);font-size:var(--sl-font-size-xs);">' +
                                     (reply.author?.name || 'Pengguna') + '</div>' +
@@ -3804,109 +4221,6 @@
                         '</div>';
                 });
                 return html;
-            }
-
-            function renderBiodata() {
-                var u = STATE.user;
-                return '<div style="padding-bottom:var(--sl-spacing-4);">' +
-                    '<div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">📋 Biodata</div>' +
-                    '<div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);">' +
-                    '<div style="display:flex;align-items:center;gap:var(--sl-spacing-4);margin-bottom:var(--sl-spacing-4);">' +
-                    '<div style="font-size:48px;width:64px;height:64px;border-radius:var(--sl-radius-full);background:var(--sl-color-secondary);display:flex;align-items:center;justify-content:center;">' +
-                    (u.avatar || '👤') + '</div>' +
-                    '<div>' +
-                    '<div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">' +
-                    (u.fullName || u.name) + '</div>' +
-                    '<div style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-muted);">' + (u
-                        .username || '@pengguna') + '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sl-spacing-2);">' +
-                    '<div><strong>Nama Lengkap:</strong> ' + (u.fullName || u.name) + '</div>' +
-                    '<div><strong>Jenis Kelamin:</strong> ' + (u.gender || '-') + '</div>' +
-                    '<div><strong>Username:</strong> ' + (u.username || '@pengguna') + '</div>' +
-                    '<div><strong>Email:</strong> ' + (u.email || '-') + '</div>' +
-                    '<div><strong>No WhatsApp:</strong> ' + (u.phone || '-') + '</div>' +
-                    '<div><strong>Negara:</strong> ' + (u.country || 'Indonesia') + '</div>' +
-                    '<div><strong>Provinsi:</strong> ' + (u.province || 'Jawa Barat') + '</div>' +
-                    '<div><strong>Kabupaten/Kota:</strong> ' + (u.regency || 'Kabupaten Bogor') + '</div>' +
-                    '<div><strong>Kecamatan:</strong> ' + (u.district || 'Pamijahan') + '</div>' +
-                    '<div><strong>Desa/Kelurahan:</strong> ' + (u.village || 'Ciasmara') + '</div>' +
-                    '<div><strong>Alamat Lengkap:</strong> ' + (u.address || '-') + '</div>' +
-                    '<div><strong>Bio:</strong> ' + (u.bio || '-') + '</div>' +
-                    '<div><strong>Bergabung:</strong> ' + (u.joined || 'Januari 2025') + '</div>' +
-                    '<div><strong>Link Google Maps:</strong> ' + (u.maps ?
-                        '<a href="' + u.maps + '" target="_blank" style="color:var(--sl-color-primary);text-decoration:none;">' +
-                        u.maps + '</a>' : '-') + '</div>' +
-                    '<div><strong>Password:</strong> <span id="sl-password-display">••••••••</span> <button class="sl-toggle-eye" data-target="sl-password-display" data-password="' +
-                    (u.password || 'password123') +
-                    '" style="background:none;border:none;color:var(--sl-color-primary);cursor:pointer;">👁️</button></div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
-            }
-
-            function renderSettings() {
-                var u = STATE.user;
-                return '<div style="padding-bottom:var(--sl-spacing-4);">' +
-                    '<div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">⚙️ Pengaturan</div>' +
-                    '<div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">' +
-                    '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-3);">🎨 Tema</div>' +
-                    '<div style="display:flex;gap:var(--sl-spacing-2);flex-wrap:wrap;">' +
-                    ThemeManager.themes.map(function(t) {
-                        return '<button class="sl-theme-option" data-theme="' + t +
-                            '" style="padding:var(--sl-spacing-2) var(--sl-spacing-4);border-radius:var(--sl-radius-full);border:2px solid ' +
-                            (ThemeManager.current === t ? 'var(--sl-color-primary)' : 'var(--sl-color-border)') +
-                            ';background:' + (ThemeManager.current === t ? 'var(--sl-color-primary)' :
-                                'transparent') + ';color:' + (ThemeManager.current === t ? '#fff' :
-                                'var(--sl-color-text-secondary)') +
-                            ';cursor:pointer;font-family:var(--sl-font-primary);font-size:var(--sl-font-size-sm);transition:var(--sl-transition-all);">' +
-                            (t === 'dark' ? '🌙' : t === 'light' ? '☀️' : t === 'emergency' ? '🚨' : '🖥️') + ' ' +
-                            t.charAt(0).toUpperCase() + t.slice(1) +
-                            '</button>';
-                    }).join('') +
-                    '</div>' +
-                    '</div>' +
-                    '<div style="background:var(--sl-color-card);border-radius:var(--sl-radius-lg);padding:var(--sl-spacing-4);border:1px solid var(--sl-color-border);margin-bottom:var(--sl-spacing-4);">' +
-                    '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-3);">👤 Edit Profil</div>' +
-                    '<div style="display:flex;flex-direction:column;gap:var(--sl-spacing-2);">' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Upload Foto Profil</label><input class="sl-search-input" type="file" accept="image/*" style="padding:var(--sl-spacing-1);" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Nama Lengkap</label><input class="sl-search-input" type="text" value="' +
-                    (u.fullName || u.name) + '" id="sl-edit-fullname" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Jenis Kelamin</label>' +
-                    '<select class="sl-search-input" id="sl-edit-gender" style="padding:var(--sl-spacing-2);">' +
-                    '<option value="Laki-laki" ' + (u.gender === 'Laki-laki' ? 'selected' : '') + '>Laki-laki</option>' +
-                    '<option value="Perempuan" ' + (u.gender === 'Perempuan' ? 'selected' : '') + '>Perempuan</option>' +
-                    '</select></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Username</label><input class="sl-search-input" type="text" value="' +
-                    (u.username || '@pengguna') + '" id="sl-edit-username" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Email</label><input class="sl-search-input" type="email" value="' +
-                    (u.email || '') + '" id="sl-edit-email" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">No WhatsApp</label><input class="sl-search-input" type="tel" value="' +
-                    (u.phone || '') + '" id="sl-edit-phone" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Negara</label><input class="sl-search-input" type="text" value="' +
-                    (u.country || 'Indonesia') + '" id="sl-edit-country" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Provinsi</label><input class="sl-search-input" type="text" value="' +
-                    (u.province || 'Jawa Barat') + '" id="sl-edit-province" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Kabupaten/Kota</label><input class="sl-search-input" type="text" value="' +
-                    (u.regency || 'Kabupaten Bogor') + '" id="sl-edit-regency" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Kecamatan</label><input class="sl-search-input" type="text" value="' +
-                    (u.district || 'Pamijahan') + '" id="sl-edit-district" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Desa/Kelurahan</label><input class="sl-search-input" type="text" value="' +
-                    (u.village || 'Ciasmara') + '" id="sl-edit-village" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Alamat Lengkap</label><input class="sl-search-input" type="text" value="' +
-                    (u.address || '') + '" id="sl-edit-address" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Bio</label><input class="sl-search-input" type="text" value="' +
-                    (u.bio || '') + '" id="sl-edit-bio" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Link Google Maps</label><input class="sl-search-input" type="url" value="' +
-                    (u.maps || '') + '" id="sl-edit-maps" placeholder="https://maps.google.com/..." /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Lama</label><input class="sl-search-input" type="password" placeholder="Masukkan password lama" id="sl-edit-oldpass" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Password Baru</label><input class="sl-search-input" type="password" placeholder="Masukkan password baru" id="sl-edit-newpass" /></div>' +
-                    '<div><label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);">Konfirmasi Password</label><input class="sl-search-input" type="password" placeholder="Konfirmasi password baru" id="sl-edit-confirmpass" /></div>' +
-                    '<button class="sl-post-composer-submit" id="sl-edit-save" style="margin-top:var(--sl-spacing-2);">Simpan</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
             }
 
             function renderStaticPage(title, content) {
@@ -3969,11 +4283,14 @@
                         var emoji = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') : '';
                         var isOwner = post.author?.id === STATE.user.id;
                         var userMap = post.author?.maps || '';
+                        var avatarDisplay = (post.author && post.author.avatar && post.author.avatar !== '👤') ?
+                            '<img src="' + post.author.avatar + '" alt="Foto Profil" />' :
+                            '<span>' + (post.author?.avatar || '👤') + '</span>';
                         html +=
                             '<div class="sl-post-card" data-post-id="' + post.id + '">' +
                             '<div class="sl-post-header">' +
                             '<div class="sl-post-avatar" data-user-id="' + (post.author?.id || 'unknown') +
-                            '">' + (post.author?.avatar || '👤') + '</div>' +
+                            '">' + avatarDisplay + '</div>' +
                             '<div>' +
                             '<div class="sl-post-author" data-user-id="' + (post.author?.id || 'unknown') +
                             '">' + (post.author?.name || 'Pengguna') + '</div>' +
@@ -3990,7 +4307,8 @@
                             '<div class="sl-post-content">' + (isEmergency ?
                                 '<span class="sl-post-emergency-icon">' + emoji + '</span>' : '') + ' ' + (post
                                 .content || '') + '</div>' +
-                            (post.media ? '<div class="sl-post-media">' + post.media + '</div>' : '') +
+                            (post.media ?
+                                '<div class="sl-post-media">' + post.media + '</div>' : '') +
                             (post.location ?
                                 '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ' +
                                 post.location + '</div>' : '') +
@@ -4061,10 +4379,13 @@
                         var isEmergency = post.type && post.type !== 'status';
                         var emoji = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') : '';
                         var userMap = post.author?.maps || '';
+                        var avatarDisplay = (post.author && post.author.avatar && post.author.avatar !== '👤') ?
+                            '<img src="' + post.author.avatar + '" alt="Foto Profil" />' :
+                            '<span>' + (post.author?.avatar || '👤') + '</span>';
                         html +=
                             '<div class="sl-post-card" data-post-id="' + post.id + '">' +
                             '<div class="sl-post-header">' +
-                            '<div class="sl-post-avatar">' + (post.author?.avatar || '👤') + '</div>' +
+                            '<div class="sl-post-avatar">' + avatarDisplay + '</div>' +
                             '<div>' +
                             '<div class="sl-post-author">' + (post.author?.name || 'Pengguna') + '</div>' +
                             '<div class="sl-post-time">' + (post.time || 'baru saja') + '</div>' +
@@ -4080,7 +4401,8 @@
                             '<div class="sl-post-content">' + (isEmergency ?
                                 '<span class="sl-post-emergency-icon">' + emoji + '</span>' : '') + ' ' + (post
                                 .content || '') + '</div>' +
-                            (post.media ? '<div class="sl-post-media">' + post.media + '</div>' : '') +
+                            (post.media ?
+                                '<div class="sl-post-media">' + post.media + '</div>' : '') +
                             (post.location ?
                                 '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ' +
                                 post.location + '</div>' : '') +
@@ -4253,6 +4575,24 @@
 
             // ==================== BIND EVENTS ====================
             function bindWorkspaceEvents(workspaceId) {
+                // ===== HOME BUTTON (Short Cut) =====
+                var homeBtn = document.querySelector('.sl-nav-item[data-workspace="home"]');
+                if (homeBtn) {
+                    homeBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.location.href = 'dashboard.html';
+                    });
+                }
+
+                // ===== SIDEBAR HOME =====
+                var sidebarHome = document.querySelector('.sl-sidebar-menu a[data-workspace="home"]');
+                if (sidebarHome) {
+                    sidebarHome.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.location.href = 'dashboard.html';
+                    });
+                }
+
                 // ===== SOCIAL BUTTONS =====
                 var socialBtns = document.querySelectorAll('.sl-social-btn[data-workspace]');
                 socialBtns.forEach(function(btn) {
@@ -4271,6 +4611,10 @@
                             return;
                         }
                         if (ws) {
+                            if (ws === 'home') {
+                                window.location.href = 'dashboard.html';
+                                return;
+                            }
                             EventBus.emit('router:navigate', { workspace: ws });
                         }
                     });
@@ -4296,6 +4640,81 @@
                     });
                 }
 
+                // ===== BIODATA BUTTON (sidebar) =====
+                var biodataSidebar = document.querySelector('.sl-sidebar-menu a[data-workspace="biodata"]');
+                if (biodataSidebar) {
+                    biodataSidebar.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (STATE.isPreview) {
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
+                            return;
+                        }
+                        // Open biodata modal
+                        showBiodataModal();
+                    });
+                }
+
+                function showBiodataModal() {
+                    var u = STATE.user;
+                    var avatarDisplay = u.avatar && u.avatar !== '👤' ?
+                        '<img src="' + u.avatar + '" alt="Foto Profil" />' :
+                        '<span>' + (u.avatar || '👤') + '</span>';
+
+                    var body = '<div class="sl-biodata-avatar">' +
+                        '<div class="sl-avatar-large">' + avatarDisplay + '</div>' +
+                        '<div>' +
+                        '<div class="sl-avatar-name">' + (u.fullName || u.name) + '</div>' +
+                        '<div class="sl-avatar-username">' + (u.username || '@pengguna') + '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="sl-biodata-grid">' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Nama Lengkap</div><div class="sl-biodata-value">' +
+                        (u.fullName || u.name) + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Jenis Kelamin</div><div class="sl-biodata-value">' +
+                        (u.gender || '-') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Username</div><div class="sl-biodata-value">' +
+                        (u.username || '@pengguna') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Email</div><div class="sl-biodata-value">' +
+                        (u.email || '-') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">No WhatsApp</div><div class="sl-biodata-value">' +
+                        (u.phone || '-') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Negara</div><div class="sl-biodata-value">' +
+                        (u.country || 'Indonesia') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Provinsi</div><div class="sl-biodata-value">' +
+                        (u.province || 'Jawa Barat') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Kabupaten/Kota</div><div class="sl-biodata-value">' +
+                        (u.regency || 'Kabupaten Bogor') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Kecamatan</div><div class="sl-biodata-value">' +
+                        (u.district || 'Pamijahan') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Desa/Kelurahan</div><div class="sl-biodata-value">' +
+                        (u.village || 'Ciasmara') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Alamat Lengkap</div><div class="sl-biodata-value">' +
+                        (u.address || '-') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Bio</div><div class="sl-biodata-value">' +
+                        (u.bio || '-') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Bergabung</div><div class="sl-biodata-value">' +
+                        (u.joined || 'Januari 2025') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Link Google Maps</div><div class="sl-biodata-value">' +
+                        (u.maps ?
+                            '<a href="' + u.maps + '" target="_blank" style="color:var(--sl-color-primary);text-decoration:none;">📍 Buka Maps</a>' :
+                            '-') + '</div></div>' +
+                        '<div class="sl-biodata-item"><div class="sl-biodata-label">Password</div><div class="sl-biodata-value"><span id="sl-biodata-password-modal">••••••••</span> <button class="sl-toggle-eye-modal" data-target="sl-biodata-password-modal" data-password="' +
+                        (u.password || 'password123') +
+                        '" style="background:none;border:none;color:var(--sl-color-primary);cursor:pointer;">👁️</button></div></div>' +
+                        '</div>';
+
+                    Layout.openModal('📋 Biodata', body, '', true);
+                }
+
+                // ===== BIODATA BUTTON (modal close) =====
+                var biodataBtn = document.querySelector('.sl-social-btn[data-workspace="biodata"]');
+                if (biodataBtn) {
+                    biodataBtn.addEventListener('click', function() {
+                        showBiodataModal();
+                    });
+                }
+
                 // ===== POST COMPOSER =====
                 var trigger = document.getElementById('sl-create-post-trigger');
                 var composer = document.getElementById('sl-post-composer');
@@ -4310,6 +4729,36 @@
                         if (composer.classList.contains('active')) {
                             var input = document.getElementById('sl-post-input');
                             if (input) input.focus();
+                        }
+                    });
+                }
+
+                // Upload files
+                var uploadInput = document.getElementById('sl-upload-file');
+                var uploadPreview = document.getElementById('sl-upload-preview');
+                var uploadedFiles = [];
+
+                if (uploadInput) {
+                    uploadInput.addEventListener('change', function() {
+                        var files = this.files;
+                        uploadPreview.innerHTML = '';
+                        uploadedFiles = [];
+                        for (var i = 0; i < files.length; i++) {
+                            uploadedFiles.push(files[i]);
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                var type = files[i].type;
+                                var el = document.createElement('div');
+                                if (type.startsWith('image/')) {
+                                    el.innerHTML = '<img src="' + e.target.result + '" />';
+                                } else if (type.startsWith('video/')) {
+                                    el.innerHTML = '<video src="' + e.target.result + '" muted></video>';
+                                } else {
+                                    el.innerHTML = '📄 ' + files[i].name;
+                                }
+                                uploadPreview.appendChild(el);
+                            };
+                            reader.readAsDataURL(files[i]);
                         }
                     });
                 }
@@ -4365,13 +4814,36 @@
                     var isEmergency = type !== 'status';
                     var author = STATE.user;
 
+                    // Process media
+                    var mediaHtml = '';
+                    if (uploadedFiles.length > 0) {
+                        uploadedFiles.forEach(function(file) {
+                            if (file.type.startsWith('image/')) {
+                                var reader = new FileReader();
+                                reader.onload = function(e) {
+                                    mediaHtml += '<img src="' + e.target.result + '" />';
+                                    // Re-render post after media loaded
+                                    renderWorkspace(workspaceId);
+                                };
+                                reader.readAsDataURL(file);
+                            } else if (file.type.startsWith('video/')) {
+                                var reader = new FileReader();
+                                reader.onload = function(e) {
+                                    mediaHtml += '<video src="' + e.target.result + '" controls></video>';
+                                    renderWorkspace(workspaceId);
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+
                     var post = {
                         id: 'post-' + Date.now(),
                         author: author,
                         type: type,
                         content: content,
                         time: 'baru saja',
-                        media: null,
+                        media: mediaHtml || null,
                         location: isEmergency ? (mapAddress ? mapAddress.textContent : 'Pamijahan, Bogor') : null,
                         coords: isEmergency ? (mapCoords ? mapCoords.textContent : '-6.6822, 106.6789') : null,
                         maps: isEmergency ? (mapLink ? mapLink.value : '') : '',
@@ -4386,6 +4858,7 @@
 
                     STATE.posts.unshift(post);
                     STATE.user.posts = (STATE.user.posts || 0) + 1;
+                    savePostsToStorage();
 
                     if (isEmergency) {
                         STATE.hologramPosts.push({ id: post.id, author: post.author, type: post.type, content: post
@@ -4405,10 +4878,10 @@
                             read: false,
                             type: 'emergency'
                         });
+                        saveNotificationsToStorage();
 
                         showFloatingNotification(emoji, '🚨 ' + label, 'Dilaporkan oleh ' + author.name);
 
-                        // Only show full screen overlay if phone is locked/standby
                         if (document.hidden || document.visibilityState === 'hidden') {
                             var overlay = document.getElementById('sl-hologram-overlay');
                             if (overlay) {
@@ -4460,6 +4933,7 @@
                             read: false,
                             type: 'regular'
                         });
+                        saveNotificationsToStorage();
                         showFloatingNotification('📝', 'Postingan Baru', author.name +
                         ' membagikan postingan baru');
                         Toast.show('Postingan berhasil dibagikan!', 'success', '📝');
@@ -4469,6 +4943,9 @@
                     if (composer) composer.classList.remove('active');
                     if (mapPreview) mapPreview.style.display = 'none';
                     if (mapSection) mapSection.classList.remove('active');
+                    if (uploadPreview) uploadPreview.innerHTML = '';
+                    uploadedFiles = [];
+                    if (uploadInput) uploadInput.value = '';
 
                     updateNotificationBadge();
                     renderWorkspace(workspaceId || 'home');
@@ -4551,6 +5028,7 @@
 
                         STATE.posts.unshift(post);
                         STATE.user.posts = (STATE.user.posts || 0) + 1;
+                        savePostsToStorage();
                         STATE.hologramPosts.push({ id: post.id, author: post.author, type: post.type,
                             content: post.content, time: post.time, location: post.location,
                             coords: post.coords, maps: post.maps });
@@ -4565,6 +5043,7 @@
                             read: false,
                             type: 'emergency'
                         });
+                        saveNotificationsToStorage();
 
                         showFloatingNotification(config.icon, '🚨 ' + config.label, 'Dilaporkan oleh ' + author
                             .name);
@@ -4666,6 +5145,7 @@
                             var count = this.querySelector('.sl-action-count');
                             if (count) count.textContent = post.likes;
                             this.classList.add('liked');
+                            savePostsToStorage();
 
                             STATE.notifications.unshift({
                                 id: 'notif-' + Date.now(),
@@ -4676,6 +5156,7 @@
                                 read: false,
                                 type: 'regular'
                             });
+                            saveNotificationsToStorage();
                             updateNotificationBadge();
                             showFloatingNotification('❤️', 'Like Baru',
                             'Seseorang menyukai postingan Anda');
@@ -4724,6 +5205,7 @@
                                 });
                                 post.comments = (post.comments || 0) + 1;
                                 input.value = '';
+                                savePostsToStorage();
                                 Toast.show('Komentar berhasil ditambahkan!', 'success', '💬');
                                 var list = document.getElementById('comment-list-' + postId);
                                 if (list) list.innerHTML = renderComments(postId);
@@ -4753,6 +5235,7 @@
                             post.viewers = (post.viewers || 0) + 1;
                             var count = this.querySelector('.sl-action-count');
                             if (count) count.textContent = post.viewers;
+                            savePostsToStorage();
                             Toast.show('👁️ Viewer bertambah!', 'info', '👁️');
                         }
                     });
@@ -4768,6 +5251,7 @@
                             post.shares = (post.shares || 0) + 1;
                             var count = this.querySelector('.sl-action-count');
                             if (count) count.textContent = post.shares;
+                            savePostsToStorage();
                             var text = '📢 ' + post.content.substring(0, 80) +
                                 '...\n\nBagikan via SALINK!';
                             if (navigator.share) {
@@ -4795,13 +5279,14 @@
                         if (confirm('Apakah Anda yakin ingin menghapus postingan ini?')) {
                             STATE.posts = STATE.posts.filter(function(p) { return p.id !== postId; });
                             STATE.user.posts = STATE.user.posts - 1;
+                            savePostsToStorage();
                             renderWorkspace(workspaceId);
                             Toast.show('Postingan berhasil dihapus', 'success', '🗑️');
                         }
                     });
                 });
 
-                // ===== MORE BUTTON (Edit) =====
+                // ===== MORE BUTTON (Edit) - MODERN =====
                 var moreBtns = document.querySelectorAll('.sl-post-more-btn');
                 moreBtns.forEach(function(btn) {
                     btn.addEventListener('click', function(e) {
@@ -4814,12 +5299,37 @@
                         var postId = this.dataset.postId;
                         var post = STATE.posts.find(function(p) { return p.id === postId; });
                         if (!post) return;
-                        var newContent = prompt('Edit postingan:', post.content);
-                        if (newContent !== null && newContent.trim()) {
-                            post.content = newContent.trim();
-                            Toast.show('Postingan berhasil diupdate!', 'success', '✏️');
-                            renderWorkspace(workspaceId);
-                        }
+
+                        // Modern edit prompt
+                        var modalBody =
+                            '<div style="padding:var(--sl-spacing-2) 0;">' +
+                            '<label style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-secondary);display:block;margin-bottom:var(--sl-spacing-2);">Edit Postingan</label>' +
+                            '<textarea class="sl-search-input" id="sl-edit-content" rows="4" style="width:100%;padding:var(--sl-spacing-3);border-radius:var(--sl-radius-md);">' +
+                            post.content + '</textarea>' +
+                            '</div>';
+
+                        Layout.openModal('✏️ Edit Postingan', modalBody,
+                            '<button class="sl-post-composer-submit" id="sl-edit-confirm" style="margin-right:var(--sl-spacing-2);">💾 Simpan</button>' +
+                            '<button class="sl-modal-close-btn" id="sl-edit-cancel">❌ Batal</button>'
+                        );
+
+                        document.getElementById('sl-edit-confirm').addEventListener('click', function() {
+                            var newContent = document.getElementById('sl-edit-content').value.trim();
+                            if (newContent && newContent !== post.content) {
+                                post.content = newContent;
+                                savePostsToStorage();
+                                Toast.show('Postingan berhasil diupdate!', 'success', '✏️');
+                                Layout.closeModal();
+                                renderWorkspace(workspaceId);
+                            } else {
+                                Toast.show('Tidak ada perubahan', 'info', 'ℹ️');
+                                Layout.closeModal();
+                            }
+                        });
+
+                        document.getElementById('sl-edit-cancel').addEventListener('click', function() {
+                            Layout.closeModal();
+                        });
                     });
                 });
 
@@ -4837,6 +5347,10 @@
                                 var isEmergency = post.type && post.type !== 'status';
                                 var icon = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') :
                                     '📝';
+                                var avatarDisplay = (post.author && post.author.avatar && post.author
+                                    .avatar !== '👤') ?
+                                    '<img src="' + post.author.avatar + '" alt="Foto Profil" />' :
+                                    '<span>' + (post.author?.avatar || '👤') + '</span>';
                                 return '<div class="sl-laporan-item" data-post-id="' + post.id +
                                     '" style="cursor:pointer;">' +
                                     '<span class="sl-laporan-icon">' + icon + '</span>' +
@@ -4865,8 +5379,8 @@
                                     Layout.openModal('📋 Detail Laporan',
                                         '<div style="padding:var(--sl-spacing-2) 0;">' +
                                         '<div style="display:flex;align-items:center;gap:var(--sl-spacing-3);margin-bottom:var(--sl-spacing-3);">' +
-                                        '<div class="sl-post-avatar">' + (post.author?.avatar ||
-                                            '👤') + '</div>' +
+                                        '<div class="sl-post-avatar" style="width:40px;height:40px;border-radius:50%;background:var(--sl-color-secondary);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;">' +
+                                        avatarDisplay + '</div>' +
                                         '<div>' +
                                         '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">' +
                                         (post.author?.name || 'Pengguna') + '</div>' +
@@ -4876,6 +5390,9 @@
                                         '</div>' +
                                         '<div style="color:var(--sl-color-text-secondary);margin-bottom:var(--sl-spacing-3);">' +
                                         post.content + '</div>' +
+                                        (post.media ?
+                                            '<div style="margin-bottom:var(--sl-spacing-3);">' +
+                                            post.media + '</div>' : '') +
                                         (post.location ?
                                             '<div style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ' +
                                             post.location + '</div>' : '') +
@@ -4946,9 +5463,8 @@
                     });
                 });
 
-                // ===== TOGGLE EYE =====
-                var toggleEyes = document.querySelectorAll('.sl-toggle-eye');
-                toggleEyes.forEach(function(btn) {
+                // ===== TOGGLE EYE for Biodata modal =====
+                document.querySelectorAll('.sl-toggle-eye-modal').forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var targetId = this.dataset.target;
                         var password = this.dataset.password || 'password123';
@@ -4959,6 +5475,41 @@
                                 this.textContent = '🙈';
                             } else {
                                 target.textContent = '••••••••';
+                                this.textContent = '👁️';
+                            }
+                        }
+                    });
+                });
+
+                // ===== TOGGLE EYE for Biodata render =====
+                document.querySelectorAll('.sl-toggle-eye-biodata').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var targetId = this.dataset.target;
+                        var password = this.dataset.password || 'password123';
+                        var target = document.getElementById(targetId);
+                        if (target) {
+                            if (target.textContent === '••••••••') {
+                                target.textContent = password;
+                                this.textContent = '🙈';
+                            } else {
+                                target.textContent = '••••••••';
+                                this.textContent = '👁️';
+                            }
+                        }
+                    });
+                });
+
+                // ===== TOGGLE EYE for Settings =====
+                document.querySelectorAll('.sl-password-toggle').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var targetId = this.dataset.target;
+                        var input = document.getElementById(targetId);
+                        if (input) {
+                            if (input.type === 'password') {
+                                input.type = 'text';
+                                this.textContent = '🙈';
+                            } else {
+                                input.type = 'password';
                                 this.textContent = '👁️';
                             }
                         }
@@ -4983,6 +5534,7 @@
                         var addressEl = document.getElementById('sl-edit-address');
                         var bioEl = document.getElementById('sl-edit-bio');
                         var mapsEl = document.getElementById('sl-edit-maps');
+                        var oldPassEl = document.getElementById('sl-edit-oldpass');
                         var newPassEl = document.getElementById('sl-edit-newpass');
                         var confirmPassEl = document.getElementById('sl-edit-confirmpass');
 
@@ -5000,30 +5552,103 @@
                         if (bioEl) u.bio = bioEl.value || u.bio;
                         if (mapsEl) u.maps = mapsEl.value || u.maps;
 
-                        var newPass = newPassEl ? newPassEl.value : '';
-                        var confirmPass = confirmPassEl ? confirmPassEl.value : '';
-                        if (newPass && confirmPass && newPass === confirmPass) {
-                            u.password = newPass;
-                            Toast.show('Password berhasil diupdate!', 'success', '🔒');
-                        } else if (newPass || confirmPass) {
-                            Toast.show('Password baru tidak cocok!', 'error', '⚠️');
-                            return;
+                        // Handle avatar upload
+                        var avatarFile = document.getElementById('sl-edit-avatar-file');
+                        if (avatarFile && avatarFile.files && avatarFile.files[0]) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                u.avatar = e.target.result;
+                                updateUserAndStorage(u);
+                            };
+                            reader.readAsDataURL(avatarFile.files[0]);
+                        } else {
+                            updateUserAndStorage(u);
                         }
 
-                        var currentUser = Storage.get('current_user', {});
-                        currentUser = { ...currentUser, ...u };
-                        Storage.set('current_user', currentUser);
+                        function updateUserAndStorage(userData) {
+                            var currentUser = Storage.get('current_user', {});
+                            currentUser = { ...currentUser, ...userData };
+                            Storage.set('current_user', currentUser);
 
-                        var users = Storage.get('users', []);
-                        var userIndex = users.findIndex(function(user) { return user.id === u.id; });
-                        if (userIndex !== -1) {
-                            users[userIndex] = { ...users[userIndex], ...u };
-                            Storage.set('users', users);
+                            var users = Storage.get('users', []);
+                            var userIndex = users.findIndex(function(user) { return user.id === userData
+                                .id; });
+                            if (userIndex !== -1) {
+                                users[userIndex] = { ...users[userIndex], ...userData };
+                                Storage.set('users', users);
+                            }
+
+                            // Update avatar in header
+                            updateHeaderAvatar(userData.avatar);
+
+                            Toast.show('Data profil berhasil disimpan!', 'success', '✅');
+                            renderWorkspace('settings');
                         }
-
-                        Toast.show('Data profil berhasil disimpan!', 'success', '✅');
-                        renderWorkspace('settings');
                     });
+                }
+
+                // ===== RESET BUTTON =====
+                var resetBtn = document.getElementById('sl-edit-reset');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', function() {
+                        if (confirm('Apakah Anda yakin ingin mereset semua data ke default?')) {
+                            var defaultUser = {
+                                id: 'usr-001',
+                                name: 'Pengguna',
+                                avatar: '👤',
+                                bio: 'Pengguna SALINK',
+                                location: 'Pamijahan, Bogor',
+                                joined: 'Januari 2025',
+                                posts: 0,
+                                followers: 0,
+                                following: 0,
+                                trustScore: 100,
+                                verified: false,
+                                fullName: 'Pengguna',
+                                gender: 'Laki-laki',
+                                username: '@pengguna',
+                                email: 'pengguna@salink.com',
+                                phone: '081234567890',
+                                country: 'Indonesia',
+                                province: 'Jawa Barat',
+                                regency: 'Kabupaten Bogor',
+                                district: 'Pamijahan',
+                                village: 'Ciasmara',
+                                address: 'Jl. Raya Pamijahan No. 123',
+                                password: 'password123',
+                                maps: ''
+                            };
+                            STATE.user = { ...STATE.user, ...defaultUser };
+                            var currentUser = Storage.get('current_user', {});
+                            currentUser = { ...currentUser, ...defaultUser };
+                            Storage.set('current_user', currentUser);
+
+                            var users = Storage.get('users', []);
+                            var userIndex = users.findIndex(function(user) { return user.id === defaultUser
+                                .id; });
+                            if (userIndex !== -1) {
+                                users[userIndex] = { ...users[userIndex], ...defaultUser };
+                                Storage.set('users', users);
+                            }
+
+                            updateHeaderAvatar('👤');
+                            Toast.show('Data berhasil direset ke default!', 'info', '🔄');
+                            renderWorkspace('settings');
+                        }
+                    });
+                }
+
+                // ===== UPDATE HEADER AVATAR =====
+                function updateHeaderAvatar(avatar) {
+                    var headerAvatar = document.getElementById('sl-header-avatar-text');
+                    if (headerAvatar) {
+                        if (avatar && avatar !== '👤') {
+                            headerAvatar.innerHTML = '<img src="' + avatar +
+                                '" alt="Foto Profil" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />';
+                        } else {
+                            headerAvatar.textContent = avatar || '👤';
+                        }
+                    }
                 }
 
                 // ===== HOLOGRAM MAP CLICK =====
@@ -5071,6 +5696,7 @@
                             if (!STATE.posts.find(function(p) { return p.id === postId; })) {
                                 STATE.posts.unshift({ ...post });
                                 STATE.user.posts = (STATE.user.posts || 0) + 1;
+                                savePostsToStorage();
                                 Toast.show('Laporan darurat masuk ke Feed!', 'info', '📰');
                                 renderWorkspace('home');
                             } else {
@@ -5202,6 +5828,7 @@
                                 if (notif) {
                                     notif.read = true;
                                     updateNotificationBadge();
+                                    saveNotificationsToStorage();
                                     if (notif.message && notif.message.includes('Dilaporkan oleh')) {
                                         var name = notif.message.replace('Dilaporkan oleh ', '')
                                             .split(' at')[0];
@@ -5222,6 +5849,7 @@
                         if (markAllBtn) {
                             markAllBtn.addEventListener('click', function() {
                                 STATE.notifications.forEach(function(n) { n.read = true; });
+                                saveNotificationsToStorage();
                                 updateNotificationBadge();
                                 Toast.show('Semua notifikasi ditandai dibaca', 'success', '✅');
                                 Layout.closeModal();
@@ -5262,15 +5890,6 @@
                     });
                 }
 
-                // ===== HOME BUTTON =====
-                var homeBtn = document.querySelector('.sl-nav-item[data-workspace="home"]');
-                if (homeBtn) {
-                    homeBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        window.location.href = 'dashboard.html';
-                    });
-                }
-
                 // ===== LOGIN ACTION =====
                 var loginActions = document.querySelectorAll('[data-action="login"]');
                 loginActions.forEach(function(el) {
@@ -5279,6 +5898,46 @@
                         if (preview) preview.classList.add('active');
                     });
                 });
+
+                // ===== CONTACT SIDEBAR =====
+                var contactSidebar = document.querySelector('.sl-sidebar-menu a[data-workspace="contact"]');
+                if (contactSidebar) {
+                    contactSidebar.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        Layout.showConfirmDialog(
+                            '📧 Contact Admin',
+                            'Apakah Anda ingin menghubungi Admin SALINK via Email di <strong>' +
+                            CONFIG.adminEmail + '</strong>?',
+                            '📧',
+                            function() {
+                                window.location.href = 'mailto:' + CONFIG.adminEmail;
+                            }
+                        );
+                    });
+                }
+            }
+
+            // ==================== STORAGE HELPERS ====================
+            function savePostsToStorage() {
+                Storage.set('posts', STATE.posts);
+            }
+
+            function loadPostsFromStorage() {
+                var saved = Storage.get('posts', []);
+                if (saved && saved.length > 0) {
+                    STATE.posts = saved;
+                }
+            }
+
+            function saveNotificationsToStorage() {
+                Storage.set('notifications', STATE.notifications);
+            }
+
+            function loadNotificationsFromStorage() {
+                var saved = Storage.get('notifications', []);
+                if (saved && saved.length > 0) {
+                    STATE.notifications = saved;
+                }
             }
 
             // ==================== NOTIFICATION BADGE ====================
@@ -5389,6 +6048,10 @@
                 console.log('[SALINK] 🚀 Initializing...');
 
                 try {
+                    // Load saved data
+                    loadPostsFromStorage();
+                    loadNotificationsFromStorage();
+
                     var loggedIn = Storage.get('logged_in', false);
                     var currentUser = Storage.get('current_user', null);
 
@@ -5399,6 +6062,12 @@
                         STATE.user = { ...STATE.user, ...currentUser };
                         if (currentUser.maps) {
                             STATE.user.maps = currentUser.maps;
+                        }
+                        // Update header avatar
+                        var headerAvatar = document.getElementById('sl-header-avatar-text');
+                        if (headerAvatar && currentUser.avatar && currentUser.avatar !== '👤') {
+                            headerAvatar.innerHTML = '<img src="' + currentUser.avatar +
+                                '" alt="Foto Profil" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />';
                         }
                     }
 
