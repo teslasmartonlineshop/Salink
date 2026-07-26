@@ -16,23 +16,97 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- ================================================================ -->
-    <!-- 🔥 API CONFIGURATION - GOOGLE SPREADSHEETS                       -->
+    <!-- 🔥 INTEGRASI DENGAN DASHBOARD - SINKRONISASI DATA                -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
-        // 🔥 API CONFIGURATION - GOOGLE SPREADSHEETS
+        // 🔥 SYNC ENGINE - Menghubungkan dengan Dashboard
         // ================================================================
+        const SYNC = {
+            getDashboardState: function() {
+                try {
+                    const state = localStorage.getItem('sl_state');
+                    if (state) {
+                        return JSON.parse(state);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Gagal mengambil state dashboard:', e);
+                }
+                return null;
+            },
+            
+            syncFromDashboard: function() {
+                const dashboardState = this.getDashboardState();
+                if (dashboardState) {
+                    if (dashboardState.user) {
+                        localStorage.setItem('salink_user', JSON.stringify(dashboardState.user));
+                        console.log('✅ User data synced from dashboard');
+                    }
+                    if (dashboardState.posts && Array.isArray(dashboardState.posts)) {
+                        localStorage.setItem('salink_posts', JSON.stringify(dashboardState.posts));
+                        console.log('✅ Posts synced from dashboard');
+                    }
+                    if (dashboardState.notifications && Array.isArray(dashboardState.notifications)) {
+                        localStorage.setItem('salink_notifications', JSON.stringify(dashboardState.notifications));
+                        console.log('✅ Notifications synced from dashboard');
+                    }
+                    if (dashboardState.friends && Array.isArray(dashboardState.friends)) {
+                        localStorage.setItem('salink_friends', JSON.stringify(dashboardState.friends));
+                        console.log('✅ Friends synced from dashboard');
+                    }
+                    if (dashboardState.theme) {
+                        localStorage.setItem('salink_theme', dashboardState.theme);
+                        console.log('✅ Theme synced from dashboard');
+                    }
+                    return true;
+                }
+                return false;
+            },
+            
+            pushToDashboard: function(data) {
+                try {
+                    const currentState = this.getDashboardState() || {};
+                    const updatedState = { ...currentState, ...data };
+                    localStorage.setItem('sl_state', JSON.stringify(updatedState));
+                    console.log('✅ Data pushed to dashboard');
+                    return true;
+                } catch (e) {
+                    console.warn('⚠️ Gagal push ke dashboard:', e);
+                    return false;
+                }
+            },
+            
+            updateUser: function(userData) {
+                return this.pushToDashboard({ user: userData });
+            },
+            
+            updatePosts: function(postsData) {
+                return this.pushToDashboard({ posts: postsData });
+            },
+            
+            updateNotifications: function(notifData) {
+                return this.pushToDashboard({ notifications: notifData });
+            },
+            
+            updateFriends: function(friendsData) {
+                return this.pushToDashboard({ friends: friendsData });
+            }
+        };
+        
+        console.log('✅ Sync Engine Loaded - Terintegrasi dengan Dashboard');
+    </script>
+    
+    <!-- ================================================================ -->
+    <!-- 🔥 API CONFIGURATION - GOOGLE SPREADSHEETS                       -->
+    <!-- ================================================================ -->
+    <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbzTGcN2FcOsC_rx01tUSvdw_trm2gKpJqUMyJSbYNonDYSqP5yn2ChYVc3ubWqaAyZC8A/exec';
 
-        /**
-         * 📥 Ambil semua user dari Google Sheets
-         */
         async function apiGetUsers() {
             try {
                 const response = await fetch(API_URL + '?action=get_users&timestamp=' + Date.now());
                 if (!response.ok) throw new Error('HTTP error: ' + response.status);
                 const result = await response.json();
-                
                 if (result.status === 'success' && result.data) {
                     localStorage.setItem('salink_users', JSON.stringify(result.data));
                     return result.data;
@@ -44,15 +118,11 @@
             }
         }
 
-        /**
-         * 📥 Ambil semua postingan dari Google Sheets
-         */
         async function apiGetPosts() {
             try {
                 const response = await fetch(API_URL + '?action=get_posts&timestamp=' + Date.now());
                 if (!response.ok) throw new Error('HTTP error: ' + response.status);
                 const result = await response.json();
-                
                 if (result.status === 'success' && result.data) {
                     localStorage.setItem('salink_posts', JSON.stringify(result.data));
                     return result.data;
@@ -64,9 +134,6 @@
             }
         }
 
-        /**
-         * 🔄 Sinkronisasi data profil ke Google Sheets
-         */
         async function syncProfileToSpreadsheet(profileData) {
             try {
                 const response = await fetch(API_URL, {
@@ -78,7 +145,6 @@
                         timestamp: Date.now()
                     })
                 });
-                
                 if (!response.ok) throw new Error('HTTP error: ' + response.status);
                 const result = await response.json();
                 console.log('📡 Sync profile result:', result);
@@ -94,9 +160,6 @@
     </script>
     
     <style>
-        /* ================================================================ */
-        /* THEME VARIABLES - LIGHT & DARK MODE                              */
-        /* ================================================================ */
         :root {
             --bg-primary: #0d1117;
             --bg-secondary: #161b22;
@@ -159,9 +222,6 @@
             --success: #2ea44f;
         }
 
-        /* ================================================================ */
-        /* BASE STYLES                                                       */
-        /* ================================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -177,17 +237,11 @@
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
 
-        /* ================================================================ */
-        /* ANIMATIONS                                                       */
-        /* ================================================================ */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes modalIn { from { transform: scale(0.8) translateY(30px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes zoomOut { 0% { transform: scale(1); } 40% { transform: scale(0.85); } 70% { transform: scale(0.95); } 100% { transform: scale(1); } }
 
-        /* ================================================================ */
-        /* TOGGLE SWITCH                                                    */
-        /* ================================================================ */
         .theme-toggle {
             position: relative;
             width: 44px;
@@ -218,9 +272,6 @@
         .theme-toggle.active .toggle-thumb { left: 22px; background: var(--toggle-thumb); }
         .theme-toggle .toggle-thumb i { color: #fff; }
 
-        /* ================================================================ */
-        /* HEADER                                                           */
-        /* ================================================================ */
         .app-bar {
             position: fixed;
             top: 0;
@@ -275,9 +326,6 @@
         .back-btn:active { transform: scale(0.95); }
         .back-btn i { font-size: 1rem; }
 
-        /* ================================================================ */
-        /* MAIN CONTENT                                                     */
-        /* ================================================================ */
         .main-content {
             padding: calc(var(--header-height) + 14px) 14px calc(var(--footer-height) + 14px);
             max-width: 600px;
@@ -286,9 +334,6 @@
             min-height: 100vh;
         }
 
-        /* ================================================================ */
-        /* PROFILE HEADER                                                   */
-        /* ================================================================ */
         .profile-header {
             text-align: center;
             margin-bottom: 20px;
@@ -307,8 +352,12 @@
             background: var(--accent-blue-gradient);
             font-size: 2.5rem;
             color: #fff;
-            cursor: default;
+            cursor: pointer;
             transition: all 0.3s;
+        }
+        .profile-avatar-large:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-blue-dark);
         }
         .profile-avatar-large img {
             width: 100%;
@@ -319,7 +368,11 @@
             font-size: 1.2rem;
             font-weight: 600;
             color: var(--text-primary);
-            cursor: default;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .profile-name:hover {
+            color: var(--accent-blue);
         }
         .profile-username {
             font-size: 0.8rem;
@@ -333,9 +386,6 @@
             cursor: default;
         }
 
-        /* ================================================================ */
-        /* PROFILE STATS                                                    */
-        /* ================================================================ */
         .profile-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -372,9 +422,6 @@
             color: var(--text-muted);
         }
 
-        /* ================================================================ */
-        /* PROFILE ACTIONS - PESAN & INVITE                                 */
-        /* ================================================================ */
         .profile-actions {
             display: flex;
             justify-content: center;
@@ -430,9 +477,6 @@
             animation: zoomOut 0.3s ease;
         }
 
-        /* ================================================================ */
-        /* PROFILE NAVBAR - SEMUA TOMBOL (FOTO, TEMAN, BIODATA, JUAL)       */
-        /* ================================================================ */
         .profile-nav-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -471,9 +515,6 @@
             font-size: 0.6rem;
         }
 
-        /* ================================================================ */
-        /* POST SECTION - READ ONLY                                         */
-        /* ================================================================ */
         .post-section {
             margin-top: 16px;
             background: var(--bg-card);
@@ -504,7 +545,6 @@
             color: var(--accent-blue);
         }
 
-        /* ===== POST ITEM ===== */
         .post {
             background: var(--bg-input);
             border-radius: 10px;
@@ -792,9 +832,6 @@
             transform: none;
         }
 
-        /* ================================================================ */
-        /* EMPTY STATE                                                      */
-        /* ================================================================ */
         .empty-state {
             text-align: center;
             padding: 30px 0;
@@ -810,9 +847,6 @@
             font-size: 0.75rem;
         }
 
-        /* ================================================================ */
-        /* FOTO MODAL                                                       */
-        /* ================================================================ */
         #fotoGrid::-webkit-scrollbar { width: 3px; }
         #fotoGrid::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         #fotoGrid::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
@@ -917,9 +951,6 @@
             border-color: var(--accent-blue) !important;
         }
 
-        /* ================================================================ */
-        /* MODALS                                                           */
-        /* ================================================================ */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -1045,7 +1076,6 @@
             border-color: var(--accent-blue);
         }
 
-        /* ===== FRIEND ITEM ===== */
         .friend-item {
             display: flex;
             align-items: center;
@@ -1102,7 +1132,32 @@
             color: var(--text-muted);
         }
 
-        /* ===== BIODATA ===== */
+        .follow-btn {
+            background: var(--bg-input);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            padding: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.6rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .follow-btn:hover {
+            background: var(--accent-blue);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .follow-btn.following {
+            background: var(--accent-blue);
+            color: #fff;
+            border-color: var(--accent-blue);
+        }
+        .follow-btn.following:hover {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+
         .bio-data-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1128,9 +1183,6 @@
             word-break: break-word;
         }
 
-        /* ================================================================ */
-        /* TOAST                                                            */
-        /* ================================================================ */
         .toast-container {
             position: fixed;
             bottom: calc(var(--footer-height) + 20px);
@@ -1189,9 +1241,107 @@
             color: var(--text-primary);
         }
 
-        /* ================================================================ */
-        /* RESPONSIVE                                                       */
-        /* ================================================================ */
+        /* ===== INVITE MODAL - DAFTAR USER ===== */
+        .invite-user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            background: var(--bg-input);
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        .invite-user-item:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-blue);
+        }
+        .invite-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-blue-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .invite-user-avatar:hover {
+            transform: scale(1.05);
+        }
+        .invite-user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .invite-user-info {
+            flex: 1;
+        }
+        .invite-user-name {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .invite-user-name:hover {
+            color: var(--accent-blue);
+        }
+        .invite-user-status {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+        .invite-btn {
+            background: var(--accent-blue-gradient);
+            color: #fff;
+            border: none;
+            padding: 4px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.6rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .invite-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+        }
+        .invite-btn.invited {
+            background: var(--bg-input);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            cursor: default;
+        }
+        .invite-btn.invited:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .invite-search-input {
+            width: 100%;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-family: inherit;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        .invite-search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+        .invite-search-input::placeholder {
+            color: var(--text-muted);
+        }
+
         @media (max-width: 480px) {
             .main-content {
                 padding: calc(var(--header-height) + 10px) 10px calc(var(--footer-height) + 10px);
@@ -1342,10 +1492,10 @@
         
         <!-- ===== PROFILE HEADER ===== -->
         <div class="profile-header">
-            <div class="profile-avatar-large" id="profileAvatarLarge">
+            <div class="profile-avatar-large" id="profileAvatarLarge" onclick="openProfileUserPage(profileUser?.username)">
                 <i class="fas fa-user"></i>
             </div>
-            <div class="profile-name" id="profileName">Nama Pengguna</div>
+            <div class="profile-name" id="profileName" onclick="openProfileUserPage(profileUser?.username)">Nama Pengguna</div>
             <div class="profile-username" id="profileUsername">@username</div>
             <div class="profile-bio" id="profileBio">Bergabung di SALINK untuk keamanan bersama</div>
         </div>
@@ -1368,15 +1518,17 @@
 
         <!-- ===== PROFILE ACTIONS ===== -->
         <div class="profile-actions">
-            <button class="profile-pesan-btn" onclick="openPesanModal()">
+            <!-- TOMBOL PESAN → BUKA halaman baru pesan.html -->
+            <a href="pesan.html" class="profile-pesan-btn" target="_blank">
                 <i class="fas fa-paper-plane"></i> PESAN
-            </button>
+            </a>
+            <!-- TOMBOL INVITE → BUKA MODAL DAFTAR USER -->
             <button class="profile-invite-btn" id="profileInviteBtn">
                 <i class="fas fa-user-plus"></i> INVITE
             </button>
         </div>
 
-        <!-- ===== PROFILE NAVBAR - SEMUA TOMBOL (FOTO, TEMAN, BIODATA, JUAL) ===== -->
+        <!-- ===== PROFILE NAVBAR ===== -->
         <div class="profile-nav-grid">
             <a href="#" class="profile-nav-item" id="profileFotoBtn" onclick="openFotoModal()">
                 <span>🖼️</span>
@@ -1390,6 +1542,7 @@
                 <span>🕵🏻</span>
                 <span>Biodata</span>
             </a>
+            <!-- TOMBOL JUAL → BUKA halaman baru jual.html -->
             <a href="jual.html" target="_blank" class="profile-nav-item" id="profileJualBtn">
                 <span>🛍️</span>
                 <span>Jual</span>
@@ -1544,7 +1697,6 @@
                 </button>
             </div>
             <div class="modal-body" id="fotoModalBody">
-                <!-- Filter Buttons -->
                 <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
                     <button class="filter-foto-btn active" data-filter="semua" style="background:var(--accent-blue-gradient);color:#fff;border:none;padding:6px 16px;border-radius:18px;font-size:0.7rem;cursor:pointer;transition:all 0.3s;">
                         📸 Semua
@@ -1565,13 +1717,36 @@
         </div>
     </div>
 
+    <!-- ===== INVITE MODAL - DAFTAR USER ===== -->
+    <div class="modal-overlay" id="inviteModal">
+        <div class="modal-content" style="max-width:480px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-user-plus"></i>
+                    <span>📨 Undang Teman</span>
+                    <span class="badge-count" id="inviteCount">0</span>
+                </div>
+                <button class="modal-close" id="inviteModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="inviteModalBody">
+                <input type="text" class="invite-search-input" id="inviteSearchInput" placeholder="🔍 Cari pengguna...">
+                <div id="inviteUserList"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-close-modal" onclick="closeInviteModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ================================================================ -->
     <!-- TOAST CONTAINER                                                  -->
     <!-- ================================================================ -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT                                                        -->
+    <!-- JAVASCRIPT - LENGKAP                                             -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -1588,26 +1763,41 @@
         let currentFotoFilter = 'semua';
         let notifications = [];
         let notificationIdCounter = 0;
+        let allUsers = [];
+        let invitedUsers = [];
 
         // ================================================================
         // LOAD THEME
         // ================================================================
         function loadTheme() {
-            const savedTheme = localStorage.getItem('salink_theme');
-            if (savedTheme === 'light') {
-                currentTheme = 'light';
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.theme) {
+                currentTheme = dashboardState.theme;
+            } else {
+                const savedTheme = localStorage.getItem('salink_theme');
+                if (savedTheme === 'light' || savedTheme === 'dark') {
+                    currentTheme = savedTheme;
+                }
+            }
+            
+            if (currentTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.getElementById('themeToggle').classList.add('active');
                 document.getElementById('toggleIcon').className = 'fas fa-sun';
                 const metaThemeColor = document.getElementById('themeColorMeta');
                 if (metaThemeColor) metaThemeColor.content = '#f0f4f8';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.getElementById('themeToggle').classList.remove('active');
+                document.getElementById('toggleIcon').className = 'fas fa-moon';
+                const metaThemeColor = document.getElementById('themeColorMeta');
+                if (metaThemeColor) metaThemeColor.content = '#0d1117';
             }
         }
 
         function toggleTheme() {
             const html = document.documentElement;
             const themeToggle = document.getElementById('themeToggle');
-            const toggleThumb = document.getElementById('toggleThumb');
             const toggleIcon = document.getElementById('toggleIcon');
             const metaThemeColor = document.getElementById('themeColorMeta');
             
@@ -1618,6 +1808,7 @@
                 toggleIcon.className = 'fas fa-sun';
                 if (metaThemeColor) metaThemeColor.content = '#f0f4f8';
                 localStorage.setItem('salink_theme', 'light');
+                SYNC.pushToDashboard({ theme: 'light' });
             } else {
                 currentTheme = 'dark';
                 html.removeAttribute('data-theme');
@@ -1625,6 +1816,7 @@
                 toggleIcon.className = 'fas fa-moon';
                 if (metaThemeColor) metaThemeColor.content = '#0d1117';
                 localStorage.setItem('salink_theme', 'dark');
+                SYNC.pushToDashboard({ theme: 'dark' });
             }
         }
 
@@ -1659,16 +1851,34 @@
         }
 
         // ================================================================
-        // GET USER BY USERNAME - DENGAN SYNC DARI SPREADSHEET
+        // OPEN PROFILE USER PAGE - BUKA profile-user.html
+        // ================================================================
+        function openProfileUserPage(username) {
+            if (!username) {
+                if (currentUser) {
+                    window.open(`profile-user.html?username=${currentUser.username}`, '_blank');
+                } else {
+                    window.open('profile-user.html', '_blank');
+                }
+                return;
+            }
+            window.open(`profile-user.html?username=${encodeURIComponent(username)}`, '_blank');
+        }
+
+        // ================================================================
+        // GET USER BY USERNAME
         // ================================================================
         async function getUserByUsername(username) {
             if (!username) return null;
             
-            // Coba ambil dari localStorage dulu
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.user && dashboardState.user.username === username) {
+                return dashboardState.user;
+            }
+            
             let users = JSON.parse(localStorage.getItem('salink_users') || '[]');
             let user = users.find(u => u.username === username);
             
-            // Jika tidak ditemukan, coba sync dari Spreadsheet
             if (!user) {
                 try {
                     const remoteUsers = await apiGetUsers();
@@ -1682,7 +1892,10 @@
                 }
             }
             
-            // Jika masih tidak ditemukan, buat data default
+            if (!user && dashboardState && dashboardState.user) {
+                user = dashboardState.user;
+            }
+            
             if (!user) {
                 const savedUser = localStorage.getItem('salink_user');
                 if (savedUser) {
@@ -1729,6 +1942,8 @@
         // LOAD PROFILE DATA
         // ================================================================
         async function loadProfileData() {
+            SYNC.syncFromDashboard();
+            
             const urlParams = new URLSearchParams(window.location.search);
             const username = urlParams.get('username');
             
@@ -1792,7 +2007,6 @@
                 }
             }
             
-            // 🔥 SYNC profil ke Spreadsheet jika ini adalah profil user sendiri
             if (currentUser && profileUser && currentUser.username === profileUser.username) {
                 try {
                     await syncProfileToSpreadsheet(profileUser);
@@ -1804,10 +2018,23 @@
         }
 
         // ================================================================
-        // LOAD POSTS - DENGAN SYNC DARI SPREADSHEET
+        // LOAD POSTS
         // ================================================================
         async function loadPosts() {
-            // Coba ambil dari localStorage dulu
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.posts && Array.isArray(dashboardState.posts)) {
+                posts = dashboardState.posts;
+                let maxId = 0;
+                posts.forEach(p => {
+                    const numId = parseInt(p.id.replace('post-', ''));
+                    if (!isNaN(numId) && numId > maxId) maxId = numId;
+                });
+                postIdCounter = maxId;
+                localStorage.setItem('salink_posts', JSON.stringify(posts));
+                console.log('✅ Posts synced from dashboard:', posts.length);
+                return true;
+            }
+            
             let loaded = false;
             try {
                 const saved = localStorage.getItem('salink_posts');
@@ -1828,7 +2055,6 @@
                 console.warn('Gagal memuat posts dari localStorage:', e);
             }
             
-            // Jika belum ada data, sync dari Spreadsheet
             if (!loaded || posts.length === 0) {
                 try {
                     const remotePosts = await apiGetPosts();
@@ -1853,13 +2079,13 @@
         }
 
         // ================================================================
-        // SAVE POSTS - SYNC KE SPREADSHEET
+        // SAVE POSTS
         // ================================================================
         function savePosts() {
             try {
                 localStorage.setItem('salink_posts', JSON.stringify(posts));
+                SYNC.updatePosts(posts);
                 
-                // 🔥 SYNC ke Spreadsheet
                 posts.forEach(async (post) => {
                     try {
                         await fetch(API_URL, {
@@ -1884,6 +2110,13 @@
         // LOAD FRIENDS
         // ================================================================
         function loadFriends() {
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.friends && Array.isArray(dashboardState.friends)) {
+                friends = dashboardState.friends;
+                localStorage.setItem('salink_friends', JSON.stringify(friends));
+                return true;
+            }
+            
             try {
                 const saved = localStorage.getItem('salink_friends');
                 if (saved) {
@@ -1899,25 +2132,279 @@
             
             if (friends.length === 0) {
                 const sampleFriends = [
-                    { id: ++friendIdCounter, name: 'Bpk. Ahmad', username: 'ahmad', gender: 'male', status: 'Online' },
-                    { id: ++friendIdCounter, name: 'Sdri. Rina', username: 'rina', gender: 'female', status: 'Offline' },
-                    { id: ++friendIdCounter, name: 'Bpk. Joko', username: 'joko', gender: 'male', status: 'Online' },
-                    { id: ++friendIdCounter, name: 'Sdri. Dewi', username: 'dewi', gender: 'female', status: 'Online' },
-                    { id: ++friendIdCounter, name: 'Bpk. Budi', username: 'budi', gender: 'male', status: 'Offline' },
-                    { id: ++friendIdCounter, name: 'Sdri. Siti', username: 'siti', gender: 'female', status: 'Online' }
+                    { id: ++friendIdCounter, name: 'Bpk. Ahmad', username: 'ahmad', gender: 'male', status: 'Online', following: 'pengguna' },
+                    { id: ++friendIdCounter, name: 'Sdri. Rina', username: 'rina', gender: 'female', status: 'Offline', following: 'pengguna' },
+                    { id: ++friendIdCounter, name: 'Bpk. Joko', username: 'joko', gender: 'male', status: 'Online', following: null },
+                    { id: ++friendIdCounter, name: 'Sdri. Dewi', username: 'dewi', gender: 'female', status: 'Online', following: 'pengguna' },
+                    { id: ++friendIdCounter, name: 'Bpk. Budi', username: 'budi', gender: 'male', status: 'Offline', following: null },
+                    { id: ++friendIdCounter, name: 'Sdri. Siti', username: 'siti', gender: 'female', status: 'Online', following: 'pengguna' }
                 ];
                 friends = sampleFriends;
                 try {
                     localStorage.setItem('salink_friends', JSON.stringify(friends));
+                    SYNC.updateFriends(friends);
                 } catch (e) {}
             }
             return true;
         }
 
         // ================================================================
+        // LOAD ALL USERS - UNTUK INVITE
+        // ================================================================
+        async function loadAllUsers() {
+            try {
+                const users = await apiGetUsers();
+                if (users && users.length > 0) {
+                    allUsers = users;
+                } else {
+                    const saved = localStorage.getItem('salink_users');
+                    if (saved) {
+                        allUsers = JSON.parse(saved);
+                    } else {
+                        // Sample users
+                        allUsers = [
+                            { username: 'ahmad', fullName: 'Bpk. Ahmad', gender: 'male', profilePicture: null },
+                            { username: 'rina', fullName: 'Sdri. Rina', gender: 'female', profilePicture: null },
+                            { username: 'joko', fullName: 'Bpk. Joko', gender: 'male', profilePicture: null },
+                            { username: 'dewi', fullName: 'Sdri. Dewi', gender: 'female', profilePicture: null },
+                            { username: 'budi', fullName: 'Bpk. Budi', gender: 'male', profilePicture: null },
+                            { username: 'siti', fullName: 'Sdri. Siti', gender: 'female', profilePicture: null },
+                            { username: 'andri', fullName: 'Bpk. Andri', gender: 'male', profilePicture: null },
+                            { username: 'maya', fullName: 'Sdri. Maya', gender: 'female', profilePicture: null }
+                        ];
+                        localStorage.setItem('salink_users', JSON.stringify(allUsers));
+                    }
+                }
+                return true;
+            } catch (e) {
+                console.warn('⚠️ Gagal load users:', e);
+                return false;
+            }
+        }
+
+        // ================================================================
+        // INVITE MODAL - DAFTAR USER
+        // ================================================================
+        function openInviteModal() {
+            if (!currentUser) {
+                showToast('🔒 Login Diperlukan', 'Silakan masuk untuk mengundang teman', 'fa-lock');
+                return;
+            }
+            
+            document.getElementById('inviteModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderInviteUsers();
+        }
+
+        function closeInviteModal() {
+            document.getElementById('inviteModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function renderInviteUsers(filter = '') {
+            const container = document.getElementById('inviteUserList');
+            container.innerHTML = '';
+            
+            // Filter user yang belum menjadi teman dan bukan diri sendiri
+            let availableUsers = allUsers.filter(u => 
+                u.username !== currentUser?.username && 
+                !friends.some(f => f.username === u.username)
+            );
+            
+            // Apply search filter
+            if (filter) {
+                const search = filter.toLowerCase();
+                availableUsers = availableUsers.filter(u => 
+                    u.fullName.toLowerCase().includes(search) || 
+                    u.username.toLowerCase().includes(search)
+                );
+            }
+            
+            document.getElementById('inviteCount').textContent = availableUsers.length;
+            
+            if (availableUsers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>${filter ? 'Pengguna tidak ditemukan' : 'Belum ada pengguna yang bisa diundang'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            availableUsers.forEach(user => {
+                const isInvited = invitedUsers.includes(user.username);
+                const avatarIcon = user.gender === 'female' ? 'fa-female' : 'fa-male';
+                const avatarDisplay = user.profilePicture ? 
+                    `<img src="${user.profilePicture}" alt="${user.fullName}">` : 
+                    `<i class="fas ${avatarIcon}"></i>`;
+                
+                const item = document.createElement('div');
+                item.className = 'invite-user-item';
+                item.innerHTML = `
+                    <div class="invite-user-avatar" onclick="openProfileUserPage('${user.username}')">
+                        ${avatarDisplay}
+                    </div>
+                    <div class="invite-user-info">
+                        <div class="invite-user-name" onclick="openProfileUserPage('${user.username}')">${user.fullName}</div>
+                        <div class="invite-user-status">@${user.username}</div>
+                    </div>
+                    <button class="invite-btn ${isInvited ? 'invited' : ''}" 
+                            data-username="${user.username}"
+                            onclick="sendInviteToUser('${user.username}')">
+                        ${isInvited ? '✓ Terkirim' : '+ Undang'}
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function sendInviteToUser(username) {
+            if (!currentUser) {
+                showToast('🔒 Login Diperlukan', 'Silakan masuk untuk mengundang', 'fa-lock');
+                return;
+            }
+            
+            if (username === currentUser.username) {
+                showToast('⚠️ Info', 'Anda tidak dapat mengundang diri sendiri!', 'fa-exclamation-triangle');
+                return;
+            }
+            
+            // Cek apakah sudah diundang
+            if (invitedUsers.includes(username)) {
+                showToast('ℹ️ Info', 'Undangan sudah terkirim ke pengguna ini', 'fa-info-circle');
+                return;
+            }
+            
+            // Tandai sebagai terkirim
+            invitedUsers.push(username);
+            
+            // Simpan ke localStorage
+            try {
+                localStorage.setItem('salink_invited_users', JSON.stringify(invitedUsers));
+            } catch (e) {}
+            
+            // 🔥 SYNC ke Dashboard
+            try {
+                const dashboardState = SYNC.getDashboardState() || {};
+                const invites = dashboardState.invites || [];
+                invites.push({
+                    from: currentUser.username,
+                    to: username,
+                    status: 'pending',
+                    timestamp: Date.now()
+                });
+                SYNC.pushToDashboard({ invites: invites });
+            } catch (e) {
+                console.warn('⚠️ Gagal sync invite ke dashboard:', e);
+            }
+            
+            // 🔥 SYNC ke Spreadsheet
+            try {
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'save_invite',
+                        invite: {
+                            from: currentUser.username,
+                            to: username,
+                            status: 'pending',
+                            timestamp: Date.now()
+                        }
+                    })
+                });
+            } catch (e) {
+                console.warn('⚠️ Gagal sync invite ke Spreadsheet:', e);
+            }
+            
+            // Update UI
+            renderInviteUsers(document.getElementById('inviteSearchInput')?.value || '');
+            
+            const user = allUsers.find(u => u.username === username);
+            showToast('✅ Terkirim', `Undangan dikirim ke ${user?.fullName || username}!`, 'fa-user-plus');
+        }
+
+        // ================================================================
+        // FOLLOW / UNFOLLOW
+        // ================================================================
+        function toggleFollow(username) {
+            if (!currentUser) {
+                showToast('🔒 Login Diperlukan', 'Silakan masuk untuk mengikuti', 'fa-lock');
+                return;
+            }
+            
+            if (username === currentUser.username) {
+                showToast('⚠️ Info', 'Anda tidak dapat mengikuti diri sendiri!', 'fa-exclamation-triangle');
+                return;
+            }
+            
+            const friend = friends.find(f => f.username === username);
+            if (!friend) {
+                showToast('⚠️ Error', 'Pengguna tidak ditemukan', 'fa-exclamation-triangle');
+                return;
+            }
+            
+            if (friend.following === currentUser.username) {
+                friend.following = null;
+                showToast('👋 Berhenti Mengikuti', `Anda berhenti mengikuti ${friend.name}`, 'fa-user-minus');
+            } else {
+                friend.following = currentUser.username;
+                showToast('✅ Mengikuti', `Anda sekarang mengikuti ${friend.name}`, 'fa-user-plus');
+                
+                notifications.unshift({
+                    id: 'notif-' + Date.now(),
+                    type: 'profile',
+                    title: '👤 Pengikut Baru',
+                    message: `${currentUser.fullName} mulai mengikuti Anda`,
+                    sender: currentUser.fullName,
+                    senderUsername: currentUser.username,
+                    timestamp: Date.now(),
+                    read: false
+                });
+                saveNotifications();
+            }
+            
+            try {
+                localStorage.setItem('salink_friends', JSON.stringify(friends));
+                SYNC.updateFriends(friends);
+            } catch (e) {
+                console.warn('Gagal menyimpan friends:', e);
+            }
+            
+            updateStats();
+            renderTemanModal();
+        }
+
+        // ================================================================
+        // UPDATE STATS
+        // ================================================================
+        function updateStats() {
+            if (!profileUser) return;
+            
+            const userPosts = posts.filter(p => p.userId === profileUser.username);
+            document.getElementById('profileStatPosts').textContent = userPosts.length;
+            
+            const followerCount = friends.filter(f => f.following === profileUser.username).length;
+            document.getElementById('profileStatFollowers').textContent = followerCount;
+            
+            const followingCount = friends.filter(f => f.following === profileUser.username).length;
+            document.getElementById('profileStatFollowing').textContent = followingCount;
+            
+            console.log(`📊 Stats: Posts=${userPosts.length}, Followers=${followerCount}, Following=${followingCount}`);
+        }
+
+        // ================================================================
         // LOAD NOTIFICATIONS
         // ================================================================
         function loadNotifications() {
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.notifications && Array.isArray(dashboardState.notifications)) {
+                notifications = dashboardState.notifications;
+                localStorage.setItem('salink_notifications', JSON.stringify(notifications));
+                return true;
+            }
+            
             try {
                 const saved = localStorage.getItem('salink_notifications');
                 if (saved) {
@@ -1937,20 +2424,15 @@
             return true;
         }
 
-        // ================================================================
-        // SAVE NOTIFICATIONS
-        // ================================================================
         function saveNotifications() {
             try {
                 localStorage.setItem('salink_notifications', JSON.stringify(notifications));
+                SYNC.updateNotifications(notifications);
             } catch (e) {
                 console.warn('Gagal menyimpan notifikasi:', e);
             }
         }
 
-        // ================================================================
-        // GENERATE SAMPLE NOTIFICATIONS
-        // ================================================================
         function generateSampleNotifications() {
             const now = Date.now();
             const notifTypes = [
@@ -1980,9 +2462,6 @@
             updateNotifBadge();
         }
 
-        // ================================================================
-        // UPDATE NOTIF BADGE
-        // ================================================================
         function updateNotifBadge() {
             const unread = notifications.filter(n => !n.read).length;
             const badge = document.getElementById('notifModalBadge');
@@ -1991,16 +2470,13 @@
             }
         }
 
-        // ================================================================
-        // RENDER NOTIFICATIONS
-        // ================================================================
         function renderNotifications() {
             const body = document.getElementById('notifModalBody');
             body.innerHTML = '';
             
             if (notifications.length === 0) {
                 body.innerHTML = `
-                    <div style="text-align:center;padding:30px 0;color:var(--text-muted);">
+                    <div class="empty-state">
                         <i class="fas fa-bell-slash" style="font-size:2.5rem;display:block;margin-bottom:10px;opacity:0.3;"></i>
                         <p>Belum ada pesan notifikasi</p>
                     </div>
@@ -2033,7 +2509,7 @@
                 };
                 
                 const senderHtml = notif.sender && notif.sender !== 'Sistem' ? 
-                    `<a href="#" onclick="event.preventDefault(); openProfileUser('${notif.senderUsername || notif.sender}');" style="color:var(--accent-blue);text-decoration:none;cursor:pointer;">${notif.sender}</a>` : 
+                    `<a href="#" onclick="event.preventDefault(); openProfileUserPage('${notif.senderUsername || notif.sender}');" style="color:var(--accent-blue);text-decoration:none;cursor:pointer;">${notif.sender}</a>` : 
                     notif.sender;
                 
                 item.innerHTML = `
@@ -2058,10 +2534,8 @@
                     updateNotifBadge();
                     renderNotifications();
                     
-                    if (notif.type === 'inbox' || notif.type === 'post' || notif.type === 'comment') {
-                        document.getElementById('mainContent').scrollIntoView({ behavior: 'smooth' });
-                    } else if (notif.sender && notif.sender !== 'Sistem') {
-                        openProfileUser(notif.senderUsername || notif.sender);
+                    if (notif.sender && notif.sender !== 'Sistem') {
+                        openProfileUserPage(notif.senderUsername || notif.sender);
                     }
                 });
                 
@@ -2069,18 +2543,34 @@
             });
         }
 
-        // ================================================================
-        // OPEN PESAN MODAL
-        // ================================================================
         function openPesanModal() {
-            renderNotifications();
-            document.getElementById('notifModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            // 🔥 BUKA halaman pesan.html
+            window.open('pesan.html', '_blank');
         }
 
         function closeNotifModal() {
             document.getElementById('notifModal').classList.remove('active');
             document.body.style.overflow = '';
+        }
+
+        function getTimeAgo(timestamp) {
+            const diff = Date.now() - timestamp;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+            
+            if (seconds < 60) return 'Baru saja';
+            if (minutes < 60) return `${minutes} menit yang lalu`;
+            if (minutes < 120) return '1 jam yang lalu';
+            if (hours < 24) return `${hours} jam yang lalu`;
+            if (days < 7) return `${days} hari yang lalu`;
+            if (weeks < 4) return `${weeks} minggu yang lalu`;
+            if (months < 12) return `${months} bulan yang lalu`;
+            return `${years} tahun yang lalu`;
         }
 
         // ================================================================
@@ -2100,54 +2590,10 @@
             document.getElementById('profileUsername').textContent = `@${profileUser.username || 'username'}`;
             document.getElementById('profileBio').textContent = profileUser.bio || 'Bergabung di SALINK untuk keamanan bersama';
             
+            updateStats();
+            
             const userPosts = posts.filter(p => p.userId === profileUser.username);
-            document.getElementById('profileStatPosts').textContent = userPosts.length;
-            
-            const followerCount = friends.filter(f => f.username !== profileUser.username).length;
-            document.getElementById('profileStatFollowers').textContent = followerCount > 0 ? followerCount : '0';
-            
-            const followingCount = Math.floor(Math.random() * 3) + 1;
-            document.getElementById('profileStatFollowing').textContent = followingCount;
-            
             renderProfilePosts(userPosts);
-        }
-
-        // ================================================================
-        // OPEN PROFILE USER
-        // ================================================================
-        function openProfileUser(username) {
-            if (!username) {
-                if (currentUser) {
-                    window.open(`profile-user.html?username=${currentUser.username}`, '_blank');
-                } else {
-                    window.open('profile-user.html', '_blank');
-                }
-                return;
-            }
-            window.open(`profile-user.html?username=${encodeURIComponent(username)}`, '_blank');
-        }
-
-        // ================================================================
-        // GET TIME AGO
-        // ================================================================
-        function getTimeAgo(timestamp) {
-            const diff = Date.now() - timestamp;
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            const weeks = Math.floor(days / 7);
-            const months = Math.floor(days / 30);
-            const years = Math.floor(days / 365);
-            
-            if (seconds < 60) return 'Baru saja';
-            if (minutes < 60) return `${minutes} menit yang lalu`;
-            if (minutes < 120) return '1 jam yang lalu';
-            if (hours < 24) return `${hours} jam yang lalu`;
-            if (days < 7) return `${days} hari yang lalu`;
-            if (weeks < 4) return `${weeks} minggu yang lalu`;
-            if (months < 12) return `${months} bulan yang lalu`;
-            return `${years} tahun yang lalu`;
         }
 
         // ================================================================
@@ -2188,11 +2634,11 @@
                 
                 postEl.innerHTML = `
                     <div class="post-header">
-                        <div class="post-profile-pic" onclick="openProfileUser('${post.userId}')">
+                        <div class="post-profile-pic" onclick="openProfileUserPage('${post.userId}')">
                             ${profilePic}
                         </div>
                         <div class="post-user-info">
-                            <h4>${post.userFullName} ${specialBadge}</h4>
+                            <h4><span class="profile-link" onclick="openProfileUserPage('${post.userId}')">${post.userFullName}</span> ${specialBadge}</h4>
                             <small>${new Date(post.timestamp).toLocaleString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' })}</small>
                         </div>
                     </div>
@@ -2235,11 +2681,11 @@
                             return `
                                 <div class="comment" id="comment-${comment.id}">
                                     <div class="comment-main">
-                                        <div class="comment-profile-pic" onclick="openProfileUser('${comment.userId}')">
+                                        <div class="comment-profile-pic" onclick="openProfileUserPage('${comment.userId}')">
                                             ${commentProfilePic}
                                         </div>
                                         <div class="comment-content">
-                                            <div class="comment-user" onclick="openProfileUser('${comment.userId}')">${comment.userFullName}</div>
+                                            <div class="comment-user" onclick="openProfileUserPage('${comment.userId}')">${comment.userFullName}</div>
                                             <div class="comment-text">${comment.text}</div>
                                             <div class="comment-time">${getTimeAgo(comment.timestamp)}</div>
                                             <div class="comment-actions">
@@ -2256,11 +2702,11 @@
                                                 return `
                                                     <div class="reply-comment">
                                                         <div class="comment-main">
-                                                            <div class="comment-profile-pic" onclick="openProfileUser('${reply.userId}')">
+                                                            <div class="comment-profile-pic" onclick="openProfileUserPage('${reply.userId}')">
                                                                 ${replyProfilePic}
                                                             </div>
                                                             <div class="comment-content">
-                                                                <div class="comment-user" onclick="openProfileUser('${reply.userId}')">${reply.userFullName}</div>
+                                                                <div class="comment-user" onclick="openProfileUserPage('${reply.userId}')">${reply.userFullName}</div>
                                                                 <div class="comment-text">${reply.text}</div>
                                                                 <div class="comment-time">${getTimeAgo(reply.timestamp)}</div>
                                                             </div>
@@ -2292,7 +2738,6 @@
         // ATTACH POST LISTENERS
         // ================================================================
         function attachPostListeners() {
-            // LIKE
             document.querySelectorAll('.post-action.liked, .post-action[data-post-id]').forEach(el => {
                 el.addEventListener('click', function(e) {
                     const postId = this.dataset.postId;
@@ -2314,10 +2759,10 @@
                     }
                     savePosts();
                     renderProfilePosts(posts.filter(p => p.userId === profileUser.username));
+                    updateStats();
                 });
             });
             
-            // COMMENT TOGGLE
             document.querySelectorAll('.comment-toggle').forEach(el => {
                 el.addEventListener('click', function() {
                     const postId = this.dataset.postId;
@@ -2328,7 +2773,6 @@
                 });
             });
             
-            // SEND COMMENT
             document.querySelectorAll('.send-comment').forEach(el => {
                 el.addEventListener('click', function() {
                     if (!currentUser) {
@@ -2363,7 +2807,6 @@
                 });
             });
             
-            // COMMENT INPUT ENTER
             document.querySelectorAll('.comment-input').forEach(el => {
                 el.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
@@ -2373,7 +2816,6 @@
                 });
             });
             
-            // REPLY COMMENT
             document.querySelectorAll('.reply-comment-action').forEach(el => {
                 el.addEventListener('click', function() {
                     if (!currentUser) {
@@ -2408,7 +2850,6 @@
                 });
             });
             
-            // SHARE
             document.querySelectorAll('.post-action.share').forEach(el => {
                 el.addEventListener('click', function() {
                     const postId = this.dataset.postId;
@@ -2456,7 +2897,6 @@
             const grid = document.getElementById('fotoGrid');
             grid.innerHTML = '';
             
-            // Ambil semua postingan dari user yang memiliki media
             const userPosts = posts.filter(p => p.userId === profileUser.username && (p.mediaType === 'image' || p.mediaType === 'video'));
             
             let filteredPosts = userPosts;
@@ -2485,7 +2925,6 @@
                 
                 const isLiked = currentUser && post.likes && post.likes.includes(currentUser.username);
                 const isOwner = currentUser && post.userId === currentUser.username;
-                const mediaClass = post.mediaType === 'video' ? 'video' : '';
                 
                 let mediaHtml = '';
                 if (post.mediaType === 'image') {
@@ -2494,13 +2933,12 @@
                     mediaHtml = `<video controls class="foto-media video" onclick="this.paused ? this.play() : this.pause()"><source src="${post.mediaData}"></video>`;
                 }
                 
-                // Komentar terbatas untuk ditampilkan di grid
                 const recentComments = post.comments ? post.comments.slice(-2) : [];
                 
                 item.innerHTML = `
                     ${mediaHtml}
                     <div class="foto-info">
-                        <span class="foto-user" onclick="openProfileUser('${post.userId}')">${post.userFullName}</span>
+                        <span class="foto-user" onclick="openProfileUserPage('${post.userId}')">${post.userFullName}</span>
                         <span style="font-size:0.5rem;color:var(--text-muted);">${getTimeAgo(post.timestamp)}</span>
                     </div>
                     <div class="foto-actions">
@@ -2522,7 +2960,7 @@
                     <div class="foto-comment-section" id="foto-comments-${post.id}" style="display:none;">
                         ${recentComments.map(c => `
                             <div class="foto-comment">
-                                <span class="foto-cmt-user" onclick="openProfileUser('${c.userId}')">${c.userFullName}</span>
+                                <span class="foto-cmt-user" onclick="openProfileUserPage('${c.userId}')">${c.userFullName}</span>
                                 : ${c.text}
                             </div>
                         `).join('')}
@@ -2537,7 +2975,6 @@
                 grid.appendChild(item);
             });
             
-            // Attach event listeners untuk foto actions
             attachFotoListeners();
         }
 
@@ -2549,7 +2986,6 @@
         }
 
         function attachFotoListeners() {
-            // LIKE di foto modal
             document.querySelectorAll('.foto-action.liked, .foto-action[data-post-id]').forEach(el => {
                 el.addEventListener('click', function(e) {
                     const postId = this.dataset.postId;
@@ -2571,10 +3007,10 @@
                     }
                     savePosts();
                     renderFotoPosts(currentFotoFilter);
+                    updateStats();
                 });
             });
             
-            // HAPUS di foto modal
             document.querySelectorAll('.delete-foto').forEach(el => {
                 el.addEventListener('click', function(e) {
                     const postId = this.dataset.postId;
@@ -2591,11 +3027,11 @@
                     savePosts();
                     renderFotoPosts(currentFotoFilter);
                     renderProfilePosts(posts.filter(p => p.userId === profileUser.username));
+                    updateStats();
                     showToast('🗑️ Dihapus', 'Postingan berhasil dihapus', 'fa-trash');
                 });
             });
             
-            // KOMENTAR di foto modal
             document.querySelectorAll('.foto-add-comment button').forEach(el => {
                 el.addEventListener('click', function() {
                     if (!currentUser) {
@@ -2630,7 +3066,6 @@
                 });
             });
             
-            // ENTER untuk komentar foto
             document.querySelectorAll('.foto-add-comment input').forEach(el => {
                 el.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
@@ -2691,6 +3126,12 @@
         // TEMAN MODAL
         // ================================================================
         function openTemanModal() {
+            renderTemanModal();
+            document.getElementById('temanModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderTemanModal() {
             const body = document.getElementById('temanModalBody');
             body.innerHTML = '';
             document.getElementById('totalTemanCount').textContent = friends.length;
@@ -2702,31 +3143,36 @@
                         <p>Belum ada teman</p>
                     </div>
                 `;
-            } else {
-                friends.forEach(friend => {
-                    const item = document.createElement('div');
-                    item.className = 'friend-item';
-                    const avatarIcon = friend.gender === 'female' ? 'fa-female' : 'fa-male';
-                    const statusColor = friend.status === 'Online' ? '#3fb950' : '#888';
-                    
-                    item.innerHTML = `
-                        <div class="friend-avatar" onclick="openProfileUser('${friend.username}')">
-                            ${friend.avatar ? `<img src="${friend.avatar}" alt="${friend.name}">` : `<i class="fas ${avatarIcon}"></i>`}
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name" onclick="openProfileUser('${friend.username}')" style="cursor:pointer;color:var(--accent-blue);">${friend.name}</div>
-                            <div class="friend-status">@${friend.username} • <span style="color:${statusColor};">${friend.status}</span></div>
-                        </div>
-                        <button onclick="openProfileUser('${friend.username}')" style="background:var(--bg-input);color:var(--accent-blue);border:1px solid var(--accent-blue);padding:4px 12px;border-radius:12px;cursor:pointer;font-size:0.6rem;">
-                            <i class="fas fa-eye"></i> Lihat
-                        </button>
-                    `;
-                    body.appendChild(item);
-                });
+                return;
             }
             
-            document.getElementById('temanModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            friends.forEach(friend => {
+                const item = document.createElement('div');
+                item.className = 'friend-item';
+                const avatarIcon = friend.gender === 'female' ? 'fa-female' : 'fa-male';
+                const statusColor = friend.status === 'Online' ? '#3fb950' : '#888';
+                const isFollowing = friend.following === currentUser?.username;
+                
+                item.innerHTML = `
+                    <div class="friend-avatar" onclick="openProfileUserPage('${friend.username}')">
+                        ${friend.avatar ? `<img src="${friend.avatar}" alt="${friend.name}">` : `<i class="fas ${avatarIcon}"></i>`}
+                    </div>
+                    <div class="friend-info">
+                        <div class="friend-name" onclick="openProfileUserPage('${friend.username}')" style="cursor:pointer;color:var(--accent-blue);">${friend.name}</div>
+                        <div class="friend-status">@${friend.username} • <span style="color:${statusColor};">${friend.status}</span></div>
+                    </div>
+                    ${currentUser && friend.username !== currentUser.username ? `
+                        <button class="follow-btn ${isFollowing ? 'following' : ''}" 
+                                onclick="event.stopPropagation(); toggleFollow('${friend.username}')">
+                            ${isFollowing ? '✓ Mengikuti' : '+ Ikuti'}
+                        </button>
+                    ` : ''}
+                    <button onclick="openProfileUserPage('${friend.username}')" style="background:var(--bg-input);color:var(--accent-blue);border:1px solid var(--accent-blue);padding:4px 12px;border-radius:12px;cursor:pointer;font-size:0.6rem;">
+                        <i class="fas fa-eye"></i> Lihat
+                    </button>
+                `;
+                body.appendChild(item);
+            });
         }
 
         function closeTemanModal() {
@@ -2836,7 +3282,7 @@
         // ================================================================
         function openPengikutModal() {
             const body = document.getElementById('pengikutModalBody');
-            const followers = friends.filter(f => f.username !== profileUser.username);
+            const followers = friends.filter(f => f.following === profileUser.username);
             document.getElementById('pengikutCount').textContent = followers.length;
             
             body.innerHTML = '';
@@ -2850,18 +3296,18 @@
                 `;
             } else {
                 followers.slice(0, 20).forEach(friend => {
+                    const avatarIcon = friend.gender === 'female' ? 'fa-female' : 'fa-male';
                     const item = document.createElement('div');
                     item.className = 'friend-item';
-                    const avatarIcon = friend.gender === 'female' ? 'fa-female' : 'fa-male';
                     item.innerHTML = `
-                        <div class="friend-avatar" onclick="openProfileUser('${friend.username}')">
+                        <div class="friend-avatar" onclick="openProfileUserPage('${friend.username}')">
                             ${friend.avatar ? `<img src="${friend.avatar}" alt="${friend.name}">` : `<i class="fas ${avatarIcon}"></i>`}
                         </div>
                         <div class="friend-info">
-                            <div class="friend-name" onclick="openProfileUser('${friend.username}')" style="cursor:pointer;color:var(--accent-blue);">${friend.name}</div>
+                            <div class="friend-name" onclick="openProfileUserPage('${friend.username}')" style="cursor:pointer;color:var(--accent-blue);">${friend.name}</div>
                             <div class="friend-status">@${friend.username}</div>
                         </div>
-                        <button onclick="openProfileUser('${friend.username}')" style="background:var(--bg-input);color:var(--accent-blue);border:1px solid var(--accent-blue);padding:4px 12px;border-radius:12px;cursor:pointer;font-size:0.6rem;">
+                        <button onclick="openProfileUserPage('${friend.username}')" style="background:var(--bg-input);color:var(--accent-blue);border:1px solid var(--accent-blue);padding:4px 12px;border-radius:12px;cursor:pointer;font-size:0.6rem;">
                             <i class="fas fa-eye"></i> Lihat
                         </button>
                     `;
@@ -2883,17 +3329,12 @@
         // ================================================================
         function openMengikutiModal() {
             const body = document.getElementById('mengikutiModalBody');
-            const followingUsers = [
-                { name: 'Bpk. Budi', username: 'budi', gender: 'male' },
-                { name: 'Sdri. Siti', username: 'siti', gender: 'female' },
-                { name: 'Bpk. Andi', username: 'andi', gender: 'male' }
-            ];
-            const count = Math.floor(Math.random() * 3) + 1;
-            document.getElementById('mengikutiCount').textContent = count;
+            const following = friends.filter(f => f.following === profileUser.username);
+            document.getElementById('mengikutiCount').textContent = following.length;
             
             body.innerHTML = '';
             
-            if (count === 0) {
+            if (following.length === 0) {
                 body.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-user-plus"></i>
@@ -2901,19 +3342,26 @@
                     </div>
                 `;
             } else {
-                followingUsers.slice(0, count).forEach(user => {
-                    const avatarIcon = user.gender === 'female' ? 'fa-female' : 'fa-male';
+                following.slice(0, 20).forEach(friend => {
+                    const avatarIcon = friend.gender === 'female' ? 'fa-female' : 'fa-male';
                     const item = document.createElement('div');
                     item.className = 'friend-item';
+                    const isFollowing = friend.following === currentUser?.username;
                     item.innerHTML = `
-                        <div class="friend-avatar" onclick="openProfileUser('${user.username}')">
-                            <i class="fas ${avatarIcon}"></i>
+                        <div class="friend-avatar" onclick="openProfileUserPage('${friend.username}')">
+                            ${friend.avatar ? `<img src="${friend.avatar}" alt="${friend.name}">` : `<i class="fas ${avatarIcon}"></i>`}
                         </div>
                         <div class="friend-info">
-                            <div class="friend-name" onclick="openProfileUser('${user.username}')" style="cursor:pointer;color:var(--accent-blue);">${user.name}</div>
-                            <div class="friend-status">@${user.username}</div>
+                            <div class="friend-name" onclick="openProfileUserPage('${friend.username}')" style="cursor:pointer;color:var(--accent-blue);">${friend.name}</div>
+                            <div class="friend-status">@${friend.username}</div>
                         </div>
-                        <button onclick="openProfileUser('${user.username}')" style="background:var(--bg-input);color:var(--accent-blue);border:1px solid var(--accent-blue);padding:4px 12px;border-radius:12px;cursor:pointer;font-size:0.6rem;">
+                        ${currentUser && friend.username !== currentUser.username ? `
+                            <button class="follow-btn ${isFollowing ? 'following' : ''}" 
+                                    onclick="event.stopPropagation(); toggleFollow('${friend.username}')">
+                                ${isFollowing ? '✓ Mengikuti' : '+ Ikuti'}
+                            </button>
+                        ` : ''}
+                        <button onclick="openProfileUserPage('${friend.username}')" style="background:var(--bg-input);color:var(--accent-blue);border:1px solid var(--accent-blue);padding:4px 12px;border-radius:12px;cursor:pointer;font-size:0.6rem;">
                             <i class="fas fa-eye"></i> Lihat
                         </button>
                     `;
@@ -2931,42 +3379,6 @@
         }
 
         // ================================================================
-        // INVITE
-        // ================================================================
-        function sendInvite() {
-            if (!currentUser) {
-                showToast('🔒 Login Diperlukan', 'Silakan masuk untuk mengirim undangan', 'fa-lock');
-                return;
-            }
-            
-            if (currentUser.username === profileUser.username) {
-                showToast('⚠️ Info', 'Anda tidak dapat mengundang diri sendiri!', 'fa-exclamation-triangle');
-                return;
-            }
-            
-            // 🔥 SYNC invite ke Spreadsheet
-            try {
-                fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'save_invite',
-                        invite: {
-                            from: currentUser.username,
-                            to: profileUser.username,
-                            status: 'pending',
-                            timestamp: Date.now()
-                        }
-                    })
-                });
-            } catch (e) {
-                console.warn('⚠️ Gagal sync invite:', e);
-            }
-            
-            showToast('✅ Terkirim', `Undangan berteman dikirim ke ${profileUser.fullName}!`, 'fa-user-plus');
-        }
-
-        // ================================================================
         // EVENT LISTENERS
         // ================================================================
         document.addEventListener('DOMContentLoaded', async function() {
@@ -2974,6 +3386,7 @@
             await loadProfileData();
             await loadPosts();
             loadFriends();
+            await loadAllUsers();
             loadNotifications();
             
             renderProfile();
@@ -2981,7 +3394,7 @@
             
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             
-            // ===== NAVBAR BUTTONS =====
+            // NAVBAR BUTTONS
             document.getElementById('profileTemanBtn').addEventListener('click', function(e) {
                 e.preventDefault();
                 openTemanModal();
@@ -2992,12 +3405,13 @@
                 openBiodataModal();
             });
             
-            document.getElementById('profileJualBtn').addEventListener('click', function(e) {
-                // Sudah menggunakan target="_blank" ke jual.html
-                // Biarkan default behavior
+            // TOMBOL INVITE → BUKA MODAL DAFTAR USER
+            document.getElementById('profileInviteBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openInviteModal();
             });
             
-            // ===== MODAL CLOSE =====
+            // MODAL CLOSES
             document.getElementById('temanModalClose').addEventListener('click', closeTemanModal);
             document.getElementById('temanModal').addEventListener('click', function(e) {
                 if (e.target === this) closeTemanModal();
@@ -3033,7 +3447,17 @@
                 if (e.target === this) closeFotoModal();
             });
             
-            // ===== STATS CLICK =====
+            document.getElementById('inviteModalClose').addEventListener('click', closeInviteModal);
+            document.getElementById('inviteModal').addEventListener('click', function(e) {
+                if (e.target === this) closeInviteModal();
+            });
+            
+            // SEARCH INVITE
+            document.getElementById('inviteSearchInput').addEventListener('input', function() {
+                renderInviteUsers(this.value);
+            });
+            
+            // STATS CLICK
             document.getElementById('statPosts').addEventListener('click', function() {
                 openPostinganModal();
             });
@@ -3046,22 +3470,22 @@
                 openMengikutiModal();
             });
             
-            // ===== INVITE BUTTON =====
-            document.getElementById('profileInviteBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                sendInvite();
-            });
-            
-            console.log('👤 Profile User Page Loaded - INTEGRASI SPREADSHEET');
+            console.log('👤 Profile User Page Loaded - INTEGRASI DENGAN DASHBOARD');
             console.log(`📌 Profile: ${profileUser?.fullName || 'Unknown'}`);
             console.log(`📝 Posts: ${posts.filter(p => p.userId === profileUser?.username).length}`);
             console.log(`👥 Friends: ${friends.length}`);
-            console.log('📡 API URL:', API_URL);
-            console.log('✅ Mode READ-ONLY - Like & Komentar aktif');
-            console.log('✅ Navbar: Foto, Teman, Biodata, Jual - SEMUA TAMPIL');
-            console.log('✅ Modal FOTO dengan filter Semua, Foto, Video');
-            console.log('✅ Like, Komentar, Hapus aktif di modal Foto');
-            console.log('✅ Sinkronisasi data ke Spreadsheet aktif');
+            console.log(`👥 All Users: ${allUsers.length}`);
+            console.log('✅ TOMBOL PESAN → buka pesan.html');
+            console.log('✅ TOMBOL INVITE → buka modal daftar user');
+            console.log('✅ TOMBOL JUAL → buka jual.html');
+            console.log('✅ Semua foto/nama akun → buka profile-user.html');
+            
+            SYNC.pushToDashboard({
+                user: currentUser || profileUser,
+                posts: posts,
+                notifications: notifications,
+                friends: friends
+            });
         });
     </script>
 </body>
