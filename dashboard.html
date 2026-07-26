@@ -37,7 +37,6 @@
     }
     </script>
 
-    <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
@@ -48,12 +47,11 @@
             console.log('❌ Service Worker registration failed:', err);
           });
 
-        let deferredPrompt;
+        var deferredPrompt;
         window.addEventListener('beforeinstallprompt', function(e) {
           e.preventDefault();
           deferredPrompt = e;
           console.log('✅ PWA install prompt available');
-          // Show install notification
           setTimeout(function() {
             showInstallNotification();
           }, 3000);
@@ -61,13 +59,14 @@
 
         window.addEventListener('appinstalled', function() {
           console.log('✅ SALINK app installed successfully!');
-          document.getElementById('sl-install-notif')?.remove();
+          var notif = document.getElementById('sl-install-notif');
+          if (notif) {
+            notif.classList.remove('show');
+            setTimeout(function() { if (notif.parentNode) notif.parentNode.removeChild(notif); }, 300);
+          }
         });
-      } else {
-        console.log('⚠️ Service Workers not supported in this browser');
       }
 
-      // Show install notification (floating)
       function showInstallNotification() {
         var container = document.getElementById('sl-toast-container');
         if (!container) return;
@@ -78,40 +77,46 @@
         var notif = document.createElement('div');
         notif.id = 'sl-install-notif';
         notif.className = 'sl-toast sl-toast-install';
-        notif.innerHTML = `
-          <span class="sl-toast-icon">📲</span>
-          <div class="sl-toast-content">
-            <div class="sl-toast-title">SALINK</div>
-            <div class="sl-toast-message">Emergency Social Platform — Install aplikasi sekarang</div>
-          </div>
-          <button class="sl-install-btn" id="sl-install-btn">Install</button>
-          <button class="sl-toast-close" id="sl-install-close">✕</button>
-        `;
+        notif.innerHTML =
+          '<span class="sl-toast-icon">📲</span>' +
+          '<div class="sl-toast-content">' +
+          '<div class="sl-toast-title">SALINK</div>' +
+          '<div class="sl-toast-message">Emergency Social Platform — Install aplikasi sekarang</div>' +
+          '</div>' +
+          '<button class="sl-install-btn" id="sl-install-btn">Install</button>' +
+          '<button class="sl-toast-close" id="sl-install-close">✕</button>';
         container.appendChild(notif);
         requestAnimationFrame(function() {
           notif.classList.add('show');
         });
 
-        document.getElementById('sl-install-btn').addEventListener('click', function() {
-          if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(function(choiceResult) {
-              if (choiceResult.outcome === 'accepted') {
-                console.log('✅ User accepted the install prompt');
-              } else {
-                console.log('❌ User dismissed the install prompt');
-              }
-              deferredPrompt = null;
-              notif.classList.remove('show');
-              setTimeout(function() { notif.remove(); }, 300);
-            });
-          }
-        });
+        var installBtn = document.getElementById('sl-install-btn');
+        var closeBtn = document.getElementById('sl-install-close');
 
-        document.getElementById('sl-install-close').addEventListener('click', function() {
-          notif.classList.remove('show');
-          setTimeout(function() { notif.remove(); }, 300);
-        });
+        if (installBtn) {
+          installBtn.addEventListener('click', function() {
+            if (deferredPrompt) {
+              deferredPrompt.prompt();
+              deferredPrompt.userChoice.then(function(choiceResult) {
+                if (choiceResult.outcome === 'accepted') {
+                  console.log('✅ User accepted the install prompt');
+                } else {
+                  console.log('❌ User dismissed the install prompt');
+                }
+                deferredPrompt = null;
+                notif.classList.remove('show');
+                setTimeout(function() { if (notif.parentNode) notif.parentNode.removeChild(notif); }, 300);
+              });
+            }
+          });
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            notif.classList.remove('show');
+            setTimeout(function() { if (notif.parentNode) notif.parentNode.removeChild(notif); }, 300);
+          });
+        }
       }
     </script>
 
@@ -120,7 +125,6 @@
            SALINK DESIGN SYSTEM — All in One
            ================================================================ */
 
-        /* ---------- TOKENS ---------- */
         :root {
             --sl-color-primary: #00C2FF;
             --sl-color-primary-hover: #33D0FF;
@@ -770,7 +774,7 @@
             text-align: right;
         }
 
-        /* ---------- HOLOGRAM OVERLAY (Emergency Alarm - Only when locked) ---------- */
+        /* ---------- HOLOGRAM OVERLAY (Emergency Alarm) ---------- */
         .sl-hologram-overlay {
             position: fixed;
             inset: 0;
@@ -996,7 +1000,7 @@
             }
         }
 
-        /* ---------- QUICK STATS (Horizontal) ---------- */
+        /* ---------- QUICK STATS ---------- */
         .sl-quick-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -2529,7 +2533,7 @@
 </head>
 <body>
 
-    <!-- ==================== SPLASH SCREEN ==================== -->
+    <!-- SPLASH SCREEN -->
     <div id="sl-splash">
         <div class="sl-splash-logo">🚨</div>
         <div class="sl-splash-sub">SALINK — Emergency Social Platform</div>
@@ -2537,7 +2541,7 @@
         <div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);margin-top:var(--sl-spacing-2);">Loading...</div>
     </div>
 
-    <!-- ==================== PREVIEW MODE OVERLAY ==================== -->
+    <!-- PREVIEW MODE OVERLAY -->
     <div id="sl-preview-overlay">
         <div class="sl-preview-card">
             <div class="sl-preview-icon">👀</div>
@@ -2553,7 +2557,7 @@
         </div>
     </div>
 
-    <!-- ==================== HOLOGRAM OVERLAY (Emergency Alarm) ==================== -->
+    <!-- HOLOGRAM OVERLAY -->
     <div class="sl-hologram-overlay" id="sl-hologram-overlay">
         <div class="sl-hologram-overlay-content">
             <div class="sl-hologram-overlay-icon" id="sl-hologram-icon">🚨</div>
@@ -2569,7 +2573,7 @@
         </div>
     </div>
 
-    <!-- ==================== APPLICATION SHELL ==================== -->
+    <!-- APPLICATION SHELL -->
     <div id="sl-app" role="application">
 
         <!-- SYSTEM BAR -->
@@ -2648,7 +2652,7 @@
         </nav>
     </div>
 
-    <!-- ==================== SIDEBAR ==================== -->
+    <!-- SIDEBAR -->
     <aside class="sl-sidebar" id="sl-sidebar" role="navigation" aria-label="Sidebar Menu">
         <div class="sl-sidebar-header">
             <div class="sl-sidebar-logo">
@@ -2696,7 +2700,7 @@
     </aside>
     <div class="sl-sidebar-overlay" id="sl-sidebar-overlay"></div>
 
-    <!-- ==================== MODAL ==================== -->
+    <!-- MODAL -->
     <div class="sl-modal-overlay" id="sl-modal-overlay">
         <div class="sl-modal">
             <div class="sl-modal-header">
@@ -2708,7 +2712,7 @@
         </div>
     </div>
 
-    <!-- ==================== CONFIRM MODAL ==================== -->
+    <!-- CONFIRM MODAL -->
     <div class="sl-modal-overlay sl-confirm-modal" id="sl-confirm-overlay">
         <div class="sl-modal">
             <div class="sl-modal-icon" id="sl-confirm-icon">📞</div>
@@ -2721,7 +2725,7 @@
         </div>
     </div>
 
-    <!-- ==================== TOAST CONTAINER ==================== -->
+    <!-- TOAST CONTAINER -->
     <div class="sl-toast-container" id="sl-toast-container"></div>
 
     <!-- ============================================================
@@ -2732,7 +2736,7 @@
             'use strict';
 
             // ==================== CONFIG ====================
-            const CONFIG = {
+            var CONFIG = {
                 emergencySounds: {
                     fire: 'https://cdn.jsdelivr.net/gh/Kangeldzi/salink@main/Music/Kebakaran.mp3',
                     medical: 'https://cdn.jsdelivr.net/gh/Kangeldzi/salink@main/Music/kematian.mp3',
@@ -2743,7 +2747,7 @@
                 adminEmail: 'teslasmartonlineshop@gmail.com'
             };
 
-            const EMERGENCY_TYPES = {
+            var EMERGENCY_TYPES = {
                 fire: { label: '🔥 Kebakaran', icon: '🔥', class: 'fire', sound: CONFIG.emergencySounds.fire },
                 medical: { label: '🚑 Medis & Kematian', icon: '🚑', class: 'medical', sound: CONFIG.emergencySounds
                         .medical },
@@ -2753,7 +2757,7 @@
                         .disaster }
             };
 
-            const CONTACTS = {
+            var CONTACTS = {
                 polisi: { label: 'Polisi', number: '0251-8647398', icon: '🚓' },
                 damkar: { label: 'Damkar', number: '0251-8642333', icon: '🔥' },
                 ambulance: { label: 'Ambulance', number: '119', icon: '🚑' },
@@ -2763,7 +2767,7 @@
             };
 
             // ==================== STATE ====================
-            const STATE = {
+            var STATE = {
                 theme: 'dark',
                 currentWorkspace: 'home',
                 isReady: false,
@@ -2803,7 +2807,7 @@
             };
 
             // ==================== STORAGE ====================
-            const Storage = {
+            var Storage = {
                 prefix: 'sl_',
                 set: function(key, value) {
                     try { localStorage.setItem(this.prefix + key, JSON.stringify(value)); } catch (e) {}
@@ -2958,11 +2962,14 @@
                         '<button class="sl-toast-close">✕</button>';
                     this.container.appendChild(toast);
                     requestAnimationFrame(function() { toast.classList.add('show'); });
-                    toast.querySelector('.sl-toast-close').addEventListener('click', function() {
-                        toast.classList.remove('show');
-                        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); },
-                        300);
-                    });
+                    var closeBtn = toast.querySelector('.sl-toast-close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', function() {
+                            toast.classList.remove('show');
+                            setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); },
+                            300);
+                        });
+                    }
                     var timer = setTimeout(function() {
                         toast.classList.remove('show');
                         setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); },
@@ -3005,7 +3012,8 @@
                     }
 
                     if (sidebar) {
-                        sidebar.querySelectorAll('.sl-sidebar-menu a').forEach(function(link) {
+                        var menuLinks = sidebar.querySelectorAll('.sl-sidebar-menu a');
+                        menuLinks.forEach(function(link) {
                             link.addEventListener('click', function(e) {
                                 e.preventDefault();
                                 var ws = this.dataset.workspace;
@@ -3017,12 +3025,13 @@
                                         Storage.remove('current_user');
                                         STATE.isLoggedIn = false;
                                         STATE.isPreview = true;
-                                        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info',
-                                            '👋');
+                                        Toast.show('Anda telah logout, kembali ke Preview Mode',
+                                            'info', '👋');
                                         EventBus.emit('router:navigate', { workspace: 'home' });
                                         setTimeout(function() {
-                                            document.getElementById('sl-preview-overlay').classList
-                                                .add('active');
+                                            var overlayEl = document.getElementById(
+                                            'sl-preview-overlay');
+                                            if (overlayEl) overlayEl.classList.add('active');
                                         }, 500);
                                     }
                                     Layout.closeSidebar();
@@ -3030,9 +3039,11 @@
                                 }
 
                                 if (ws) {
-                                    if (STATE.isPreview && ws !== 'home' && ws !== 'about' && ws !== 'privacy' &&
+                                    if (STATE.isPreview && ws !== 'home' && ws !== 'about' && ws !==
+                                        'privacy' &&
                                         ws !== 'terms' && ws !== 'contact') {
-                                        document.getElementById('sl-preview-overlay').classList.add('active');
+                                        var overlayEl = document.getElementById('sl-preview-overlay');
+                                        if (overlayEl) overlayEl.classList.add('active');
                                         return;
                                     }
                                     EventBus.emit('router:navigate', { workspace: ws });
@@ -3042,7 +3053,8 @@
                                     if (contactData) {
                                         Layout.showConfirmDialog(
                                             '📞 ' + contactData.label,
-                                            'Apakah Anda ingin menghubungi ' + contactData.label + ' di <strong>' +
+                                            'Apakah Anda ingin menghubungi ' + contactData.label +
+                                            ' di <strong>' +
                                             contactData.number + '</strong>?',
                                             contactData.icon,
                                             function() {
@@ -3106,8 +3118,10 @@
                             if (Layout.modalOpen) Layout.closeModal();
                             if (Layout.confirmOpen) Layout.closeConfirm();
                             if (AudioManager.isPlaying) AudioManager.stop();
-                            document.getElementById('sl-hologram-overlay')?.classList.remove('active');
-                            document.getElementById('sl-preview-overlay')?.classList.remove('active');
+                            var hologram = document.getElementById('sl-hologram-overlay');
+                            if (hologram) hologram.classList.remove('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.remove('active');
                         }
                         if (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
                             var map = { '1': 'home', '2': 'emergency', '3': 'feed', '4': 'history', '5': 'map' };
@@ -3115,7 +3129,8 @@
                             if (target) {
                                 e.preventDefault();
                                 if (STATE.isPreview && target !== 'home') {
-                                    document.getElementById('sl-preview-overlay').classList.add('active');
+                                    var previewEl = document.getElementById('sl-preview-overlay');
+                                    if (previewEl) previewEl.classList.add('active');
                                     return;
                                 }
                                 EventBus.emit('router:navigate', { workspace: target });
@@ -3144,17 +3159,23 @@
                                         .classList.remove('active'); });
                             }
                         });
-                        document.getElementById('sl-hologram-close').addEventListener('click', function() {
-                            overlay.classList.remove('active');
-                            AudioManager.stop();
-                            STATE.emergencyPlaying = false;
-                            document.querySelectorAll('.sl-emergency-btn').forEach(function(b) { b
-                                    .classList.remove('active'); });
-                        });
-                        document.getElementById('sl-hologram-detail').addEventListener('click', function() {
-                            overlay.classList.remove('active');
-                            EventBus.emit('router:navigate', { workspace: 'feed' });
-                        });
+                        var closeBtn = document.getElementById('sl-hologram-close');
+                        if (closeBtn) {
+                            closeBtn.addEventListener('click', function() {
+                                overlay.classList.remove('active');
+                                AudioManager.stop();
+                                STATE.emergencyPlaying = false;
+                                document.querySelectorAll('.sl-emergency-btn').forEach(function(b) { b
+                                        .classList.remove('active'); });
+                            });
+                        }
+                        var detailBtn = document.getElementById('sl-hologram-detail');
+                        if (detailBtn) {
+                            detailBtn.addEventListener('click', function() {
+                                overlay.classList.remove('active');
+                                EventBus.emit('router:navigate', { workspace: 'feed' });
+                            });
+                        }
                     }
                 },
 
@@ -3165,12 +3186,12 @@
 
                     if (cancelBtn) {
                         cancelBtn.addEventListener('click', function() {
-                            overlay.classList.remove('active');
+                            if (overlay) overlay.classList.remove('active');
                         });
                     }
                     if (loginBtn) {
                         loginBtn.addEventListener('click', function() {
-                            overlay.classList.remove('active');
+                            if (overlay) overlay.classList.remove('active');
                             window.location.href = 'login.html';
                         });
                     }
@@ -3243,9 +3264,12 @@
                         } else {
                             footerEl.innerHTML =
                                 '<button class="sl-modal-close-btn" id="sl-modal-close-btn">Tutup</button>';
-                            document.getElementById('sl-modal-close-btn').addEventListener('click', function() {
-                                Layout.closeModal();
-                            });
+                            var closeBtn = document.getElementById('sl-modal-close-btn');
+                            if (closeBtn) {
+                                closeBtn.addEventListener('click', function() {
+                                    Layout.closeModal();
+                                });
+                            }
                         }
                     }
                     if (modal) modal.classList.add('active');
@@ -3311,6 +3335,35 @@
 
             // ==================== RENDER FUNCTIONS ====================
 
+            // Helper function to get element safely
+            function safeGetElement(id) {
+                var el = document.getElementById(id);
+                if (!el) {
+                    console.warn('[SALINK] Element not found:', id);
+                }
+                return el;
+            }
+
+            // Helper function to add event listener safely
+            function safeAddListener(id, event, callback) {
+                var el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener(event, callback);
+                    return true;
+                }
+                console.warn('[SALINK] Cannot add listener, element not found:', id);
+                return false;
+            }
+
+            // Helper function to query selector safely
+            function safeQuery(selector) {
+                var el = document.querySelector(selector);
+                if (!el) {
+                    console.warn('[SALINK] Element not found:', selector);
+                }
+                return el;
+            }
+
             function orderClass(index) {
                 var orders = ['sl-order-1', 'sl-order-2', 'sl-order-3', 'sl-order-4', 'sl-order-5', 'sl-order-6',
                     'sl-order-7', 'sl-order-8', 'sl-order-9', 'sl-order-10', 'sl-order-11', 'sl-order-12'
@@ -3318,6 +3371,7 @@
                 return orders[index] || '';
             }
 
+            // ===== RENDER FUNCTIONS =====
             function renderHome() {
                 var hasHologram = STATE.hologramPosts.length > 0;
                 var latestHologram = hasHologram ? STATE.hologramPosts[STATE.hologramPosts.length - 1] : null;
@@ -3669,7 +3723,6 @@
                     '</div>';
             }
 
-            // ===== RENDER CHART =====
             function renderChart(type) {
                 var data = [12, 18, 24, 30, 22, 28, 35];
                 var labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
@@ -3708,7 +3761,6 @@
                 return html;
             }
 
-            // ===== RENDER COMMENTS =====
             function renderComments(postId) {
                 var post = STATE.posts.find(function(p) { return p.id === postId; });
                 if (!post || !post.commentList || post.commentList.length === 0) {
@@ -3754,7 +3806,6 @@
                 return html;
             }
 
-            // ===== RENDER BIODATA =====
             function renderBiodata() {
                 var u = STATE.user;
                 return '<div style="padding-bottom:var(--sl-spacing-4);">' +
@@ -3795,7 +3846,6 @@
                     '</div>';
             }
 
-            // ===== RENDER SETTINGS =====
             function renderSettings() {
                 var u = STATE.user;
                 return '<div style="padding-bottom:var(--sl-spacing-4);">' +
@@ -3859,7 +3909,6 @@
                     '</div>';
             }
 
-            // ===== RENDER STATIC PAGES =====
             function renderStaticPage(title, content) {
                 return '<div style="padding-bottom:var(--sl-spacing-4);">' +
                     '<div style="font-size:var(--sl-font-size-xl);font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);margin-bottom:var(--sl-spacing-4);">' +
@@ -3870,118 +3919,6 @@
                     '</div>';
             }
 
-            // ==================== MAIN RENDER ====================
-            function renderWorkspace(workspaceId) {
-                var container = document.getElementById('sl-workspace-content');
-                var loader = document.getElementById('sl-loader');
-                var errorBoundary = document.getElementById('sl-error-boundary');
-                var errorMsg = document.getElementById('sl-error-message');
-
-                errorBoundary.classList.remove('active');
-                loader.style.display = 'flex';
-                container.style.display = 'none';
-
-                var loaderText = document.getElementById('sl-loader-text');
-                var progress = 0;
-                var interval = setInterval(function() {
-                    progress += Math.random() * 20;
-                    if (progress > 90) progress = 90;
-                    if (loaderText) {
-                        if (progress < 30) loaderText.textContent = 'Mempersiapkan workspace...';
-                        else if (progress < 60) loaderText.textContent = 'Memuat konten...';
-                        else if (progress < 80) loaderText.textContent = 'Hampir selesai...';
-                        else loaderText.textContent = 'Siap!';
-                    }
-                }, 80);
-
-                setTimeout(function() {
-                    clearInterval(interval);
-
-                    try {
-                        var content = '';
-                        switch (workspaceId) {
-                            case 'home':
-                                content = renderHome();
-                                break;
-                            case 'emergency':
-                                content = renderEmergencyWorkspace();
-                                break;
-                            case 'feed':
-                                content = renderFeedWorkspace();
-                                break;
-                            case 'history':
-                                content = renderHistoryWorkspace();
-                                break;
-                            case 'map':
-                                content = renderMapWorkspace();
-                                break;
-                            case 'biodata':
-                                content = renderBiodata();
-                                break;
-                            case 'settings':
-                                content = renderSettings();
-                                break;
-                            case 'about':
-                                content = renderStaticPage('ℹ️ Tentang Kami',
-                                    'SALINK adalah platform darurat berbasis komunitas yang menghubungkan masyarakat, relawan, dan instansi pemerintah dalam satu ekosistem yang cepat, aman, dan terpercaya.'
-                                    );
-                                break;
-                            case 'privacy':
-                                content = renderStaticPage('🔒 Kebijakan Privasi',
-                                    'Kami menghargai privasi Anda. Data pribadi Anda dilindungi dan hanya digunakan untuk tujuan pelayanan darurat. Kami tidak membagikan data Anda kepada pihak ketiga tanpa izin Anda.'
-                                    );
-                                break;
-                            case 'terms':
-                                content = renderStaticPage('📜 Syarat & Ketentuan',
-                                    'Dengan menggunakan SALINK, Anda menyetujui untuk menggunakan platform ini dengan bertanggung jawab. Laporan palsu atau penyalahgunaan sistem dapat dikenakan sanksi sesuai ketentuan yang berlaku.'
-                                    );
-                                break;
-                            case 'contact':
-                                content = renderStaticPage('📧 Contact',
-                                    'Hubungi kami di: <a href="mailto:' + CONFIG.adminEmail +
-                                    '" style="color:var(--sl-color-primary);text-decoration:none;">' +
-                                    CONFIG.adminEmail + '</a> atau melalui hotline 112 untuk keadaan darurat.'
-                                    );
-                                break;
-                            default:
-                                throw new Error('Workspace "' + workspaceId + '" tidak ditemukan');
-                        }
-
-                        container.innerHTML = content;
-                        loader.style.display = 'none';
-                        container.style.display = 'block';
-
-                        // Update navigation
-                        document.querySelectorAll('.sl-nav-item').forEach(function(el) {
-                            el.classList.toggle('active', el.dataset.workspace === workspaceId);
-                        });
-                        document.querySelectorAll('.sl-sidebar-menu a').forEach(function(el) {
-                            el.classList.toggle('active', el.dataset.workspace === workspaceId);
-                        });
-
-                        var workspace = WORKSPACES[workspaceId];
-                        if (workspace) {
-                            document.querySelector('#sl-logo').innerHTML =
-                                '<span class="sl-logo-icon">🚨</span> SALINK' +
-                                '<span style="font-size:var(--sl-font-size-xs);font-weight:var(--sl-font-weight-medium);color:var(--sl-color-text-muted);margin-left:var(--sl-spacing-1);">' +
-                                workspace.label + '</span>';
-                        }
-
-                        bindWorkspaceEvents(workspaceId);
-                        updateNotificationBadge();
-                        EventBus.emit('workspace:loaded', { workspace: workspaceId });
-
-                    } catch (error) {
-                        console.error('[Workspace] Error:', error);
-                        errorBoundary.classList.add('active');
-                        errorMsg.textContent = error.message || 'Terjadi kesalahan saat memuat workspace.';
-                        loader.style.display = 'none';
-                        container.style.display = 'none';
-                    }
-                }, 800);
-            }
-
-            // ===== RENDER EMERGENCY WORKSPACE =====
             function renderEmergencyWorkspace() {
                 var html =
                     '<div style="padding-bottom:var(--sl-spacing-4);">' +
@@ -4014,7 +3951,6 @@
                 return html;
             }
 
-            // ===== RENDER FEED WORKSPACE =====
             function renderFeedWorkspace() {
                 var html =
                     '<div style="padding-bottom:var(--sl-spacing-4);">' +
@@ -4106,7 +4042,6 @@
                 return html;
             }
 
-            // ===== RENDER HISTORY WORKSPACE =====
             function renderHistoryWorkspace() {
                 var userPosts = STATE.posts.filter(function(p) { return p.author?.id === STATE.user.id; });
                 var html =
@@ -4178,7 +4113,6 @@
                 return html;
             }
 
-            // ===== RENDER MAP WORKSPACE =====
             function renderMapWorkspace() {
                 var userMap = STATE.user.maps || '';
                 return '<div style="padding-bottom:var(--sl-spacing-4);">' +
@@ -4202,10 +4136,126 @@
                     '</div>';
             }
 
+            // ==================== MAIN RENDER ====================
+            function renderWorkspace(workspaceId) {
+                var container = document.getElementById('sl-workspace-content');
+                var loader = document.getElementById('sl-loader');
+                var errorBoundary = document.getElementById('sl-error-boundary');
+                var errorMsg = document.getElementById('sl-error-message');
+
+                if (errorBoundary) errorBoundary.classList.remove('active');
+                if (loader) loader.style.display = 'flex';
+                if (container) container.style.display = 'none';
+
+                var loaderText = document.getElementById('sl-loader-text');
+                var progress = 0;
+                var interval = setInterval(function() {
+                    progress += Math.random() * 20;
+                    if (progress > 90) progress = 90;
+                    if (loaderText) {
+                        if (progress < 30) loaderText.textContent = 'Mempersiapkan workspace...';
+                        else if (progress < 60) loaderText.textContent = 'Memuat konten...';
+                        else if (progress < 80) loaderText.textContent = 'Hampir selesai...';
+                        else loaderText.textContent = 'Siap!';
+                    }
+                }, 80);
+
+                setTimeout(function() {
+                    clearInterval(interval);
+
+                    try {
+                        var content = '';
+                        switch (workspaceId) {
+                            case 'home':
+                                content = renderHome();
+                                break;
+                            case 'emergency':
+                                content = renderEmergencyWorkspace();
+                                break;
+                            case 'feed':
+                                content = renderFeedWorkspace();
+                                break;
+                            case 'history':
+                                content = renderHistoryWorkspace();
+                                break;
+                            case 'map':
+                                content = renderMapWorkspace();
+                                break;
+                            case 'biodata':
+                                content = renderBiodata();
+                                break;
+                            case 'settings':
+                                content = renderSettings();
+                                break;
+                            case 'about':
+                                content = renderStaticPage('ℹ️ Tentang Kami',
+                                    'SALINK adalah platform darurat berbasis komunitas yang menghubungkan masyarakat, relawan, dan instansi pemerintah dalam satu ekosistem yang cepat, aman, dan terpercaya.'
+                                    );
+                                break;
+                            case 'privacy':
+                                content = renderStaticPage('🔒 Kebijakan Privasi',
+                                    'Kami menghargai privasi Anda. Data pribadi Anda dilindungi dan hanya digunakan untuk tujuan pelayanan darurat. Kami tidak membagikan data Anda kepada pihak ketiga tanpa izin Anda.'
+                                    );
+                                break;
+                            case 'terms':
+                                content = renderStaticPage('📜 Syarat & Ketentuan',
+                                    'Dengan menggunakan SALINK, Anda menyetujui untuk menggunakan platform ini dengan bertanggung jawab. Laporan palsu atau penyalahgunaan sistem dapat dikenakan sanksi sesuai ketentuan yang berlaku.'
+                                    );
+                                break;
+                            case 'contact':
+                                content = renderStaticPage('📧 Contact',
+                                    'Hubungi kami di: <a href="mailto:' + CONFIG.adminEmail +
+                                    '" style="color:var(--sl-color-primary);text-decoration:none;">' +
+                                    CONFIG.adminEmail + '</a> atau melalui hotline 112 untuk keadaan darurat.'
+                                    );
+                                break;
+                            default:
+                                throw new Error('Workspace "' + workspaceId + '" tidak ditemukan');
+                        }
+
+                        if (container) container.innerHTML = content;
+                        if (loader) loader.style.display = 'none';
+                        if (container) container.style.display = 'block';
+
+                        var navItems = document.querySelectorAll('.sl-nav-item');
+                        navItems.forEach(function(el) {
+                            el.classList.toggle('active', el.dataset.workspace === workspaceId);
+                        });
+                        var sidebarLinks = document.querySelectorAll('.sl-sidebar-menu a');
+                        sidebarLinks.forEach(function(el) {
+                            el.classList.toggle('active', el.dataset.workspace === workspaceId);
+                        });
+
+                        var workspace = WORKSPACES[workspaceId];
+                        if (workspace) {
+                            var logo = document.getElementById('sl-logo');
+                            if (logo) {
+                                logo.innerHTML =
+                                    '<span class="sl-logo-icon">🚨</span> SALINK' +
+                                    '<span style="font-size:var(--sl-font-size-xs);font-weight:var(--sl-font-weight-medium);color:var(--sl-color-text-muted);margin-left:var(--sl-spacing-1);">' +
+                                    workspace.label + '</span>';
+                            }
+                        }
+
+                        bindWorkspaceEvents(workspaceId);
+                        updateNotificationBadge();
+                        EventBus.emit('workspace:loaded', { workspace: workspaceId });
+
+                    } catch (error) {
+                        console.error('[Workspace] Error:', error);
+                        if (errorBoundary) errorBoundary.classList.add('active');
+                        if (errorMsg) errorMsg.textContent = error.message || 'Terjadi kesalahan saat memuat workspace.';
+                        if (loader) loader.style.display = 'none';
+                        if (container) container.style.display = 'none';
+                    }
+                }, 800);
+            }
+
             // ==================== BIND EVENTS ====================
             function bindWorkspaceEvents(workspaceId) {
                 // ===== SOCIAL BUTTONS =====
-                document.querySelectorAll('.sl-social-btn[data-workspace]').forEach(function(btn) {
+                var socialBtns = document.querySelectorAll('.sl-social-btn[data-workspace]');
+                socialBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var ws = this.dataset.workspace;
                         if (ws === 'contact') {
@@ -4227,20 +4277,24 @@
                 });
 
                 // ===== SIDEBAR LOGOUT =====
-                document.getElementById('sl-sidebar-logout').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (confirm('Apakah Anda yakin ingin logout?')) {
-                        Storage.remove('logged_in');
-                        Storage.remove('current_user');
-                        STATE.isLoggedIn = false;
-                        STATE.isPreview = true;
-                        Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
-                        EventBus.emit('router:navigate', { workspace: 'home' });
-                        setTimeout(function() {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
-                        }, 500);
-                    }
-                });
+                var logoutLink = document.getElementById('sl-sidebar-logout');
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (confirm('Apakah Anda yakin ingin logout?')) {
+                            Storage.remove('logged_in');
+                            Storage.remove('current_user');
+                            STATE.isLoggedIn = false;
+                            STATE.isPreview = true;
+                            Toast.show('Anda telah logout, kembali ke Preview Mode', 'info', '👋');
+                            EventBus.emit('router:navigate', { workspace: 'home' });
+                            setTimeout(function() {
+                                var preview = document.getElementById('sl-preview-overlay');
+                                if (preview) preview.classList.add('active');
+                            }, 500);
+                        }
+                    });
+                }
 
                 // ===== POST COMPOSER =====
                 var trigger = document.getElementById('sl-create-post-trigger');
@@ -4248,12 +4302,14 @@
                 if (trigger && composer) {
                     trigger.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         composer.classList.toggle('active');
                         if (composer.classList.contains('active')) {
-                            document.getElementById('sl-post-input').focus();
+                            var input = document.getElementById('sl-post-input');
+                            if (input) input.focus();
                         }
                     });
                 }
@@ -4264,10 +4320,9 @@
                     postType.addEventListener('change', function() {
                         var isEmergency = postType.value !== 'status';
                         mapSection.classList.toggle('active', isEmergency);
-                        if (isEmergency) {
-                            document.getElementById('sl-post-input').placeholder = 'Deskripsi kejadian darurat...';
-                        } else {
-                            document.getElementById('sl-post-input').placeholder = 'Tulis sesuatu...';
+                        var input = document.getElementById('sl-post-input');
+                        if (input) {
+                            input.placeholder = isEmergency ? 'Deskripsi kejadian darurat...' : 'Tulis sesuatu...';
                         }
                     });
                 }
@@ -4280,9 +4335,9 @@
                 if (mapAddBtn && mapLink) {
                     mapAddBtn.addEventListener('click', function() {
                         if (mapLink.value.trim()) {
-                            mapPreview.style.display = 'flex';
-                            mapAddress.textContent = 'Lokasi ditambahkan';
-                            mapCoords.textContent = '-6.6822, 106.6789';
+                            if (mapPreview) mapPreview.style.display = 'flex';
+                            if (mapAddress) mapAddress.textContent = 'Lokasi ditambahkan';
+                            if (mapCoords) mapCoords.textContent = '-6.6822, 106.6789';
                             mapLink.value = '';
                             Toast.show('Lokasi berhasil ditambahkan!', 'success', '📍');
                         } else {
@@ -4296,7 +4351,8 @@
 
                 function handlePostSubmit() {
                     if (STATE.isPreview) {
-                        document.getElementById('sl-preview-overlay').classList.add('active');
+                        var preview = document.getElementById('sl-preview-overlay');
+                        if (preview) preview.classList.add('active');
                         return;
                     }
                     if (!postInput || !postInput.value.trim()) {
@@ -4350,23 +4406,23 @@
                             type: 'emergency'
                         });
 
-                        // Show floating notification
                         showFloatingNotification(emoji, '🚨 ' + label, 'Dilaporkan oleh ' + author.name);
 
                         // Only show full screen overlay if phone is locked/standby
-                        // For now, we check if document is hidden or visibility state
                         if (document.hidden || document.visibilityState === 'hidden') {
                             var overlay = document.getElementById('sl-hologram-overlay');
                             if (overlay) {
-                                document.getElementById('sl-hologram-icon').textContent = emoji;
-                                document.getElementById('sl-hologram-title').textContent = '⚠️ ' + label;
-                                document.getElementById('sl-hologram-desc').textContent = 'Dilaporkan oleh ' +
-                                    author.name + ' di ' + (post.location || 'Pamijahan, Bogor');
+                                var iconEl = document.getElementById('sl-hologram-icon');
+                                var titleEl = document.getElementById('sl-hologram-title');
+                                var descEl = document.getElementById('sl-hologram-desc');
+                                if (iconEl) iconEl.textContent = emoji;
+                                if (titleEl) titleEl.textContent = '⚠️ ' + label;
+                                if (descEl) descEl.textContent = 'Dilaporkan oleh ' + author.name + ' di ' + (post
+                                    .location || 'Pamijahan, Bogor');
                                 overlay.classList.add('active');
                             }
                         }
 
-                        // Animate emergency buttons
                         document.querySelectorAll('.sl-emergency-btn').forEach(function(b) {
                             if (b.dataset.emergency === type) {
                                 b.classList.add('active');
@@ -4382,7 +4438,6 @@
                             navigator.vibrate([500, 200, 500, 200, 500]);
                         }
 
-                        // Auto stop after 60 seconds if not stopped
                         setTimeout(function() {
                             if (STATE.emergencyPlaying) {
                                 AudioManager.stop();
@@ -4405,13 +4460,12 @@
                             read: false,
                             type: 'regular'
                         });
-                        // Show floating notification for regular
                         showFloatingNotification('📝', 'Postingan Baru', author.name +
                         ' membagikan postingan baru');
                         Toast.show('Postingan berhasil dibagikan!', 'success', '📝');
                     }
 
-                    postInput.value = '';
+                    if (postInput) postInput.value = '';
                     if (composer) composer.classList.remove('active');
                     if (mapPreview) mapPreview.style.display = 'none';
                     if (mapSection) mapSection.classList.remove('active');
@@ -4429,7 +4483,8 @@
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
                             if (STATE.isPreview) {
-                                document.getElementById('sl-preview-overlay').classList.add('active');
+                                var preview = document.getElementById('sl-preview-overlay');
+                                if (preview) preview.classList.add('active');
                                 return;
                             }
                             handlePostSubmit();
@@ -4438,10 +4493,12 @@
                 }
 
                 // ===== EMERGENCY GRID BUTTONS =====
-                document.querySelectorAll('.sl-emergency-btn[data-emergency]').forEach(function(btn) {
+                var emergencyBtns = document.querySelectorAll('.sl-emergency-btn[data-emergency]');
+                emergencyBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var type = this.dataset.emergency;
@@ -4455,12 +4512,12 @@
                             this.classList.remove('active');
                             STATE.activeEmergency = null;
                             STATE.emergencyPlaying = false;
-                            document.getElementById('sl-hologram-overlay').classList.remove('active');
+                            var overlay = document.getElementById('sl-hologram-overlay');
+                            if (overlay) overlay.classList.remove('active');
                             Toast.show('Alarm dimatikan', 'info', '🔕');
                             return;
                         }
 
-                        // Stop any currently playing
                         AudioManager.stop();
                         document.querySelectorAll('.sl-emergency-btn').forEach(function(b) { b.classList.remove(
                                 'active'); });
@@ -4513,13 +4570,16 @@
                             .name);
 
                         if (document.hidden || document.visibilityState === 'hidden') {
-                            var overlay = document.getElementById('sl-hologram-overlay');
-                            if (overlay) {
-                                document.getElementById('sl-hologram-icon').textContent = config.icon;
-                                document.getElementById('sl-hologram-title').textContent = '⚠️ ' + config.label;
-                                document.getElementById('sl-hologram-desc').textContent = 'Dilaporkan oleh ' +
-                                    author.name + ' di ' + (author.location || 'Pamijahan, Bogor');
-                                overlay.classList.add('active');
+                            var overlayEl = document.getElementById('sl-hologram-overlay');
+                            if (overlayEl) {
+                                var iconEl2 = document.getElementById('sl-hologram-icon');
+                                var titleEl2 = document.getElementById('sl-hologram-title');
+                                var descEl2 = document.getElementById('sl-hologram-desc');
+                                if (iconEl2) iconEl2.textContent = config.icon;
+                                if (titleEl2) titleEl2.textContent = '⚠️ ' + config.label;
+                                if (descEl2) descEl2.textContent = 'Dilaporkan oleh ' + author.name + ' di ' + (
+                                    author.location || 'Pamijahan, Bogor');
+                                overlayEl.classList.add('active');
                             }
                         }
 
@@ -4535,7 +4595,6 @@
                             renderWorkspace(Router.current);
                         }
 
-                        // Auto stop after 60 seconds
                         setTimeout(function() {
                             if (STATE.emergencyPlaying) {
                                 AudioManager.stop();
@@ -4564,7 +4623,6 @@
                         '</div>' +
                         '<button class="sl-toast-close">✕</button>';
 
-                    // Remove previous toast of same type to avoid clutter
                     var existing = container.querySelectorAll('.sl-toast');
                     if (existing.length > 3) {
                         existing[0].classList.remove('show');
@@ -4575,25 +4633,30 @@
                     container.appendChild(toast);
                     requestAnimationFrame(function() { toast.classList.add('show'); });
 
-                    toast.querySelector('.sl-toast-close').addEventListener('click', function() {
-                        toast.classList.remove('show');
-                        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); },
-                        300);
-                    });
+                    var closeBtn = toast.querySelector('.sl-toast-close');
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', function() {
+                            toast.classList.remove('show');
+                            setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(
+                                    toast); }, 300);
+                        });
+                    }
 
                     var duration = title.includes('🚨') ? 8000 : 4000;
                     setTimeout(function() {
                         toast.classList.remove('show');
                         setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); },
-                        300);
+                            300);
                     }, duration);
                 }
 
                 // ===== LIKE =====
-                document.querySelectorAll('.sl-post-action[data-action="like"]').forEach(function(btn) {
+                var likeBtns = document.querySelectorAll('.sl-post-action[data-action="like"]');
+                likeBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var postId = this.dataset.post;
@@ -4614,16 +4677,19 @@
                                 type: 'regular'
                             });
                             updateNotificationBadge();
-                            showFloatingNotification('❤️', 'Like Baru', 'Seseorang menyukai postingan Anda');
+                            showFloatingNotification('❤️', 'Like Baru',
+                            'Seseorang menyukai postingan Anda');
                         }
                     });
                 });
 
                 // ===== COMMENT =====
-                document.querySelectorAll('.sl-post-action[data-action="comment"]').forEach(function(btn) {
+                var commentBtns = document.querySelectorAll('.sl-post-action[data-action="comment"]');
+                commentBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var postId = this.dataset.post;
@@ -4634,11 +4700,13 @@
                     });
                 });
 
-                document.querySelectorAll('.sl-comment-submit, .sl-post-composer-submit[data-post]').forEach(function(
-                btn) {
+                var commentSubmitBtns = document.querySelectorAll(
+                '.sl-comment-submit, .sl-post-composer-submit[data-post]');
+                commentSubmitBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var postId = this.dataset.post;
@@ -4663,17 +4731,20 @@
                                     '.sl-post-action[data-action="comment"][data-post="' + postId +
                                     '"] .sl-action-count');
                                 if (actionBtn) actionBtn.textContent = post.comments;
-                                showFloatingNotification('💬', 'Komentar Baru', 'Anda berkomentar di postingan');
+                                showFloatingNotification('💬', 'Komentar Baru',
+                                    'Anda berkomentar di postingan');
                             }
                         }
                     });
                 });
 
                 // ===== VIEWER =====
-                document.querySelectorAll('.sl-post-action[data-action="viewer"]').forEach(function(btn) {
+                var viewerBtns = document.querySelectorAll('.sl-post-action[data-action="viewer"]');
+                viewerBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var postId = this.dataset.post;
@@ -4688,7 +4759,8 @@
                 });
 
                 // ===== SHARE =====
-                document.querySelectorAll('.sl-post-action[data-action="share"]').forEach(function(btn) {
+                var shareBtns = document.querySelectorAll('.sl-post-action[data-action="share"]');
+                shareBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var postId = this.dataset.post;
                         var post = STATE.posts.find(function(p) { return p.id === postId; });
@@ -4702,7 +4774,8 @@
                                 navigator.share({ title: 'Postingan SALINK', text: text }).catch(function() {});
                             } else {
                                 navigator.clipboard.writeText(text)
-                                    .then(function() { Toast.show('Teks berhasil disalin!', 'success', '📋'); })
+                                    .then(function() { Toast.show('Teks berhasil disalin!', 'success',
+                                        '📋'); })
                                     .catch(function() { Toast.show('Bagikan: ' + text, 'info', '↗️'); });
                             }
                         }
@@ -4710,10 +4783,12 @@
                 });
 
                 // ===== DELETE =====
-                document.querySelectorAll('.sl-post-action[data-action="delete"]').forEach(function(btn) {
+                var deleteBtns = document.querySelectorAll('.sl-post-action[data-action="delete"]');
+                deleteBtns.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var postId = this.dataset.post;
@@ -4727,11 +4802,13 @@
                 });
 
                 // ===== MORE BUTTON (Edit) =====
-                document.querySelectorAll('.sl-post-more-btn').forEach(function(btn) {
+                var moreBtns = document.querySelectorAll('.sl-post-more-btn');
+                moreBtns.forEach(function(btn) {
                     btn.addEventListener('click', function(e) {
                         e.stopPropagation();
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var postId = this.dataset.postId;
@@ -4747,82 +4824,87 @@
                 });
 
                 // ===== LAPORAN TERKINI =====
-                document.getElementById('sl-laporan-lihat-semua').addEventListener('click', function() {
-                    var posts = STATE.posts;
-                    var listHtml = '';
-                    if (posts.length === 0) {
-                        listHtml =
-                            '<div style="text-align:center;padding:var(--sl-spacing-4) 0;color:var(--sl-color-text-muted);">Belum ada laporan</div>';
-                    } else {
-                        listHtml = posts.map(function(post) {
-                            var isEmergency = post.type && post.type !== 'status';
-                            var icon = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') :
-                                '📝';
-                            return '<div class="sl-laporan-item" data-post-id="' + post.id +
-                                '" style="cursor:pointer;">' +
-                                '<span class="sl-laporan-icon">' + icon + '</span>' +
-                                '<div class="sl-laporan-info">' +
-                                '<div class="sl-laporan-judul">' + (post.content ? post.content.substring(
-                                    0, 40) + (post.content.length > 40 ? '...' : '') :
-                                    'Postingan') + '</div>' +
-                                '<div class="sl-laporan-desc">' + (post.author?.name || 'Pengguna') +
-                                ' · ' + (post.location || 'Lokasi tidak diketahui') + '</div>' +
-                                '</div>' +
-                                '<div class="sl-laporan-time">' + (post.time || 'baru saja') + '</div>' +
-                                '</div>';
-                        }).join('');
-                    }
-                    Layout.openModal('📋 Semua Laporan',
-                        '<div style="max-height:400px;overflow-y:auto;">' + listHtml + '</div>'
-                    );
-                    document.querySelectorAll('#sl-modal-body .sl-laporan-item').forEach(function(el) {
-                        el.addEventListener('click', function() {
-                            var postId = this.dataset.postId;
-                            var post = STATE.posts.find(function(p) { return p.id === postId; });
-                            if (post) {
-                                Layout.closeModal();
-                                Layout.openModal('📋 Detail Laporan',
-                                    '<div style="padding:var(--sl-spacing-2) 0;">' +
-                                    '<div style="display:flex;align-items:center;gap:var(--sl-spacing-3);margin-bottom:var(--sl-spacing-3);">' +
-                                    '<div class="sl-post-avatar">' + (post.author?.avatar || '👤') +
+                var laporanBtn = document.getElementById('sl-laporan-lihat-semua');
+                if (laporanBtn) {
+                    laporanBtn.addEventListener('click', function() {
+                        var posts = STATE.posts;
+                        var listHtml = '';
+                        if (posts.length === 0) {
+                            listHtml =
+                                '<div style="text-align:center;padding:var(--sl-spacing-4) 0;color:var(--sl-color-text-muted);">Belum ada laporan</div>';
+                        } else {
+                            listHtml = posts.map(function(post) {
+                                var isEmergency = post.type && post.type !== 'status';
+                                var icon = isEmergency ? (EMERGENCY_TYPES[post.type]?.icon || '🚨') :
+                                    '📝';
+                                return '<div class="sl-laporan-item" data-post-id="' + post.id +
+                                    '" style="cursor:pointer;">' +
+                                    '<span class="sl-laporan-icon">' + icon + '</span>' +
+                                    '<div class="sl-laporan-info">' +
+                                    '<div class="sl-laporan-judul">' + (post.content ? post.content
+                                        .substring(0, 40) + (post.content.length > 40 ? '...' :
+                                            '') : 'Postingan') + '</div>' +
+                                    '<div class="sl-laporan-desc">' + (post.author?.name || 'Pengguna') +
+                                    ' · ' + (post.location || 'Lokasi tidak diketahui') + '</div>' +
                                     '</div>' +
-                                    '<div>' +
-                                    '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">' +
-                                    (post.author?.name || 'Pengguna') + '</div>' +
-                                    '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);">' +
-                                    (post.time || 'baru saja') + '</div>' +
+                                    '<div class="sl-laporan-time">' + (post.time || 'baru saja') +
                                     '</div>' +
-                                    '</div>' +
-                                    '<div style="color:var(--sl-color-text-secondary);margin-bottom:var(--sl-spacing-3);">' +
-                                    post.content + '</div>' +
-                                    (post.location ?
-                                        '<div style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ' +
-                                        post.location + '</div>' : '') +
-                                    (post.coords ?
-                                        '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);font-family:monospace;">🗺️ ' +
-                                        post.coords + '</div>' : '') +
-                                    (post.maps ?
-                                        '<div style="margin-top:var(--sl-spacing-2);"><a href="' + post
-                                        .maps +
-                                        '" target="_blank" style="display:inline-block;padding:var(--sl-spacing-2) var(--sl-spacing-4);background:var(--sl-color-primary);color:#fff;border-radius:var(--sl-radius-md);text-decoration:none;font-size:var(--sl-font-size-sm);">📍 Buka Google Maps</a></div>' :
-                                        '') +
-                                    '<div style="margin-top:var(--sl-spacing-3);padding:var(--sl-spacing-3);background:var(--sl-color-surface);border-radius:var(--sl-radius-md);text-align:center;">' +
-                                    '<a href="https://www.google.com/maps?q=' + (post.coords ||
-                                        '-6.6822,106.6789') +
-                                    '" target="_blank" style="display:inline-block;padding:var(--sl-spacing-2) var(--sl-spacing-4);background:var(--sl-color-primary);color:#fff;border-radius:var(--sl-radius-md);text-decoration:none;font-size:var(--sl-font-size-sm);">Buka Google Maps</a>' +
-                                    '</div>' +
-                                    '</div>'
-                                );
-                            }
+                                    '</div>';
+                            }).join('');
+                        }
+                        Layout.openModal('📋 Semua Laporan',
+                            '<div style="max-height:400px;overflow-y:auto;">' + listHtml + '</div>'
+                        );
+                        var reportItems = document.querySelectorAll('#sl-modal-body .sl-laporan-item');
+                        reportItems.forEach(function(el) {
+                            el.addEventListener('click', function() {
+                                var postId = this.dataset.postId;
+                                var post = STATE.posts.find(function(p) { return p.id === postId; });
+                                if (post) {
+                                    Layout.closeModal();
+                                    Layout.openModal('📋 Detail Laporan',
+                                        '<div style="padding:var(--sl-spacing-2) 0;">' +
+                                        '<div style="display:flex;align-items:center;gap:var(--sl-spacing-3);margin-bottom:var(--sl-spacing-3);">' +
+                                        '<div class="sl-post-avatar">' + (post.author?.avatar ||
+                                            '👤') + '</div>' +
+                                        '<div>' +
+                                        '<div style="font-weight:var(--sl-font-weight-bold);color:var(--sl-color-text-primary);">' +
+                                        (post.author?.name || 'Pengguna') + '</div>' +
+                                        '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);">' +
+                                        (post.time || 'baru saja') + '</div>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '<div style="color:var(--sl-color-text-secondary);margin-bottom:var(--sl-spacing-3);">' +
+                                        post.content + '</div>' +
+                                        (post.location ?
+                                            '<div style="font-size:var(--sl-font-size-sm);color:var(--sl-color-text-muted);margin-bottom:var(--sl-spacing-2);">📍 ' +
+                                            post.location + '</div>' : '') +
+                                        (post.coords ?
+                                            '<div style="font-size:var(--sl-font-size-xs);color:var(--sl-color-text-muted);font-family:monospace;">🗺️ ' +
+                                            post.coords + '</div>' : '') +
+                                        (post.maps ?
+                                            '<div style="margin-top:var(--sl-spacing-2);"><a href="' +
+                                            post.maps +
+                                            '" target="_blank" style="display:inline-block;padding:var(--sl-spacing-2) var(--sl-spacing-4);background:var(--sl-color-primary);color:#fff;border-radius:var(--sl-radius-md);text-decoration:none;font-size:var(--sl-font-size-sm);">📍 Buka Google Maps</a></div>' :
+                                            '') +
+                                        '<div style="margin-top:var(--sl-spacing-3);padding:var(--sl-spacing-3);background:var(--sl-color-surface);border-radius:var(--sl-radius-md);text-align:center;">' +
+                                        '<a href="https://www.google.com/maps?q=' + (post.coords ||
+                                            '-6.6822,106.6789') +
+                                        '" target="_blank" style="display:inline-block;padding:var(--sl-spacing-2) var(--sl-spacing-4);background:var(--sl-color-primary);color:#fff;border-radius:var(--sl-radius-md);text-decoration:none;font-size:var(--sl-font-size-sm);">Buka Google Maps</a>' +
+                                        '</div>' +
+                                        '</div>'
+                                    );
+                                }
+                            });
                         });
                     });
-                });
+                }
 
                 // ===== GRAFIK TABS =====
-                document.querySelectorAll('.sl-grafik-tab').forEach(function(tab) {
+                var grafikTabs = document.querySelectorAll('.sl-grafik-tab');
+                grafikTabs.forEach(function(tab) {
                     tab.addEventListener('click', function() {
-                        document.querySelectorAll('.sl-grafik-tab').forEach(function(t) { t.classList.remove(
-                                'active'); });
+                        grafikTabs.forEach(function(t) { t.classList.remove('active'); });
                         this.classList.add('active');
                         var chartType = this.dataset.chart;
                         var container = document.getElementById('sl-grafik-container');
@@ -4833,21 +4915,25 @@
                 });
 
                 // ===== GRAFIK FILTER =====
-                document.getElementById('sl-search-filter').addEventListener('click', function() {
-                    var negara = document.getElementById('sl-search-negara').value || '';
-                    var provinsi = document.getElementById('sl-search-provinsi').value || '';
-                    var kabupaten = document.getElementById('sl-search-kabupaten').value || '';
-                    var kecamatan = document.getElementById('sl-search-kecamatan').value || '';
-                    var desa = document.getElementById('sl-search-desa').value || '';
-                    var alamat = document.getElementById('sl-search-alamat').value || '';
-                    Toast.show(
-                        'Filter diterapkan: ' + (negara || provinsi || kabupaten || kecamatan || desa ||
-                            alamat || 'Semua'),
-                        'info', '🔍');
-                });
+                var filterBtn = document.getElementById('sl-search-filter');
+                if (filterBtn) {
+                    filterBtn.addEventListener('click', function() {
+                        var negara = document.getElementById('sl-search-negara')?.value || '';
+                        var provinsi = document.getElementById('sl-search-provinsi')?.value || '';
+                        var kabupaten = document.getElementById('sl-search-kabupaten')?.value || '';
+                        var kecamatan = document.getElementById('sl-search-kecamatan')?.value || '';
+                        var desa = document.getElementById('sl-search-desa')?.value || '';
+                        var alamat = document.getElementById('sl-search-alamat')?.value || '';
+                        Toast.show(
+                            'Filter diterapkan: ' + (negara || provinsi || kabupaten || kecamatan ||
+                                desa || alamat || 'Semua'),
+                            'info', '🔍');
+                    });
+                }
 
                 // ===== THEME OPTIONS =====
-                document.querySelectorAll('.sl-theme-option').forEach(function(btn) {
+                var themeOptions = document.querySelectorAll('.sl-theme-option');
+                themeOptions.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var theme = this.dataset.theme;
                         if (theme) {
@@ -4861,7 +4947,8 @@
                 });
 
                 // ===== TOGGLE EYE =====
-                document.querySelectorAll('.sl-toggle-eye').forEach(function(btn) {
+                var toggleEyes = document.querySelectorAll('.sl-toggle-eye');
+                toggleEyes.forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var targetId = this.dataset.target;
                         var password = this.dataset.password || 'password123';
@@ -4879,50 +4966,69 @@
                 });
 
                 // ===== EDIT SAVE =====
-                document.getElementById('sl-edit-save').addEventListener('click', function() {
-                    var u = STATE.user;
-                    u.fullName = document.getElementById('sl-edit-fullname').value || u.name;
-                    u.gender = document.getElementById('sl-edit-gender').value || u.gender;
-                    u.username = document.getElementById('sl-edit-username').value || u.username;
-                    u.email = document.getElementById('sl-edit-email').value || u.email;
-                    u.phone = document.getElementById('sl-edit-phone').value || u.phone;
-                    u.country = document.getElementById('sl-edit-country').value || u.country;
-                    u.province = document.getElementById('sl-edit-province').value || u.province;
-                    u.regency = document.getElementById('sl-edit-regency').value || u.regency;
-                    u.district = document.getElementById('sl-edit-district').value || u.district;
-                    u.village = document.getElementById('sl-edit-village').value || u.village;
-                    u.address = document.getElementById('sl-edit-address').value || u.address;
-                    u.bio = document.getElementById('sl-edit-bio').value || u.bio;
-                    u.maps = document.getElementById('sl-edit-maps').value || u.maps;
+                var saveBtn = document.getElementById('sl-edit-save');
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', function() {
+                        var u = STATE.user;
+                        var fullnameEl = document.getElementById('sl-edit-fullname');
+                        var genderEl = document.getElementById('sl-edit-gender');
+                        var usernameEl = document.getElementById('sl-edit-username');
+                        var emailEl = document.getElementById('sl-edit-email');
+                        var phoneEl = document.getElementById('sl-edit-phone');
+                        var countryEl = document.getElementById('sl-edit-country');
+                        var provinceEl = document.getElementById('sl-edit-province');
+                        var regencyEl = document.getElementById('sl-edit-regency');
+                        var districtEl = document.getElementById('sl-edit-district');
+                        var villageEl = document.getElementById('sl-edit-village');
+                        var addressEl = document.getElementById('sl-edit-address');
+                        var bioEl = document.getElementById('sl-edit-bio');
+                        var mapsEl = document.getElementById('sl-edit-maps');
+                        var newPassEl = document.getElementById('sl-edit-newpass');
+                        var confirmPassEl = document.getElementById('sl-edit-confirmpass');
 
-                    var newPass = document.getElementById('sl-edit-newpass').value;
-                    var confirmPass = document.getElementById('sl-edit-confirmpass').value;
-                    if (newPass && confirmPass && newPass === confirmPass) {
-                        u.password = newPass;
-                        Toast.show('Password berhasil diupdate!', 'success', '🔒');
-                    } else if (newPass || confirmPass) {
-                        Toast.show('Password baru tidak cocok!', 'error', '⚠️');
-                        return;
-                    }
-                    // Update storage
-                    var currentUser = Storage.get('current_user', {});
-                    currentUser = { ...currentUser, ...u };
-                    Storage.set('current_user', currentUser);
+                        if (fullnameEl) u.fullName = fullnameEl.value || u.name;
+                        if (genderEl) u.gender = genderEl.value || u.gender;
+                        if (usernameEl) u.username = usernameEl.value || u.username;
+                        if (emailEl) u.email = emailEl.value || u.email;
+                        if (phoneEl) u.phone = phoneEl.value || u.phone;
+                        if (countryEl) u.country = countryEl.value || u.country;
+                        if (provinceEl) u.province = provinceEl.value || u.province;
+                        if (regencyEl) u.regency = regencyEl.value || u.regency;
+                        if (districtEl) u.district = districtEl.value || u.district;
+                        if (villageEl) u.village = villageEl.value || u.village;
+                        if (addressEl) u.address = addressEl.value || u.address;
+                        if (bioEl) u.bio = bioEl.value || u.bio;
+                        if (mapsEl) u.maps = mapsEl.value || u.maps;
 
-                    // Also update in users array
-                    var users = Storage.get('users', []);
-                    var userIndex = users.findIndex(function(user) { return user.id === u.id; });
-                    if (userIndex !== -1) {
-                        users[userIndex] = { ...users[userIndex], ...u };
-                        Storage.set('users', users);
-                    }
+                        var newPass = newPassEl ? newPassEl.value : '';
+                        var confirmPass = confirmPassEl ? confirmPassEl.value : '';
+                        if (newPass && confirmPass && newPass === confirmPass) {
+                            u.password = newPass;
+                            Toast.show('Password berhasil diupdate!', 'success', '🔒');
+                        } else if (newPass || confirmPass) {
+                            Toast.show('Password baru tidak cocok!', 'error', '⚠️');
+                            return;
+                        }
 
-                    Toast.show('Data profil berhasil disimpan!', 'success', '✅');
-                    renderWorkspace('settings');
-                });
+                        var currentUser = Storage.get('current_user', {});
+                        currentUser = { ...currentUser, ...u };
+                        Storage.set('current_user', currentUser);
+
+                        var users = Storage.get('users', []);
+                        var userIndex = users.findIndex(function(user) { return user.id === u.id; });
+                        if (userIndex !== -1) {
+                            users[userIndex] = { ...users[userIndex], ...u };
+                            Storage.set('users', users);
+                        }
+
+                        Toast.show('Data profil berhasil disimpan!', 'success', '✅');
+                        renderWorkspace('settings');
+                    });
+                }
 
                 // ===== HOLOGRAM MAP CLICK =====
-                document.querySelectorAll('.sl-hologram-map').forEach(function(el) {
+                var hologramMaps = document.querySelectorAll('.sl-hologram-map');
+                hologramMaps.forEach(function(el) {
                     el.addEventListener('click', function() {
                         var postId = this.dataset.postId;
                         var post = STATE.hologramPosts.find(function(p) { return p.id === postId; });
@@ -4956,7 +5062,8 @@
                 });
 
                 // ===== HOLOGRAM CLICK =====
-                document.querySelectorAll('.sl-hologram').forEach(function(el) {
+                var holograms = document.querySelectorAll('.sl-hologram');
+                holograms.forEach(function(el) {
                     el.addEventListener('click', function() {
                         var postId = this.dataset.postId;
                         var post = STATE.hologramPosts.find(function(p) { return p.id === postId; });
@@ -4978,7 +5085,8 @@
                 if (inviteBtn) {
                     inviteBtn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var users = [
@@ -5005,17 +5113,22 @@
                             '<div class="sl-invite-list" id="sl-invite-list">' + listHtml + '</div>'
                         );
 
-                        document.getElementById('sl-invite-search').addEventListener('input', function() {
-                            var query = this.value.toLowerCase();
-                            var items = document.querySelectorAll('#sl-invite-list .sl-invite-item');
-                            items.forEach(function(item) {
-                                var name = item.querySelector('.sl-invite-name')?.textContent
-                                    ?.toLowerCase() || '';
-                                item.style.display = name.includes(query) ? 'flex' : 'none';
+                        var searchInput = document.getElementById('sl-invite-search');
+                        if (searchInput) {
+                            searchInput.addEventListener('input', function() {
+                                var query = this.value.toLowerCase();
+                                var items = document.querySelectorAll(
+                                '#sl-invite-list .sl-invite-item');
+                                items.forEach(function(item) {
+                                    var name = item.querySelector('.sl-invite-name')?.textContent
+                                        ?.toLowerCase() || '';
+                                    item.style.display = name.includes(query) ? 'flex' : 'none';
+                                });
                             });
-                        });
+                        }
 
-                        document.querySelectorAll('#sl-invite-list .sl-invite-btn').forEach(function(btn) {
+                        var inviteBtns = document.querySelectorAll('#sl-invite-list .sl-invite-btn');
+                        inviteBtns.forEach(function(btn) {
                             btn.addEventListener('click', function() {
                                 this.textContent = '✅ Terkirim';
                                 this.style.background = 'var(--sl-color-success)';
@@ -5024,14 +5137,15 @@
                             });
                         });
 
-                        document.querySelectorAll('#sl-invite-list .sl-invite-avatar, #sl-invite-list .sl-invite-name')
-                            .forEach(function(el) {
-                                el.addEventListener('click', function() {
-                                    var userId = this.dataset.userId;
-                                    Toast.show('Membuka profil ' + userId + '...', 'info', '👤');
-                                    window.location.href = 'profile-user.html?id=' + userId;
-                                });
+                        var avatarLinks = document.querySelectorAll(
+                            '#sl-invite-list .sl-invite-avatar, #sl-invite-list .sl-invite-name');
+                        avatarLinks.forEach(function(el) {
+                            el.addEventListener('click', function() {
+                                var userId = this.dataset.userId;
+                                Toast.show('Membuka profil ' + userId + '...', 'info', '👤');
+                                window.location.href = 'profile-user.html?id=' + userId;
                             });
+                        });
                     });
                 }
 
@@ -5040,7 +5154,8 @@
                 if (notifBtn) {
                     notifBtn.addEventListener('click', function() {
                         if (STATE.isPreview) {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                             return;
                         }
                         var notifs = STATE.notifications;
@@ -5078,7 +5193,8 @@
                             '</div>'
                         );
 
-                        document.querySelectorAll('#sl-modal-body [data-notif-id]').forEach(function(el) {
+                        var notifItems = document.querySelectorAll('#sl-modal-body [data-notif-id]');
+                        notifItems.forEach(function(el) {
                             el.addEventListener('click', function() {
                                 var id = this.dataset.notifId;
                                 var notif = STATE.notifications.find(function(n) { return n.id ===
@@ -5102,17 +5218,21 @@
                             });
                         });
 
-                        document.getElementById('sl-mark-all-read-modal').addEventListener('click', function() {
-                            STATE.notifications.forEach(function(n) { n.read = true; });
-                            updateNotificationBadge();
-                            Toast.show('Semua notifikasi ditandai dibaca', 'success', '✅');
-                            Layout.closeModal();
-                        });
+                        var markAllBtn = document.getElementById('sl-mark-all-read-modal');
+                        if (markAllBtn) {
+                            markAllBtn.addEventListener('click', function() {
+                                STATE.notifications.forEach(function(n) { n.read = true; });
+                                updateNotificationBadge();
+                                Toast.show('Semua notifikasi ditandai dibaca', 'success', '✅');
+                                Layout.closeModal();
+                            });
+                        }
                     });
                 }
 
                 // ===== PROFILE AVATAR CLICK =====
-                document.querySelectorAll('.sl-post-avatar, .sl-post-author').forEach(function(el) {
+                var postAvatars = document.querySelectorAll('.sl-post-avatar, .sl-post-author');
+                postAvatars.forEach(function(el) {
                     el.addEventListener('click', function() {
                         var userId = this.dataset.userId;
                         if (userId && userId !== STATE.user.id) {
@@ -5121,7 +5241,8 @@
                             window.location.href = 'profil.html';
                         } else {
                             if (STATE.isPreview) {
-                                document.getElementById('sl-preview-overlay').classList.add('active');
+                                var preview = document.getElementById('sl-preview-overlay');
+                                if (preview) preview.classList.add('active');
                             } else {
                                 window.location.href = 'profil.html';
                             }
@@ -5129,23 +5250,34 @@
                     });
                 });
 
-                document.querySelector('.sl-nav-item[data-workspace="profile"]').addEventListener('click', function(e) {
-                    if (STATE.isPreview) {
-                        e.preventDefault();
-                        document.getElementById('sl-preview-overlay').classList.add('active');
-                    }
-                });
-
-                document.querySelectorAll('[data-action="login"]').forEach(function(el) {
-                    el.addEventListener('click', function() {
-                        document.getElementById('sl-preview-overlay').classList.add('active');
+                // ===== PROFILE NAV =====
+                var profileNav = document.querySelector('.sl-nav-item[data-workspace="profile"]');
+                if (profileNav) {
+                    profileNav.addEventListener('click', function(e) {
+                        if (STATE.isPreview) {
+                            e.preventDefault();
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
+                        }
                     });
-                });
+                }
 
-                // ===== HOME BUTTON (bottom nav) =====
-                document.querySelector('.sl-nav-item[data-workspace="home"]').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.location.href = 'dashboard.html';
+                // ===== HOME BUTTON =====
+                var homeBtn = document.querySelector('.sl-nav-item[data-workspace="home"]');
+                if (homeBtn) {
+                    homeBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        window.location.href = 'dashboard.html';
+                    });
+                }
+
+                // ===== LOGIN ACTION =====
+                var loginActions = document.querySelectorAll('[data-action="login"]');
+                loginActions.forEach(function(el) {
+                    el.addEventListener('click', function() {
+                        var preview = document.getElementById('sl-preview-overlay');
+                        if (preview) preview.classList.add('active');
+                    });
                 });
             }
 
@@ -5180,34 +5312,52 @@
             // ==================== SEARCH ====================
             function toggleSearch() {
                 var bar = document.getElementById('sl-search-bar');
-                bar.classList.toggle('active');
-                if (bar.classList.contains('active')) {
-                    document.getElementById('sl-search-input').focus();
+                if (bar) {
+                    bar.classList.toggle('active');
+                    if (bar.classList.contains('active')) {
+                        var input = document.getElementById('sl-search-input');
+                        if (input) input.focus();
+                    }
                 }
             }
 
             // ==================== GLOBAL EVENTS ====================
             function bindGlobalEvents() {
-                document.getElementById('sl-search-btn').addEventListener('click', toggleSearch);
-                document.getElementById('sl-search-input').addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        document.getElementById('sl-search-bar').classList.remove('active');
-                    }
-                });
+                var searchBtn = document.getElementById('sl-search-btn');
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', toggleSearch);
+                }
 
-                document.getElementById('sl-theme-btn').addEventListener('click', function() {
-                    ThemeManager.toggle();
-                    Toast.show('Tema: ' + ThemeManager.current, 'info', '🎨');
-                });
+                var searchInput = document.getElementById('sl-search-input');
+                if (searchInput) {
+                    searchInput.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            var bar = document.getElementById('sl-search-bar');
+                            if (bar) bar.classList.remove('active');
+                        }
+                    });
+                }
 
-                document.getElementById('sl-profile-avatar').addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (STATE.isPreview) {
-                        document.getElementById('sl-preview-overlay').classList.add('active');
-                        return;
-                    }
-                    window.location.href = 'profil.html';
-                });
+                var themeBtn = document.getElementById('sl-theme-btn');
+                if (themeBtn) {
+                    themeBtn.addEventListener('click', function() {
+                        ThemeManager.toggle();
+                        Toast.show('Tema: ' + ThemeManager.current, 'info', '🎨');
+                    });
+                }
+
+                var profileAvatar = document.getElementById('sl-profile-avatar');
+                if (profileAvatar) {
+                    profileAvatar.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (STATE.isPreview) {
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
+                            return;
+                        }
+                        window.location.href = 'profil.html';
+                    });
+                }
 
                 window.addEventListener('online', updateSystemStatus);
                 window.addEventListener('offline', updateSystemStatus);
@@ -5218,6 +5368,20 @@
                 EventBus.on('route:changed', function(data) {
                     renderWorkspace(data.workspace);
                 });
+            }
+
+            // ==================== UPDATE USER STATS ====================
+            function updateUserStats() {
+                var user = STATE.user;
+                var statNumbers = document.querySelectorAll('.sl-quick-stat .sl-stat-number');
+                if (statNumbers.length >= 4) {
+                    var emergencyPosts = STATE.posts.filter(function(p) { return p.type && p.type !== 'status'; });
+                    statNumbers[0].textContent = emergencyPosts.length;
+                    var resolvedPosts = STATE.posts.filter(function(p) { return p.resolved; });
+                    statNumbers[1].textContent = resolvedPosts.length;
+                    statNumbers[2].textContent = user.followers || 0;
+                    statNumbers[3].textContent = (user.trustScore || 100) + '%';
+                }
             }
 
             // ==================== BOOTSTRAP ====================
@@ -5233,7 +5397,6 @@
 
                     if (currentUser) {
                         STATE.user = { ...STATE.user, ...currentUser };
-                        // Also update maps if exists in user data from login
                         if (currentUser.maps) {
                             STATE.user.maps = currentUser.maps;
                         }
@@ -5257,7 +5420,6 @@
                     updateSystemStatus();
                     updateNotificationBadge();
 
-                    // Update UI based on login status
                     if (STATE.isLoggedIn && currentUser) {
                         var avatarEl = document.getElementById('sl-profile-avatar');
                         var sidebarAvatar = document.querySelector('.sl-sidebar-avatar');
@@ -5271,10 +5433,6 @@
                         updateUserStats();
 
                         console.log('[SALINK] ✅ User loaded:', currentUser.name);
-                    } else {
-                        setTimeout(function() {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
-                        }, 300);
                     }
 
                     // Splash screen
@@ -5304,27 +5462,14 @@
 
                     if (!STATE.isLoggedIn) {
                         setTimeout(function() {
-                            document.getElementById('sl-preview-overlay').classList.add('active');
+                            var preview = document.getElementById('sl-preview-overlay');
+                            if (preview) preview.classList.add('active');
                         }, 800);
                     }
 
                 } catch (error) {
                     console.error('[SALINK] ❌ Bootstrap error:', error);
                     Toast.show('Terjadi kesalahan saat memuat aplikasi', 'error', '⚠️');
-                }
-            }
-
-            // ===== UPDATE USER STATS =====
-            function updateUserStats() {
-                var user = STATE.user;
-                var statNumbers = document.querySelectorAll('.sl-quick-stat .sl-stat-number');
-                if (statNumbers.length >= 4) {
-                    var emergencyPosts = STATE.posts.filter(function(p) { return p.type && p.type !== 'status'; });
-                    statNumbers[0].textContent = emergencyPosts.length;
-                    var resolvedPosts = STATE.posts.filter(function(p) { return p.resolved; });
-                    statNumbers[1].textContent = resolvedPosts.length;
-                    statNumbers[2].textContent = user.followers || 0;
-                    statNumbers[3].textContent = (user.trustScore || 100) + '%';
                 }
             }
 
