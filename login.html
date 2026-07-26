@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <meta name="theme-color" content="#071A2E" />
-    <meta name="description" content="SALINK — Login" />
+    <meta name="description" content="SALINK — Login & Register" />
     <title>Login — SALINK</title>
     <style>
         * {
@@ -27,22 +27,33 @@
 
         .sl-login-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             background: #0B223D;
             border-radius: 24px;
             padding: 32px 24px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-height: 98vh;
+            overflow-y: auto;
+        }
+
+        .sl-login-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sl-login-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
         }
 
         .sl-login-header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
         }
 
         .sl-login-header .sl-logo {
             font-size: 48px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .sl-login-header h1 {
@@ -52,9 +63,8 @@
         }
 
         .sl-login-header p {
-            font-size: 14px;
+            font-size: 13px;
             color: #6A8BA0;
-            margin-top: 4px;
         }
 
         .sl-login-tabs {
@@ -63,7 +73,7 @@
             background: #071A2E;
             border-radius: 12px;
             padding: 4px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .sl-login-tab {
@@ -73,7 +83,7 @@
             border-radius: 10px;
             background: transparent;
             color: #6A8BA0;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -90,44 +100,90 @@
         }
 
         .sl-form-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .sl-form-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #B0C4DE;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
-        .sl-form-group input {
+        .sl-form-group label .sl-required {
+            color: #FF3B30;
+        }
+
+        .sl-form-group input,
+        .sl-form-group select,
+        .sl-form-group textarea {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border: 2px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            border-radius: 10px;
             background: #071A2E;
             color: #FFFFFF;
-            font-size: 14px;
+            font-size: 13px;
             font-family: inherit;
             transition: all 0.3s ease;
         }
 
-        .sl-form-group input:focus {
+        .sl-form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .sl-form-group select option {
+            background: #0B223D;
+            color: #FFFFFF;
+        }
+
+        .sl-form-group input:focus,
+        .sl-form-group select:focus,
+        .sl-form-group textarea:focus {
             outline: none;
             border-color: #00C2FF;
             box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
         }
 
-        .sl-form-group input::placeholder {
+        .sl-form-group input::placeholder,
+        .sl-form-group textarea::placeholder {
             color: #3A5A70;
+        }
+
+        .sl-password-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .sl-password-wrap input {
+            flex: 1;
+            padding-right: 44px;
+        }
+
+        .sl-password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #6A8BA0;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .sl-password-toggle:hover {
+            color: #B0C4DE;
         }
 
         .sl-form-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
 
         .sl-form-row label {
@@ -167,6 +223,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
+            margin-top: 4px;
         }
 
         .sl-btn-login:hover {
@@ -192,7 +249,7 @@
             padding: 10px 14px;
             color: #FF3B30;
             font-size: 13px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .sl-error-msg.active {
@@ -207,7 +264,7 @@
             padding: 10px 14px;
             color: #00C853;
             font-size: 13px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .sl-success-msg.active {
@@ -224,7 +281,7 @@
 
         .sl-login-footer {
             text-align: center;
-            margin-top: 16px;
+            margin-top: 14px;
             font-size: 12px;
             color: #6A8BA0;
         }
@@ -245,8 +302,8 @@
             gap: 8px;
             color: #6A8BA0;
             text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 16px;
+            font-size: 13px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
         }
 
@@ -254,10 +311,64 @@
             color: #B0C4DE;
         }
 
+        .sl-upload-avatar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 14px;
+            background: #071A2E;
+            border-radius: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sl-upload-avatar:hover {
+            border-color: #00C2FF;
+        }
+
+        .sl-upload-avatar .sl-avatar-preview {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #0B223D;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sl-upload-avatar .sl-avatar-text {
+            font-size: 12px;
+            color: #6A8BA0;
+        }
+
+        .sl-upload-avatar .sl-avatar-text strong {
+            color: #B0C4DE;
+        }
+
+        .sl-upload-avatar input[type="file"] {
+            display: none;
+        }
+
+        .sl-form-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 12px 0;
+        }
+
+        .sl-form-hint {
+            font-size: 10px;
+            color: #3A5A70;
+            margin-top: 2px;
+        }
+
         /* ---------- RESPONSIVE ---------- */
         @media (max-width: 480px) {
             .sl-login-container {
-                padding: 24px 16px;
+                padding: 20px 14px;
+                border-radius: 16px;
             }
 
             .sl-login-header h1 {
@@ -267,13 +378,30 @@
             .sl-login-header .sl-logo {
                 font-size: 36px;
             }
+
+            .sl-form-group {
+                margin-bottom: 10px;
+            }
+
+            .sl-form-group input,
+            .sl-form-group select,
+            .sl-form-group textarea {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .sl-upload-avatar .sl-avatar-preview {
+                width: 44px;
+                height: 44px;
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="sl-login-container">
-        <a href="dashboard.html" class="sl-back-link">← Kembali</a>
+        <a href="dashboard.html" class="sl-back-link">← Kembali ke Dashboard</a>
 
         <div class="sl-login-header">
             <div class="sl-logo">🚨</div>
@@ -282,7 +410,7 @@
         </div>
 
         <div class="sl-login-tabs">
-            <button class="sl-login-tab active" data-tab="login">Login</button>
+            <button class="sl-login-tab active" data-tab="login">Masuk</button>
             <button class="sl-login-tab" data-tab="register">Daftar</button>
         </div>
 
@@ -292,7 +420,7 @@
         <!-- Success Message -->
         <div class="sl-success-msg" id="sl-success-msg">✅ <span id="sl-success-text">Berhasil!</span></div>
 
-        <!-- LOGIN FORM -->
+        <!-- ==================== LOGIN FORM ==================== -->
         <form id="sl-login-form">
             <div class="sl-form-group">
                 <label>Email atau Username</label>
@@ -300,7 +428,10 @@
             </div>
             <div class="sl-form-group">
                 <label>Password</label>
-                <input type="password" id="sl-login-password" placeholder="Masukkan password" required />
+                <div class="sl-password-wrap">
+                    <input type="password" id="sl-login-password" placeholder="Masukkan password" required />
+                    <button type="button" class="sl-password-toggle" data-target="sl-login-password">👁️</button>
+                </div>
             </div>
             <div class="sl-form-row">
                 <label><input type="checkbox" checked /> Ingat saya</label>
@@ -309,36 +440,109 @@
             <button type="submit" class="sl-btn-login" id="sl-login-btn">Masuk</button>
         </form>
 
-        <!-- REGISTER FORM -->
+        <!-- ==================== REGISTER FORM (19 Field) ==================== -->
         <form id="sl-register-form" style="display:none;">
+            <!-- Upload Foto Profil -->
             <div class="sl-form-group">
-                <label>Nama Lengkap</label>
+                <label>Upload Foto Profil</label>
+                <div class="sl-upload-avatar" id="sl-upload-avatar">
+                    <div class="sl-avatar-preview" id="sl-avatar-preview">👤</div>
+                    <div class="sl-avatar-text">
+                        <strong>Klik untuk upload foto</strong><br />
+                        <span>Format: JPG, PNG, GIF</span>
+                    </div>
+                    <input type="file" id="sl-avatar-file" accept="image/*" />
+                </div>
+            </div>
+
+            <div class="sl-form-group">
+                <label>Nama Lengkap <span class="sl-required">*</span></label>
                 <input type="text" id="sl-register-name" placeholder="Masukkan nama lengkap" required />
             </div>
+
             <div class="sl-form-group">
-                <label>Username</label>
+                <label>Jenis Kelamin</label>
+                <select id="sl-register-gender">
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                    <option value="Tidak disebutkan">Tidak disebutkan</option>
+                </select>
+            </div>
+
+            <div class="sl-form-group">
+                <label>Username <span class="sl-required">*</span></label>
                 <input type="text" id="sl-register-username" placeholder="Pilih username" required />
             </div>
+
             <div class="sl-form-group">
-                <label>Email</label>
+                <label>Email <span class="sl-required">*</span></label>
                 <input type="email" id="sl-register-email" placeholder="Masukkan email" required />
             </div>
+
             <div class="sl-form-group">
                 <label>No WhatsApp</label>
                 <input type="tel" id="sl-register-phone" placeholder="Masukkan nomor WhatsApp" />
             </div>
+
             <div class="sl-form-group">
-                <label>Lokasi</label>
-                <input type="text" id="sl-register-location" placeholder="Kota/Kabupaten" />
+                <label>Negara</label>
+                <input type="text" id="sl-register-country" placeholder="Indonesia" value="Indonesia" />
             </div>
+
             <div class="sl-form-group">
-                <label>Password</label>
-                <input type="password" id="sl-register-password" placeholder="Buat password" required />
+                <label>Provinsi</label>
+                <input type="text" id="sl-register-province" placeholder="Masukkan provinsi" />
             </div>
+
             <div class="sl-form-group">
-                <label>Konfirmasi Password</label>
-                <input type="password" id="sl-register-confirm" placeholder="Konfirmasi password" required />
+                <label>Kabupaten/Kota</label>
+                <input type="text" id="sl-register-regency" placeholder="Masukkan kabupaten/kota" />
             </div>
+
+            <div class="sl-form-group">
+                <label>Kecamatan</label>
+                <input type="text" id="sl-register-district" placeholder="Masukkan kecamatan" />
+            </div>
+
+            <div class="sl-form-group">
+                <label>Desa/Kelurahan</label>
+                <input type="text" id="sl-register-village" placeholder="Masukkan desa/kelurahan" />
+            </div>
+
+            <div class="sl-form-group">
+                <label>Alamat Lengkap</label>
+                <textarea id="sl-register-address" placeholder="Masukkan alamat lengkap" rows="2"></textarea>
+            </div>
+
+            <div class="sl-form-group">
+                <label>Bio</label>
+                <textarea id="sl-register-bio" placeholder="Ceritakan tentang diri Anda" rows="2"></textarea>
+            </div>
+
+            <div class="sl-form-group">
+                <label>Upload Link Google Maps</label>
+                <input type="url" id="sl-register-maps" placeholder="https://maps.google.com/..." />
+                <div class="sl-form-hint">Masukkan link Google Maps lokasi Anda</div>
+            </div>
+
+            <hr class="sl-form-divider" />
+
+            <div class="sl-form-group">
+                <label>Password <span class="sl-required">*</span></label>
+                <div class="sl-password-wrap">
+                    <input type="password" id="sl-register-password" placeholder="Buat password (min. 6 karakter)" required />
+                    <button type="button" class="sl-password-toggle" data-target="sl-register-password">👁️</button>
+                </div>
+            </div>
+
+            <div class="sl-form-group">
+                <label>Konfirmasi Password <span class="sl-required">*</span></label>
+                <div class="sl-password-wrap">
+                    <input type="password" id="sl-register-confirm" placeholder="Konfirmasi password" required />
+                    <button type="button" class="sl-password-toggle" data-target="sl-register-confirm">👁️</button>
+                </div>
+            </div>
+
             <button type="submit" class="sl-btn-login" id="sl-register-btn">Daftar Sekarang</button>
         </form>
 
@@ -351,6 +555,7 @@
         (function() {
             'use strict';
 
+            // ===== DOM ELEMENTS =====
             const loginForm = document.getElementById('sl-login-form');
             const registerForm = document.getElementById('sl-register-form');
             const errorMsg = document.getElementById('sl-error-msg');
@@ -365,36 +570,63 @@
 
             let isLoginMode = true;
 
-            // ===== STORAGE HELPER =====
+            // ===== STORAGE =====
             function setStorage(key, value) {
-                try {
-                    localStorage.setItem('sl_' + key, JSON.stringify(value));
-                } catch (e) {}
+                try { localStorage.setItem('sl_' + key, JSON.stringify(value)); } catch (e) {}
             }
 
             function getStorage(key, defaultValue = null) {
-                try {
-                    const raw = localStorage.getItem('sl_' + key);
-                    return raw ? JSON.parse(raw) : defaultValue;
-                } catch (e) {
-                    return defaultValue;
-                }
+                try { const raw = localStorage.getItem('sl_' + key); return raw ? JSON.parse(raw) : defaultValue; } catch (
+                    e) { return defaultValue; }
             }
 
             function removeStorage(key) {
-                try {
-                    localStorage.removeItem('sl_' + key);
-                } catch (e) {}
+                try { localStorage.removeItem('sl_' + key); } catch (e) {}
             }
+
+            // ===== TOGGLE PASSWORD =====
+            document.querySelectorAll('.sl-password-toggle').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const input = document.getElementById(targetId);
+                    if (input) {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            this.textContent = '🙈';
+                        } else {
+                            input.type = 'password';
+                            this.textContent = '👁️';
+                        }
+                    }
+                });
+            });
+
+            // ===== UPLOAD AVATAR =====
+            const avatarFile = document.getElementById('sl-avatar-file');
+            const avatarPreview = document.getElementById('sl-avatar-preview');
+
+            document.getElementById('sl-upload-avatar').addEventListener('click', function() {
+                avatarFile.click();
+            });
+
+            avatarFile.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.textContent = '📷';
+                        avatarPreview.style.fontSize = '24px';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
             // ===== SHOW ERROR =====
             function showError(message) {
                 errorText.textContent = message;
                 errorMsg.classList.add('active');
                 successMsg.classList.remove('active');
-                setTimeout(function() {
-                    errorMsg.classList.remove('active');
-                }, 4000);
+                setTimeout(function() { errorMsg.classList.remove('active'); }, 4000);
             }
 
             // ===== SHOW SUCCESS =====
@@ -402,9 +634,7 @@
                 successText.textContent = message;
                 successMsg.classList.add('active');
                 errorMsg.classList.remove('active');
-                setTimeout(function() {
-                    successMsg.classList.remove('active');
-                }, 4000);
+                setTimeout(function() { successMsg.classList.remove('active'); }, 4000);
             }
 
             // ===== TOGGLE TABS =====
@@ -419,7 +649,8 @@
                     if (isLoginMode) {
                         loginForm.style.display = 'block';
                         registerForm.style.display = 'none';
-                        toggleText.innerHTML = 'Belum punya akun? <a href="#" id="sl-toggle-link">Daftar di sini</a>';
+                        toggleText.innerHTML =
+                        'Belum punya akun? <a href="#" id="sl-toggle-link">Daftar di sini</a>';
                         document.getElementById('sl-toggle-link').addEventListener('click', function(e) {
                             e.preventDefault();
                             document.querySelector('.sl-login-tab[data-tab="register"]').click();
@@ -427,7 +658,8 @@
                     } else {
                         loginForm.style.display = 'none';
                         registerForm.style.display = 'block';
-                        toggleText.innerHTML = 'Sudah punya akun? <a href="#" id="sl-toggle-link">Login di sini</a>';
+                        toggleText.innerHTML =
+                        'Sudah punya akun? <a href="#" id="sl-toggle-link">Login di sini</a>';
                         document.getElementById('sl-toggle-link').addEventListener('click', function(e) {
                             e.preventDefault();
                             document.querySelector('.sl-login-tab[data-tab="login"]').click();
@@ -447,7 +679,7 @@
                 }
             });
 
-            // ===== GET USERS FROM STORAGE =====
+            // ===== GET USERS =====
             function getUsers() {
                 return getStorage('users', []);
             }
@@ -460,6 +692,139 @@
             function getCurrentUser() {
                 return getStorage('current_user', null);
             }
+
+            // ===== GET REGISTER FIELDS =====
+            function getRegisterData() {
+                return {
+                    name: document.getElementById('sl-register-name').value.trim(),
+                    gender: document.getElementById('sl-register-gender').value,
+                    username: document.getElementById('sl-register-username').value.trim(),
+                    email: document.getElementById('sl-register-email').value.trim(),
+                    phone: document.getElementById('sl-register-phone').value.trim(),
+                    country: document.getElementById('sl-register-country').value.trim() || 'Indonesia',
+                    province: document.getElementById('sl-register-province').value.trim(),
+                    regency: document.getElementById('sl-register-regency').value.trim(),
+                    district: document.getElementById('sl-register-district').value.trim(),
+                    village: document.getElementById('sl-register-village').value.trim(),
+                    address: document.getElementById('sl-register-address').value.trim(),
+                    bio: document.getElementById('sl-register-bio').value.trim(),
+                    maps: document.getElementById('sl-register-maps').value.trim(),
+                    password: document.getElementById('sl-register-password').value,
+                    confirm: document.getElementById('sl-register-confirm').value,
+                    avatar: avatarPreview.textContent || '👤'
+                };
+            }
+
+            // ===== REGISTER =====
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const data = getRegisterData();
+
+                if (!data.name || !data.username || !data.email || !data.password || !data.confirm) {
+                    showError('Harap isi semua field yang wajib (*)!');
+                    return;
+                }
+
+                if (data.password !== data.confirm) {
+                    showError('Password tidak cocok!');
+                    return;
+                }
+
+                if (data.password.length < 6) {
+                    showError('Password minimal 6 karakter!');
+                    return;
+                }
+
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Memproses...';
+
+                setTimeout(function() {
+                    const users = getUsers();
+
+                    if (users.some(function(u) { return u.username === data.username; })) {
+                        showError('Username sudah digunakan!');
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = 'Daftar Sekarang';
+                        return;
+                    }
+
+                    if (users.some(function(u) { return u.email === data.email; })) {
+                        showError('Email sudah terdaftar!');
+                        registerBtn.disabled = false;
+                        registerBtn.textContent = 'Daftar Sekarang';
+                        return;
+                    }
+
+                    const now = new Date();
+                    const joined = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric',
+                        month: 'long', year: 'numeric' }) + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit',
+                            minute: '2-digit' });
+
+                    const newUser = {
+                        id: 'usr-' + Date.now(),
+                        name: data.name,
+                        gender: data.gender,
+                        username: data.username,
+                        email: data.email,
+                        phone: data.phone || '',
+                        country: data.country,
+                        province: data.province || '',
+                        regency: data.regency || '',
+                        district: data.district || '',
+                        village: data.village || '',
+                        address: data.address || '',
+                        bio: data.bio || '',
+                        maps: data.maps || '',
+                        password: data.password,
+                        avatar: data.avatar,
+                        joined: joined,
+                        posts: 0,
+                        followers: 0,
+                        following: 0,
+                        trustScore: 100,
+                        verified: false,
+                        createdAt: now.toISOString()
+                    };
+
+                    users.push(newUser);
+                    saveUsers(users);
+
+                    // Auto login
+                    setStorage('logged_in', true);
+                    setStorage('current_user', {
+                        id: newUser.id,
+                        name: newUser.name,
+                        gender: newUser.gender,
+                        username: newUser.username,
+                        email: newUser.email,
+                        phone: newUser.phone,
+                        country: newUser.country,
+                        province: newUser.province,
+                        regency: newUser.regency,
+                        district: newUser.district,
+                        village: newUser.village,
+                        address: newUser.address,
+                        bio: newUser.bio,
+                        maps: newUser.maps,
+                        avatar: newUser.avatar,
+                        joined: newUser.joined,
+                        posts: newUser.posts,
+                        followers: newUser.followers,
+                        following: newUser.following,
+                        trustScore: newUser.trustScore,
+                        verified: newUser.verified
+                    });
+
+                    showSuccess('Pendaftaran berhasil! Mengarahkan ke dashboard...');
+                    setTimeout(function() {
+                        window.location.href = 'dashboard.html';
+                    }, 500);
+
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = 'Daftar Sekarang';
+                }, 500);
+            });
 
             // ===== LOGIN =====
             loginForm.addEventListener('submit', function(e) {
@@ -485,16 +850,23 @@
                     if (found) {
                         setStorage('logged_in', true);
                         setStorage('current_user', {
-                            id: found.id || 'usr-' + Date.now(),
-                            name: found.name || found.username,
+                            id: found.id,
+                            name: found.name,
+                            gender: found.gender || 'Laki-laki',
                             username: found.username,
                             email: found.email,
-                            avatar: found.avatar || '👤',
-                            bio: found.bio || 'Pengguna SALINK',
-                            location: found.location || 'Indonesia',
-                            joined: found.joined || new Date().toLocaleDateString('id-ID', { month: 'long',
-                                year: 'numeric' }),
                             phone: found.phone || '',
+                            country: found.country || 'Indonesia',
+                            province: found.province || '',
+                            regency: found.regency || '',
+                            district: found.district || '',
+                            village: found.village || '',
+                            address: found.address || '',
+                            bio: found.bio || '',
+                            maps: found.maps || '',
+                            avatar: found.avatar || '👤',
+                            joined: found.joined || new Date().toLocaleDateString('id-ID', { month: 'long',
+                                    year: 'numeric' }),
                             posts: found.posts || 0,
                             followers: found.followers || 0,
                             following: found.following || 0,
@@ -514,110 +886,8 @@
                 }, 500);
             });
 
-            // ===== REGISTER =====
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const name = document.getElementById('sl-register-name').value.trim();
-                const username = document.getElementById('sl-register-username').value.trim();
-                const email = document.getElementById('sl-register-email').value.trim();
-                const phone = document.getElementById('sl-register-phone').value.trim();
-                const location = document.getElementById('sl-register-location').value.trim();
-                const password = document.getElementById('sl-register-password').value;
-                const confirm = document.getElementById('sl-register-confirm').value;
-
-                if (!name || !username || !email || !password || !confirm) {
-                    showError('Harap isi semua field yang wajib!');
-                    return;
-                }
-
-                if (password !== confirm) {
-                    showError('Password tidak cocok!');
-                    return;
-                }
-
-                if (password.length < 6) {
-                    showError('Password minimal 6 karakter!');
-                    return;
-                }
-
-                registerBtn.disabled = true;
-                registerBtn.textContent = 'Memproses...';
-
-                setTimeout(function() {
-                    const users = getUsers();
-
-                    // Check if username exists
-                    if (users.some(function(u) { return u.username === username; })) {
-                        showError('Username sudah digunakan!');
-                        registerBtn.disabled = false;
-                        registerBtn.textContent = 'Daftar Sekarang';
-                        return;
-                    }
-
-                    // Check if email exists
-                    if (users.some(function(u) { return u.email === email; })) {
-                        showError('Email sudah terdaftar!');
-                        registerBtn.disabled = false;
-                        registerBtn.textContent = 'Daftar Sekarang';
-                        return;
-                    }
-
-                    // Create new user
-                    const newUser = {
-                        id: 'usr-' + Date.now(),
-                        name: name,
-                        username: username,
-                        email: email,
-                        phone: phone || '',
-                        location: location || 'Indonesia',
-                        password: password,
-                        avatar: '👤',
-                        bio: 'Pengguna SALINK',
-                        joined: new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }),
-                        posts: 0,
-                        followers: 0,
-                        following: 0,
-                        trustScore: 100,
-                        verified: false,
-                        createdAt: new Date().toISOString()
-                    };
-
-                    users.push(newUser);
-                    saveUsers(users);
-
-                    // Auto login after register
-                    setStorage('logged_in', true);
-                    setStorage('current_user', {
-                        id: newUser.id,
-                        name: newUser.name,
-                        username: newUser.username,
-                        email: newUser.email,
-                        avatar: newUser.avatar,
-                        bio: newUser.bio,
-                        location: newUser.location,
-                        joined: newUser.joined,
-                        phone: newUser.phone,
-                        posts: newUser.posts,
-                        followers: newUser.followers,
-                        following: newUser.following,
-                        trustScore: newUser.trustScore,
-                        verified: newUser.verified
-                    });
-
-                    showSuccess('Pendaftaran berhasil! Mengarahkan ke dashboard...');
-                    setTimeout(function() {
-                        window.location.href = 'dashboard.html';
-                    }, 500);
-
-                    registerBtn.disabled = false;
-                    registerBtn.textContent = 'Daftar Sekarang';
-                }, 500);
-            });
-
             // ===== CHECK IF ALREADY LOGGED IN =====
-            const loggedIn = getStorage('logged_in', false);
-            if (loggedIn) {
+            if (getStorage('logged_in', false)) {
                 window.location.href = 'dashboard.html';
             }
 
