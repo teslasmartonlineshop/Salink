@@ -16,6 +16,87 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- ================================================================ -->
+    <!-- 🔥 SYNC ENGINE - INTEGRASI DENGAN DASHBOARD                     -->
+    <!-- ================================================================ -->
+    <script>
+        // ================================================================
+        // 🔥 SYNC ENGINE - Menghubungkan dengan Dashboard
+        // ================================================================
+        const SYNC = {
+            getDashboardState: function() {
+                try {
+                    const state = localStorage.getItem('sl_state');
+                    if (state) {
+                        return JSON.parse(state);
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Gagal mengambil state dashboard:', e);
+                }
+                return null;
+            },
+            
+            syncFromDashboard: function() {
+                const dashboardState = this.getDashboardState();
+                if (dashboardState) {
+                    if (dashboardState.user) {
+                        localStorage.setItem('salink_user', JSON.stringify(dashboardState.user));
+                        console.log('✅ User data synced from dashboard');
+                    }
+                    if (dashboardState.posts && Array.isArray(dashboardState.posts)) {
+                        localStorage.setItem('salink_posts', JSON.stringify(dashboardState.posts));
+                        console.log('✅ Posts synced from dashboard');
+                    }
+                    if (dashboardState.notifications && Array.isArray(dashboardState.notifications)) {
+                        localStorage.setItem('salink_notifications', JSON.stringify(dashboardState.notifications));
+                        console.log('✅ Notifications synced from dashboard');
+                    }
+                    if (dashboardState.friends && Array.isArray(dashboardState.friends)) {
+                        localStorage.setItem('salink_friends', JSON.stringify(dashboardState.friends));
+                        console.log('✅ Friends synced from dashboard');
+                    }
+                    if (dashboardState.theme) {
+                        localStorage.setItem('salink_theme', dashboardState.theme);
+                        console.log('✅ Theme synced from dashboard');
+                    }
+                    return true;
+                }
+                return false;
+            },
+            
+            pushToDashboard: function(data) {
+                try {
+                    const currentState = this.getDashboardState() || {};
+                    const updatedState = { ...currentState, ...data };
+                    localStorage.setItem('sl_state', JSON.stringify(updatedState));
+                    console.log('✅ Data pushed to dashboard');
+                    return true;
+                } catch (e) {
+                    console.warn('⚠️ Gagal push ke dashboard:', e);
+                    return false;
+                }
+            },
+            
+            updateUser: function(userData) {
+                return this.pushToDashboard({ user: userData });
+            },
+            
+            updatePosts: function(postsData) {
+                return this.pushToDashboard({ posts: postsData });
+            },
+            
+            updateNotifications: function(notifData) {
+                return this.pushToDashboard({ notifications: notifData });
+            },
+            
+            updateFriends: function(friendsData) {
+                return this.pushToDashboard({ friends: friendsData });
+            }
+        };
+        
+        console.log('✅ Sync Engine Loaded - Terintegrasi dengan Dashboard');
+    </script>
+    
+    <!-- ================================================================ -->
     <!-- 🔥 API CONFIGURATION - GOOGLE SPREADSHEETS                       -->
     <!-- ================================================================ -->
     <script>
@@ -1256,6 +1337,38 @@
             color: var(--text-primary);
         }
 
+        /* ===== CONFIRMATION MODAL ===== */
+        .btn-confirm-yes {
+            background: var(--accent-blue-gradient);
+            color: #fff;
+            border: none;
+            padding: 8px 30px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-confirm-yes:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+        }
+        .btn-confirm-no {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 30px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-confirm-no:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-blue);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .main-content { padding: calc(var(--header-height) + 10px) 10px calc(var(--footer-height) + 10px); }
@@ -1359,6 +1472,7 @@
 
         <!-- ===== PROFILE ACTIONS ===== -->
         <div class="profile-actions">
+            <!-- 🔥 TOMBOL PESAN → Redirect ke pesan-masuk.html -->
             <a href="pesan-masuk.html" class="profile-pesan-btn" id="profilePesanBtn">
                 <i class="fas fa-paper-plane"></i> PESAN
             </a>
@@ -1368,6 +1482,7 @@
                 <i class="fas fa-user-plus"></i> INVITE
             </button>
             
+            <!-- 🔥 TOMBOL ACTION ⚠️ → Buka Modal Tindakan -->
             <button class="profile-action-btn" id="profileActionBtn" onclick="openActionModal()" title="Tindakan Lainnya">
                 <i class="fas fa-exclamation-triangle"></i> Action
             </button>
@@ -1630,10 +1745,10 @@
             <div class="modal-body" id="confirmModalBody">
                 <p id="confirmMessage" style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
                 <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                    <button class="btn-confirm-yes" id="confirmYesBtn" style="background:var(--accent-blue-gradient);color:#fff;border:none;padding:8px 30px;border-radius:8px;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.3s;">
+                    <button class="btn-confirm-yes" id="confirmYesBtn">
                         <i class="fas fa-check"></i> Ya
                     </button>
-                    <button class="btn-confirm-no" id="confirmNoBtn" style="background:var(--bg-input);color:var(--text-primary);border:1px solid var(--border-color);padding:8px 30px;border-radius:8px;font-size:0.75rem;font-weight:500;cursor:pointer;transition:all 0.3s;">
+                    <button class="btn-confirm-no" id="confirmNoBtn">
                         Batal
                     </button>
                 </div>
@@ -1647,7 +1762,7 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- ================================================================ -->
-    <!-- JAVASCRIPT                                                        -->
+    <!-- JAVASCRIPT - INTEGRASI DENGAN DASHBOARD                         -->
     <!-- ================================================================ -->
     <script>
         // ================================================================
@@ -1668,17 +1783,32 @@
         let allUsers = [];
 
         // ================================================================
-        // LOAD THEME
+        // LOAD THEME - SINKRON DARI DASHBOARD
         // ================================================================
         function loadTheme() {
-            const savedTheme = localStorage.getItem('salink_theme');
-            if (savedTheme === 'light') {
-                currentTheme = 'light';
+            // Coba ambil tema dari dashboard state
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.theme) {
+                currentTheme = dashboardState.theme;
+            } else {
+                const savedTheme = localStorage.getItem('salink_theme');
+                if (savedTheme === 'light') {
+                    currentTheme = 'light';
+                }
+            }
+            
+            if (currentTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.getElementById('themeToggle').classList.add('active');
                 document.getElementById('toggleIcon').className = 'fas fa-sun';
                 const metaThemeColor = document.getElementById('themeColorMeta');
                 if (metaThemeColor) metaThemeColor.content = '#f0f4f8';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.getElementById('themeToggle').classList.remove('active');
+                document.getElementById('toggleIcon').className = 'fas fa-moon';
+                const metaThemeColor = document.getElementById('themeColorMeta');
+                if (metaThemeColor) metaThemeColor.content = '#0d1117';
             }
         }
 
@@ -1695,6 +1825,8 @@
                 toggleIcon.className = 'fas fa-sun';
                 if (metaThemeColor) metaThemeColor.content = '#f0f4f8';
                 localStorage.setItem('salink_theme', 'light');
+                // 🔥 SYNC ke dashboard
+                SYNC.pushToDashboard({ theme: 'light' });
             } else {
                 currentTheme = 'dark';
                 html.removeAttribute('data-theme');
@@ -1702,6 +1834,8 @@
                 toggleIcon.className = 'fas fa-moon';
                 if (metaThemeColor) metaThemeColor.content = '#0d1117';
                 localStorage.setItem('salink_theme', 'dark');
+                // 🔥 SYNC ke dashboard
+                SYNC.pushToDashboard({ theme: 'dark' });
             }
         }
 
@@ -1736,9 +1870,17 @@
         }
 
         // ================================================================
-        // GET ALL USERS
+        // GET ALL USERS - DENGAN SYNC DARI DASHBOARD
         // ================================================================
         async function getAllUsers() {
+            // Sync dari dashboard terlebih dahulu
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.users && Array.isArray(dashboardState.users)) {
+                allUsers = dashboardState.users;
+                localStorage.setItem('salink_users', JSON.stringify(allUsers));
+                return allUsers;
+            }
+            
             let users = JSON.parse(localStorage.getItem('salink_users') || '[]');
             
             try {
@@ -1746,6 +1888,8 @@
                 if (remoteUsers && remoteUsers.length > 0) {
                     users = remoteUsers;
                     localStorage.setItem('salink_users', JSON.stringify(users));
+                    // 🔥 SYNC ke dashboard
+                    SYNC.pushToDashboard({ users: users });
                 }
             } catch (e) {
                 console.warn('⚠️ Gagal sync users:', e);
@@ -1760,10 +1904,16 @@
         }
 
         // ================================================================
-        // GET USER BY USERNAME
+        // GET USER BY USERNAME - DENGAN SYNC DARI DASHBOARD
         // ================================================================
         async function getUserByUsername(username) {
             if (!username) return null;
+            
+            // Coba ambil dari dashboard state dulu
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.user && dashboardState.user.username === username) {
+                return dashboardState.user;
+            }
             
             let users = JSON.parse(localStorage.getItem('salink_users') || '[]');
             let user = users.find(u => u.username === username);
@@ -1779,6 +1929,10 @@
                 } catch (e) {
                     console.warn('⚠️ Gagal sync users dari Spreadsheet:', e);
                 }
+            }
+            
+            if (!user && dashboardState && dashboardState.user) {
+                user = dashboardState.user;
             }
             
             if (!user) {
@@ -1824,9 +1978,12 @@
         }
 
         // ================================================================
-        // LOAD PROFILE DATA
+        // LOAD PROFILE DATA - DENGAN SYNC DARI DASHBOARD
         // ================================================================
         async function loadProfileData() {
+            // 🔥 SYNC dari dashboard terlebih dahulu
+            SYNC.syncFromDashboard();
+            
             const urlParams = new URLSearchParams(window.location.search);
             const username = urlParams.get('username');
             
@@ -1856,12 +2013,12 @@
             
             if (!profileUser) {
                 profileUser = {
-                    fullName: '',
-                    username: '',
-                    email: '',
-                    gender: '',
+                    fullName: 'Pengguna SALINK',
+                    username: 'pengguna',
+                    email: 'pengguna@salink.id',
+                    gender: 'male',
                     phone: '',
-                    country: '',
+                    country: 'Indonesia',
                     province: '',
                     city: '',
                     district: '',
@@ -1892,7 +2049,7 @@
             
             await getAllUsers();
             
-            // 🔥 PERBAIKAN: Cek status invite & update tombol
+            // 🔥 Cek status invite & update tombol
             checkInviteStatusAndUpdate();
         }
 
@@ -1918,7 +2075,7 @@
             const isFriend = friends.some(f => f.username === profileUser.username);
             
             if (isFriend) {
-                // ✅ SUDAH BERTEMAN → Tampilkan "Teman" (hijau)
+                // ✅ SUDAH BERTEMAN → Tampilkan "TEMAN" (hijau)
                 updateInviteButton('friend');
             } else if (isInviteSent) {
                 // ⏳ SUDAH MENGIRIM UNDANGAN (pending) → Tampilkan "TERUNDANG" (kuning)
@@ -2015,6 +2172,16 @@
             // Simpan ke localStorage
             localStorage.setItem(inviteKey, 'true');
             
+            // 🔥 SYNC ke dashboard
+            try {
+                const dashboardState = SYNC.getDashboardState() || {};
+                const invites = dashboardState.invites || [];
+                invites.push(inviteData);
+                SYNC.pushToDashboard({ invites: invites });
+            } catch (e) {
+                console.warn('⚠️ Gagal sync invite ke dashboard:', e);
+            }
+            
             // Update tombol menjadi TERUNDANG
             updateInviteButton('pending');
             
@@ -2047,13 +2214,31 @@
             saveNotifications();
             updateNotifBadge();
             
+            // 🔥 SYNC notifikasi ke dashboard
+            SYNC.updateNotifications(notifications);
+            
             showToast('✅ Terkirim', `Undangan berteman dikirim ke ${profileUser.fullName}!`, 'fa-user-plus');
         }
 
         // ================================================================
-        // LOAD POSTS
+        // LOAD POSTS - DENGAN SYNC DARI DASHBOARD
         // ================================================================
         function loadPosts() {
+            // Coba sync dari dashboard
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.posts && Array.isArray(dashboardState.posts)) {
+                posts = dashboardState.posts;
+                let maxId = 0;
+                posts.forEach(p => {
+                    const numId = parseInt(p.id.replace('post-', ''));
+                    if (!isNaN(numId) && numId > maxId) maxId = numId;
+                });
+                postIdCounter = maxId;
+                localStorage.setItem('salink_posts', JSON.stringify(posts));
+                console.log('✅ Posts synced from dashboard:', posts.length);
+                return true;
+            }
+            
             try {
                 const saved = localStorage.getItem('salink_posts');
                 if (saved) {
@@ -2076,9 +2261,30 @@
         }
 
         // ================================================================
-        // LOAD FRIENDS
+        // SAVE POSTS - SYNC KE DASHBOARD
+        // ================================================================
+        function savePosts() {
+            try {
+                localStorage.setItem('salink_posts', JSON.stringify(posts));
+                // 🔥 SYNC ke dashboard
+                SYNC.updatePosts(posts);
+            } catch (e) {
+                console.warn('Gagal menyimpan posts:', e);
+            }
+        }
+
+        // ================================================================
+        // LOAD FRIENDS - DENGAN SYNC DARI DASHBOARD
         // ================================================================
         function loadFriends() {
+            // Coba sync dari dashboard
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.friends && Array.isArray(dashboardState.friends)) {
+                friends = dashboardState.friends;
+                localStorage.setItem('salink_friends', JSON.stringify(friends));
+                return true;
+            }
+            
             try {
                 const saved = localStorage.getItem('salink_friends');
                 if (saved) {
@@ -2104,37 +2310,38 @@
                 friends = sampleFriends;
                 try {
                     localStorage.setItem('salink_friends', JSON.stringify(friends));
+                    // 🔥 SYNC ke dashboard
+                    SYNC.updateFriends(friends);
                 } catch (e) {}
             }
             return true;
         }
 
         // ================================================================
-        // SAVE FRIENDS
+        // SAVE FRIENDS - SYNC KE DASHBOARD
         // ================================================================
         function saveFriends() {
             try {
                 localStorage.setItem('salink_friends', JSON.stringify(friends));
+                // 🔥 SYNC ke dashboard
+                SYNC.updateFriends(friends);
             } catch (e) {
                 console.warn('Gagal menyimpan friends:', e);
             }
         }
 
         // ================================================================
-        // SAVE POSTS
-        // ================================================================
-        function savePosts() {
-            try {
-                localStorage.setItem('salink_posts', JSON.stringify(posts));
-            } catch (e) {
-                console.warn('Gagal menyimpan posts:', e);
-            }
-        }
-
-        // ================================================================
-        // LOAD NOTIFICATIONS
+        // LOAD NOTIFICATIONS - DENGAN SYNC DARI DASHBOARD
         // ================================================================
         function loadNotifications() {
+            // Coba sync dari dashboard
+            const dashboardState = SYNC.getDashboardState();
+            if (dashboardState && dashboardState.notifications && Array.isArray(dashboardState.notifications)) {
+                notifications = dashboardState.notifications;
+                localStorage.setItem('salink_notifications', JSON.stringify(notifications));
+                return true;
+            }
+            
             try {
                 const saved = localStorage.getItem('salink_notifications');
                 if (saved) {
@@ -2155,11 +2362,13 @@
         }
 
         // ================================================================
-        // SAVE NOTIFICATIONS
+        // SAVE NOTIFICATIONS - SYNC KE DASHBOARD
         // ================================================================
         function saveNotifications() {
             try {
                 localStorage.setItem('salink_notifications', JSON.stringify(notifications));
+                // 🔥 SYNC ke dashboard
+                SYNC.updateNotifications(notifications);
             } catch (e) {
                 console.warn('Gagal menyimpan notifikasi:', e);
             }
@@ -2353,7 +2562,7 @@
         }
 
         // ================================================================
-        // RENDER PROFILE
+        // RENDER PROFILE - DENGAN UPDATE STATS
         // ================================================================
         function renderProfile() {
             if (!profileUser) return;
@@ -2369,19 +2578,33 @@
             document.getElementById('profileUsername').textContent = `@${profileUser.username || 'username'}`;
             document.getElementById('profileBio').textContent = profileUser.bio || 'Bergabung di SALINK untuk keamanan bersama';
             
+            // 🔥 Update stats
+            updateStats();
+            
+            // Render posts
             const userPosts = posts.filter(p => p.userId === profileUser.username);
-            document.getElementById('profileStatPosts').textContent = userPosts.length;
-            
-            const followerCount = friends.filter(f => f.username !== profileUser.username).length;
-            document.getElementById('profileStatFollowers').textContent = followerCount > 0 ? followerCount : '0';
-            
-            const followingCount = Math.floor(Math.random() * 3) + 1;
-            document.getElementById('profileStatFollowing').textContent = followingCount;
-            
             renderProfilePosts(userPosts);
             
             // 🔥 Update tombol invite setelah render
             checkInviteStatusAndUpdate();
+        }
+
+        // ================================================================
+        // UPDATE STATS - DINAMIS
+        // ================================================================
+        function updateStats() {
+            if (!profileUser) return;
+            
+            const userPosts = posts.filter(p => p.userId === profileUser.username);
+            document.getElementById('profileStatPosts').textContent = userPosts.length;
+            
+            const followerCount = friends.filter(f => f.username === profileUser.username).length;
+            document.getElementById('profileStatFollowers').textContent = followerCount;
+            
+            const followingCount = friends.filter(f => f.username === profileUser.username).length;
+            document.getElementById('profileStatFollowing').textContent = followingCount;
+            
+            console.log(`📊 Stats updated: Posts=${userPosts.length}, Followers=${followerCount}, Following=${followingCount}`);
         }
 
         // ================================================================
@@ -2547,6 +2770,7 @@
                     }
                     savePosts();
                     renderProfilePosts(posts.filter(p => p.userId === profileUser.username));
+                    updateStats();
                 });
             });
             
@@ -2684,7 +2908,7 @@
             const grid = document.getElementById('fotoGrid');
             grid.innerHTML = '';
             
-            const userPosts = posts.filter(p => p.userId === profileUser?.username && (p.mediaType === 'image' || p.mediaType === 'video'));
+            const userPosts = posts.filter(p => p.userId === profileUser.username && (p.mediaType === 'image' || p.mediaType === 'video'));
             
             let filteredPosts = userPosts;
             if (filter === 'foto') {
@@ -2700,7 +2924,7 @@
                 grid.innerHTML = `
                     <div style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--text-muted);">
                         <i class="fas fa-images" style="font-size:3rem;display:block;margin-bottom:10px;opacity:0.3;"></i>
-                        <p>${profileUser?.fullName || 'Pengguna'} belum memiliki ${filter === 'foto' ? 'foto' : filter === 'video' ? 'video' : 'foto/video'}</p>
+                        <p>${profileUser.fullName} belum memiliki ${filter === 'foto' ? 'foto' : filter === 'video' ? 'video' : 'foto/video'}</p>
                     </div>
                 `;
                 return;
@@ -2712,7 +2936,6 @@
                 
                 const isLiked = currentUser && post.likes && post.likes.includes(currentUser.username);
                 const isOwner = currentUser && post.userId === currentUser.username;
-                const mediaClass = post.mediaType === 'video' ? 'video' : '';
                 
                 let mediaHtml = '';
                 if (post.mediaType === 'image') {
@@ -2795,6 +3018,7 @@
                     }
                     savePosts();
                     renderFotoPosts(currentFotoFilter);
+                    updateStats();
                 });
             });
             
@@ -2814,6 +3038,7 @@
                     savePosts();
                     renderFotoPosts(currentFotoFilter);
                     renderProfilePosts(posts.filter(p => p.userId === profileUser.username));
+                    updateStats();
                     showToast('🗑️ Dihapus', 'Postingan berhasil dihapus', 'fa-trash');
                 });
             });
@@ -2954,7 +3179,7 @@
         }
 
         // ================================================================
-        // ACTION HANDLERS
+        // ACTION HANDLERS - DENGAN SYNC KE DASHBOARD
         // ================================================================
         function confirmRemoveFriend() {
             closeActionModal();
@@ -2975,6 +3200,9 @@
                 friends.splice(friendIndex, 1);
                 saveFriends();
                 
+                // 🔥 SYNC ke dashboard
+                SYNC.updateFriends(friends);
+                
                 apiSendNotification({
                     type: 'profile',
                     title: '❌ Hapus Pertemanan',
@@ -2984,9 +3212,7 @@
                     target: profileUser.username
                 });
                 
-                const followerCount = friends.filter(f => f.username !== profileUser.username).length;
-                document.getElementById('profileStatFollowers').textContent = followerCount > 0 ? followerCount : '0';
-                
+                updateStats();
                 showToast('✅ Berhasil', `${profileUser.fullName} telah dihapus dari daftar teman`, 'fa-user-minus');
                 closeConfirmModal();
             } else {
@@ -3040,6 +3266,8 @@
             if (friendIndex > -1) {
                 friends.splice(friendIndex, 1);
                 saveFriends();
+                // 🔥 SYNC ke dashboard
+                SYNC.updateFriends(friends);
             }
             
             apiSendNotification({
@@ -3055,11 +3283,11 @@
             if (!blockedUsers.includes(profileUser.username)) {
                 blockedUsers.push(profileUser.username);
                 localStorage.setItem('salink_blocked', JSON.stringify(blockedUsers));
+                // 🔥 SYNC ke dashboard
+                SYNC.pushToDashboard({ blocked: blockedUsers });
             }
             
-            const followerCount = friends.filter(f => f.username !== profileUser.username).length;
-            document.getElementById('profileStatFollowers').textContent = followerCount > 0 ? followerCount : '0';
-            
+            updateStats();
             showToast('🚫 Berhasil', `${profileUser.fullName} telah diblokir. Tidak dapat berinteraksi lagi.`, 'fa-ban');
             closeConfirmModal();
         }
@@ -3213,7 +3441,7 @@
         // ================================================================
         function openPengikutModal() {
             const body = document.getElementById('pengikutModalBody');
-            const followers = friends.filter(f => f.username !== profileUser.username);
+            const followers = friends.filter(f => f.username === profileUser.username);
             document.getElementById('pengikutCount').textContent = followers.length;
             
             body.innerHTML = '';
@@ -3336,6 +3564,7 @@
             
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
             
+            // 🔥 MODAL CLOSES
             document.getElementById('temanModalClose').addEventListener('click', closeTemanModal);
             document.getElementById('temanModal').addEventListener('click', function(e) {
                 if (e.target === this) closeTemanModal();
@@ -3387,6 +3616,7 @@
                 }
             });
             
+            // 🔥 STATS CLICK
             document.getElementById('statPosts').addEventListener('click', function() {
                 openPostinganModal();
             });
@@ -3399,17 +3629,24 @@
                 openMengikutiModal();
             });
             
-            console.log('👤 Profile User Page Loaded - INTEGRASI SPREADSHEET');
+            console.log('👤 Profile User Page Loaded - INTEGRASI DENGAN DASHBOARD');
             console.log(`📌 Profile: ${profileUser?.fullName || 'Unknown'}`);
             console.log(`📝 Posts: ${posts.filter(p => p.userId === profileUser?.username).length}`);
             console.log(`👥 Friends: ${friends.length}`);
             console.log('📡 API URL:', API_URL);
-            console.log('✅ Mode READ-ONLY - Like & Komentar aktif');
-            console.log('✅ Navbar: Foto & Teman saja');
-            console.log('✅ Tombol PESAN → Redirect ke pesan-masuk.html');
-            console.log('✅ Tombol INVITE → 3 STATUS (INVITE / TERUNDANG / TEMAN) - AKTIF');
-            console.log('✅ Tombol ACTION ⚠️ → Modal dengan 3 pilihan tindakan - AKTIF');
-            console.log('✅ Sinkronisasi ke Google Spreadsheet aktif');
+            console.log('✅ TOMBOL PESAN → Redirect ke pesan-masuk.html');
+            console.log('✅ TOMBOL INVITE → 3 STATUS (INVITE / TERUNDANG / TEMAN) - AKTIF');
+            console.log('✅ TOMBOL ACTION ⚠️ → Modal dengan 3 pilihan tindakan - AKTIF');
+            console.log('✅ Sinkronisasi data ke Dashboard & Spreadsheet aktif');
+            
+            // 🔥 SYNC awal ke dashboard
+            SYNC.pushToDashboard({
+                user: currentUser || profileUser,
+                posts: posts,
+                notifications: notifications,
+                friends: friends,
+                users: allUsers
+            });
         });
     </script>
 </body>
